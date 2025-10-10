@@ -1,4 +1,4 @@
-# Task List: PWC Mindmap Pro - Firebase Web Transformation
+# Task List: MyMindmap - Firebase Web Transformation
 
 **PRD**: [0001-prd-firebase-web-transformation.md](0001-prd-firebase-web-transformation.md)
 **Version**: 1.0.0
@@ -114,10 +114,10 @@ Below are the high-level tasks (1.0, 2.0, etc.) that will be broken down into su
 
 #### Task 1.0: Initialize project and Firebase configuration
 
-- [ ] 1.1 Create Firebase project in console (pwc-mindmap-web)
+- [ ] 1.1 Create Firebase project in console (mymindmap)
   - Navigate to https://console.firebase.google.com
   - Click "Add project"
-  - Name: "PWC Mindmap Web"
+  - Name: "MyMindmap"
   - Enable Google Analytics: Yes
   - Select Analytics location: United States
   - Accept terms and create project
@@ -130,7 +130,7 @@ Below are the high-level tasks (1.0, 2.0, etc.) that will be broken down into su
 - [ ] 1.3 Initialize Firebase in project directory
   - Run: `firebase init` in `/Users/gonzaloriederer/Documents/GitHub/mindmap-web-firebase`
   - Select: Hosting, Firestore, Storage, Functions
-  - Use existing project: pwc-mindmap-web
+  - Use existing project: mymindmap
   - Firestore rules: `firestore.rules`
   - Storage rules: `storage.rules`
   - Functions language: TypeScript
@@ -158,7 +158,7 @@ Below are the high-level tasks (1.0, 2.0, etc.) that will be broken down into su
 - [ ] 1.7 Save Firebase configuration
   - In Firebase Console → Project settings → Your apps
   - Click "Add app" → Web (</>)
-  - Register app name: "PWC Mindmap Web"
+  - Register app name: "MyMindmap"
   - Copy config object
   - Create `src/lib/firebase.ts` with config (will be created in 2.4)
 

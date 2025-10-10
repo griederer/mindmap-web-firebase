@@ -1,4 +1,4 @@
-# Product Requirements Document: PWC Mindmap Pro - Firebase Web Application
+# Product Requirements Document: MyMindmap - Firebase Web Application
 
 **Version**: 1.0.0
 **Date**: October 10, 2025
@@ -11,7 +11,7 @@
 
 ### 1.1 Overview
 
-PWC Mindmap Pro Web is a complete transformation of the existing macOS Electron application into a modern, cloud-based web application using Firebase as the backend platform. This transformation will enable real-time collaboration, cross-platform accessibility, and seamless data synchronization while preserving all existing features of the desktop application.
+MyMindmap is a complete transformation of the existing macOS Electron application into a modern, cloud-based web application using Firebase as the backend platform. This transformation will enable real-time collaboration, cross-platform accessibility, and seamless data synchronization while preserving all existing features of the desktop application.
 
 ### 1.2 Current State Analysis
 

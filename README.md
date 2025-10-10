@@ -1,6 +1,6 @@
-# PWC Mindmap Pro - Firebase Web Application
+# MyMindmap - Firebase Web Application
 
-**Version**: 5.0.0 (In Development)
+**Version**: 1.0.0 (In Development)
 **Repository**: https://github.com/griederer/mindmap-web-firebase
 **Desktop App**: https://github.com/griederer/mindmap-macos-app
 
@@ -8,7 +8,7 @@
 
 ## 📋 Project Overview
 
-PWC Mindmap Pro Web is a complete transformation of the existing macOS Electron application into a modern, cloud-based web application using Firebase as the backend platform.
+MyMindmap is a complete transformation of the existing macOS Electron application into a modern, cloud-based web application using Firebase as the backend platform.
 
 ### Key Objectives
 
@@ -166,7 +166,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines (to be created).
 - **Desktop App Repository**: https://github.com/griederer/mindmap-macos-app
 - **MCP Documentation**: https://spec.modelcontextprotocol.io/
 - **Firebase Documentation**: https://firebase.google.com/docs
-- **Obsidian Vault**: `/Users/gonzaloriederer/Documents/Obsidian/griederer/Proyectos/PWC Mindmap MCP/`
+- **Obsidian Vault**: `/Users/gonzaloriederer/Documents/Obsidian/griederer/Proyectos/MyMindmap Web App/`
 
 ---
 
