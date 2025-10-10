@@ -44,8 +44,8 @@ Below are the high-level tasks (1.0, 2.0, etc.) that will be broken down into su
 
 ### Phase 0: Setup & Foundation
 
-- [ ] 1.0 Initialize project and Firebase configuration
-- [ ] 2.0 Set up React + Vite + TypeScript boilerplate
+- [x] 1.0 Initialize project and Firebase configuration
+- [x] 2.0 Set up React + Vite + TypeScript boilerplate
 - [ ] 3.0 Implement Firebase Authentication
 
 ### Phase 1: Core Mindmap Engine
