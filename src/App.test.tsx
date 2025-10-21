@@ -1,49 +1,61 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render } from '@testing-library/react';
 import App from './App';
 
+// Mock fetch for demo project
+global.fetch = vi.fn(() =>
+  Promise.resolve({
+    json: () =>
+      Promise.resolve({
+        projectId: 'demo-1',
+        rootNodeId: 'root',
+        nodes: {
+          root: {
+            id: 'root',
+            title: 'NODEM',
+            description: 'Interactive Mind Map Presentations',
+            children: [],
+            level: 0,
+            parentId: null,
+            position: { x: 100, y: 300 },
+            isExpanded: true,
+            isVisible: true,
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          },
+        },
+        actions: [],
+        settings: {
+          defaultZoom: 1,
+          defaultPosition: { x: 0, y: 0 },
+          theme: 'light',
+        },
+      }),
+  } as Response)
+);
+
 describe('App', () => {
-  it('renders NODEM title', () => {
-    render(<App />);
-    expect(screen.getByText('NODEM')).toBeInTheDocument();
+  it('renders NODEM title in header', () => {
+    const { container } = render(<App />);
+    expect(container.textContent).toContain('NODEM');
   });
 
-  it('shows Interactive Mind Map Presentations subtitle', () => {
-    render(<App />);
-    expect(screen.getByText('Interactive Mind Map Presentations')).toBeInTheDocument();
+  it('has header with proper styling', () => {
+    const { container } = render(<App />);
+    const header = container.querySelector('header');
+    expect(header).toBeInTheDocument();
+    expect(header?.className).toContain('bg-white');
   });
 
-  it('displays Clean Slate Ready status', () => {
-    render(<App />);
-    expect(screen.getByText('Clean Slate Ready')).toBeInTheDocument();
+  it('renders Canvas component', () => {
+    const { container } = render(<App />);
+    const canvas = container.querySelector('.w-full.h-full.bg-gray-50');
+    expect(canvas).toBeInTheDocument();
   });
 
-  it('shows Firebase configured checkmark', () => {
-    render(<App />);
-    expect(screen.getByText('Firebase configured')).toBeInTheDocument();
-  });
-
-  it('shows environment hostname', () => {
-    render(<App />);
+  it('shows environment hostname in header', () => {
+    const { container } = render(<App />);
     const hostname = window.location.hostname;
-    expect(screen.getByText(hostname)).toBeInTheDocument();
-  });
-
-  it('has gradient background', () => {
-    const { container } = render(<App />);
-    const gradient = container.querySelector('.bg-gradient-to-br');
-    expect(gradient).toBeInTheDocument();
-  });
-
-  it('displays status card with white background', () => {
-    const { container } = render(<App />);
-    const statusCard = container.querySelector('.bg-white.rounded-lg');
-    expect(statusCard).toBeInTheDocument();
-  });
-
-  it('shows pulsing green indicator', () => {
-    const { container } = render(<App />);
-    const indicator = container.querySelector('.bg-green-500.animate-pulse');
-    expect(indicator).toBeInTheDocument();
+    expect(container.textContent).toContain(hostname);
   });
 });
