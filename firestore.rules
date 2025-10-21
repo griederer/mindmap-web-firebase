@@ -2,9 +2,53 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Default: deny all access (will be configured in Task 4.1)
-    match /{document=**} {
-      allow read, write: if false;
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Production projects collection
+    match /projects/{projectId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // Development projects collection
+    match /projects-dev/{projectId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // Staging projects collection
+    match /projects-staging/{projectId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // Production users collection
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Development users collection
+    match /users-dev/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Staging users collection
+    match /users-staging/{userId} {
+      allow read, write: if isOwner(userId);
     }
   }
 }

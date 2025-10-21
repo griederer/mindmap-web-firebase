@@ -2,9 +2,32 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Default: deny all access (will be configured in Task 4.6)
-    match /{allPaths=**} {
-      allow read, write: if false;
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Production project images
+    match /projects/{userId}/{projectId}/{allFiles=**} {
+      allow read: if isAuthenticated();
+      allow write, delete: if isOwner(userId);
+    }
+
+    // Development project images
+    match /projects-dev/{userId}/{projectId}/{allFiles=**} {
+      allow read: if isAuthenticated();
+      allow write, delete: if isOwner(userId);
+    }
+
+    // Staging project images
+    match /projects-staging/{userId}/{projectId}/{allFiles=**} {
+      allow read: if isAuthenticated();
+      allow write, delete: if isOwner(userId);
     }
   }
 }
