@@ -12,16 +12,17 @@ interface ProjectState {
   // Current project
   currentProject: Project | null;
   currentProjectId: ProjectId | null;
-  
+
   // Node operations
   nodes: Record<NodeId, Node>;
   rootNodeId: NodeId | null;
-  
+
   // Actions
   recordedActions: Action[];
-  
+
   // Operations
   loadProject: (project: Project) => void;
+  saveProject: () => Project | null;
   clearProject: () => void;
   updateNode: (nodeId: NodeId, updates: Partial<Node>) => void;
   addNode: (node: Node) => void;
@@ -49,6 +50,23 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       rootNodeId: project.rootNodeId,
       recordedActions: project.actions || [],
     });
+  },
+
+  // Save current project (returns current state as Project)
+  saveProject: () => {
+    const { currentProject, nodes, rootNodeId, recordedActions } = get();
+    if (!currentProject) return null;
+
+    return {
+      ...currentProject,
+      nodes,
+      rootNodeId: rootNodeId || '',
+      actions: recordedActions,
+      metadata: {
+        ...currentProject.metadata,
+        updatedAt: Date.now(),
+      },
+    };
   },
   
   // Clear current project

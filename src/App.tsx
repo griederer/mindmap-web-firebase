@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Canvas from './components/Canvas/Canvas';
+import Sidebar from './components/Layout/Sidebar';
 import { useProjectStore } from './stores/projectStore';
 import { calculateLayout } from './utils/layoutEngine';
 
@@ -40,10 +41,16 @@ function App() {
         </div>
       </header>
 
-      {/* Canvas */}
-      <main className="flex-1 overflow-hidden">
-        <Canvas />
-      </main>
+      {/* Main content area */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Canvas */}
+        <main className="flex-1 overflow-hidden relative">
+          <Canvas />
+        </main>
+      </div>
     </div>
   );
 }
