@@ -1,0 +1,130 @@
+{
+  "projectId": "segunda-guerra-mundial",
+  "name": "Segunda Guerra Mundial",
+  "createdAt": "2025-01-20T10:00:00Z",
+  "updatedAt": "2025-01-20T15:30:00Z",
+  "rootNodeId": "node-root",
+  "nodes": [
+    {
+      "id": "node-root",
+      "title": "Segunda Guerra Mundial",
+      "description": null,
+      "image": null,
+      "children": ["node-potencias", "node-consecuencias", "node-aliados", "node-causas"],
+      "level": 0,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "node-potencias",
+      "title": "Potencias del Eje",
+      "description": "Las principales potencias del Eje durante la Segunda Guerra Mundial fueron Alemania, Italia y Japón. Estas naciones formaron una alianza militar y política que se opuso a las Potencias Aliadas.",
+      "image": null,
+      "children": ["node-italia", "node-japon", "node-alemania"],
+      "level": 1,
+      "position": { "x": 400, "y": -200 }
+    },
+    {
+      "id": "node-italia",
+      "title": "Italia Fascista",
+      "description": "Bajo el gobierno de Benito Mussolini, Italia se convirtió en un estado fascista totalitario. El régimen se caracterizó por el nacionalismo extremo, el militarismo y la supresión de la oposición política.",
+      "image": null,
+      "children": ["node-imperio-colonial", "node-camisas-negras"],
+      "level": 2,
+      "position": { "x": 800, "y": -300 }
+    },
+    {
+      "id": "node-imperio-colonial",
+      "title": "Imperio Colonial",
+      "description": "Italia buscó expandir su imperio colonial en África, invadiendo Etiopía en 1935 y ocupando Albania en 1939. Estas acciones fueron parte de la política expansionista del régimen fascista.",
+      "image": null,
+      "children": [],
+      "level": 3,
+      "position": { "x": 1200, "y": -350 }
+    },
+    {
+      "id": "node-camisas-negras",
+      "title": "Camisas Negras",
+      "description": "Las Camisas Negras (Squadristi) fueron la milicia paramilitar del Partido Nacional Fascista italiano. Jugaron un papel crucial en el ascenso de Mussolini al poder mediante la violencia y la intimidación.",
+      "image": null,
+      "children": [],
+      "level": 3,
+      "position": { "x": 1200, "y": -250 }
+    },
+    {
+      "id": "node-japon",
+      "title": "Japón Imperial",
+      "description": "Bajo el emperador Hirohito, Japón Imperial buscó la dominación de Asia Oriental. La política militarista japonesa llevó a la invasión de China, Corea y el sudeste asiático.",
+      "image": null,
+      "children": [],
+      "level": 2,
+      "position": { "x": 800, "y": -150 }
+    },
+    {
+      "id": "node-alemania",
+      "title": "Alemania Nazi",
+      "description": "Liderada por Adolf Hitler y el Partido Nazi, Alemania implementó políticas de expansión territorial, persecución racial y genocidio. El régimen nazi fue responsable del Holocausto y la devastación de Europa.",
+      "image": null,
+      "children": [],
+      "level": 2,
+      "position": { "x": 800, "y": -50 }
+    },
+    {
+      "id": "node-consecuencias",
+      "title": "Consecuencias",
+      "description": "La Segunda Guerra Mundial resultó en aproximadamente 70-85 millones de muertes, la creación de las Naciones Unidas, la división de Europa en bloques Este-Oeste, y el comienzo de la Guerra Fría.",
+      "image": null,
+      "children": [],
+      "level": 1,
+      "position": { "x": 400, "y": 0 }
+    },
+    {
+      "id": "node-aliados",
+      "title": "Aliados",
+      "description": "Las principales Potencias Aliadas fueron Estados Unidos, el Reino Unido, la Unión Soviética, China y Francia. Estas naciones formaron una coalición para derrotar a las Potencias del Eje.",
+      "image": null,
+      "children": [],
+      "level": 1,
+      "position": { "x": 400, "y": 150 }
+    },
+    {
+      "id": "node-causas",
+      "title": "Causas",
+      "description": "Las causas de la Segunda Guerra Mundial incluyen el Tratado de Versalles y sus duras condiciones para Alemania, el ascenso de regímenes totalitarios, la crisis económica de 1929, y el fracaso de la Sociedad de Naciones.",
+      "image": null,
+      "children": [],
+      "level": 1,
+      "position": { "x": 400, "y": 300 }
+    }
+  ],
+  "actions": [
+    {
+      "type": "expand",
+      "nodeId": "node-root",
+      "timestamp": 1705753200000
+    },
+    {
+      "type": "expand",
+      "nodeId": "node-potencias",
+      "timestamp": 1705753205000
+    },
+    {
+      "type": "showInfo",
+      "nodeId": "node-italia",
+      "timestamp": 1705753210000
+    },
+    {
+      "type": "hideInfo",
+      "nodeId": "node-italia",
+      "timestamp": 1705753215000
+    },
+    {
+      "type": "expand",
+      "nodeId": "node-italia",
+      "timestamp": 1705753220000
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "schema": "https://nodem.app/schema/v1"
+  }
+}

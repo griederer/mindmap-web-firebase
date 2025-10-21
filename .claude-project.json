@@ -1,0 +1,28 @@
+{
+  "projectId": "nodem-mind-map-presentation",
+  "name": "NODEM",
+  "description": "Interactive mind map presentation tool - Replace PowerPoint with smooth, zoomable node-based presentations",
+  "type": "web",
+  "repository": "https://github.com/griederer/NODEM",
+  "createdAt": "2025-01-20T00:00:00Z",
+  "technologies": [
+    "React",
+    "TypeScript",
+    "Vite",
+    "Zustand",
+    "Framer Motion",
+    "React Flow",
+    "D3.js",
+    "Zod"
+  ],
+  "features": [
+    "Node-based mind maps",
+    "Smooth 60fps animations",
+    "Action recording and playback",
+    "Project-centric JSON storage",
+    "Smart camera positioning",
+    "Focus mode",
+    "Full-screen image display",
+    "Zoom and pan controls"
+  ]
+}
