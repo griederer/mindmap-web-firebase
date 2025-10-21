@@ -87,20 +87,20 @@ Based on PRD: `0001-prd-nodem-core.md`
   - [x] 1.11 Write tests for basic setup
   - [x] 1.12 Commit initial project setup
 
-- [ ] 2.0 Core Data Layer (Types, Stores, Validation)
-  - [ ] 2.1 Define Node type interface (id, title, description, image, children, level, position)
-  - [ ] 2.2 Define Action type union (expand, collapse, showInfo, hideInfo, focus, unfocus, etc.)
-  - [ ] 2.3 Define Project type interface (projectId, name, nodes, rootNodeId, actions, metadata)
-  - [ ] 2.4 Create Zod schemas for Node validation
-  - [ ] 2.5 Create Zod schemas for Action validation
-  - [ ] 2.6 Create Zod schemas for Project validation
-  - [ ] 2.7 Implement projectStore with Zustand (nodes, currentProject, actions)
-  - [ ] 2.8 Implement viewportStore (zoom, pan, camera position)
-  - [ ] 2.9 Implement uiStore (selectedNode, focusMode, detailPanelOpen)
-  - [ ] 2.10 Implement presentationStore (isRecording, isPresenting, currentActionIndex)
-  - [ ] 2.11 Write unit tests for all type validators
-  - [ ] 2.12 Write unit tests for all stores
-  - [ ] 2.13 Verify all tests pass
+- [x] 2.0 Core Data Layer (Types, Stores, Validation)
+  - [x] 2.1 Define Node type interface (id, title, description, image, children, level, position)
+  - [x] 2.2 Define Action type union (expand, collapse, showInfo, hideInfo, focus, unfocus, etc.)
+  - [x] 2.3 Define Project type interface (projectId, name, nodes, rootNodeId, actions, metadata)
+  - [x] 2.4 Create Zod schemas for Node validation
+  - [x] 2.5 Create Zod schemas for Action validation
+  - [x] 2.6 Create Zod schemas for Project validation
+  - [x] 2.7 Implement projectStore with Zustand (nodes, currentProject, actions)
+  - [x] 2.8 Implement viewportStore (zoom, pan, camera position)
+  - [x] 2.9 Implement uiStore (selectedNode, focusMode, detailPanelOpen)
+  - [x] 2.10 Implement presentationStore (isRecording, isPresenting, currentActionIndex)
+  - [x] 2.11 Write unit tests for all type validators
+  - [x] 2.12 Write unit tests for all stores
+  - [x] 2.13 Verify all tests pass
 
 - [ ] 3.0 Node Rendering and Basic Layout
   - [ ] 3.1 Create Canvas component with SVG container
