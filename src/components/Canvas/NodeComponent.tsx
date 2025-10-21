@@ -28,18 +28,49 @@ export default function NodeComponent({ node }: NodeComponentProps) {
   const hasChildren = node.children.length > 0;
   const hasDetails = node.description || node.image;
 
-  // Animate node appearance
+  // Animate node appearance on mount with smooth fade
   useEffect(() => {
     if (groupRef.current) {
       groupRef.current.to({
         opacity: 1,
-        scaleX: 1,
-        scaleY: 1,
-        duration: 0.3,
-        easing: Konva.Easings.EaseOut,
+        duration: 0.4,
+        easing: Konva.Easings.EaseInOut,
       });
     }
   }, []);
+
+  // Animate position changes with smooth easing
+  useEffect(() => {
+    if (groupRef.current) {
+      groupRef.current.to({
+        x: node.position.x,
+        y: node.position.y,
+        duration: 0.6,
+        easing: Konva.Easings.EaseInOut,
+      });
+    }
+  }, [node.position.x, node.position.y]);
+
+  // Animate visibility changes (appear/disappear smoothly)
+  useEffect(() => {
+    if (groupRef.current) {
+      if (node.isVisible) {
+        // Fade in when becoming visible
+        groupRef.current.to({
+          opacity: 1,
+          duration: 0.4,
+          easing: Konva.Easings.EaseOut,
+        });
+      } else {
+        // Fade out when becoming invisible
+        groupRef.current.to({
+          opacity: 0,
+          duration: 0.35,
+          easing: Konva.Easings.EaseIn,
+        });
+      }
+    }
+  }, [node.isVisible]);
 
   const handleClick = () => {
     selectNode(node.id);
@@ -61,8 +92,6 @@ export default function NodeComponent({ node }: NodeComponentProps) {
       x={node.position.x}
       y={node.position.y}
       opacity={0}
-      scaleX={0.8}
-      scaleY={0.8}
       onClick={handleClick}
     >
       {/* Node background */}

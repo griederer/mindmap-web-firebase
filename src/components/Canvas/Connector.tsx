@@ -21,16 +21,51 @@ const CONNECTOR_WIDTH = 2;
 export default function Connector({ fromNode, toNode }: ConnectorProps) {
   const lineRef = useRef<Konva.Line>(null);
 
-  // Animate connector appearance
+  // Animate connector visibility (fade in/out with nodes)
   useEffect(() => {
     if (lineRef.current) {
+      const bothVisible = fromNode.isVisible && toNode.isVisible;
+
       lineRef.current.to({
-        opacity: 1,
-        duration: 0.4,
-        easing: Konva.Easings.EaseOut,
+        opacity: bothVisible ? 1 : 0,
+        duration: bothVisible ? 0.4 : 0.35,
+        easing: bothVisible ? Konva.Easings.EaseOut : Konva.Easings.EaseIn,
       });
     }
-  }, []);
+  }, [fromNode.isVisible, toNode.isVisible]);
+
+  // Animate connector position changes to sync with nodes
+  useEffect(() => {
+    if (lineRef.current) {
+      // Calculate connection points
+      const fromX = fromNode.position.x + NODE_WIDTH;
+      const fromY = fromNode.position.y + NODE_HEIGHT / 2;
+      const toX = toNode.position.x;
+      const toY = toNode.position.y + NODE_HEIGHT / 2;
+
+      // Calculate Bezier control points
+      const controlPointOffset = Math.abs(toX - fromX) * 0.5;
+      const cp1X = fromX + controlPointOffset;
+      const cp1Y = fromY;
+      const cp2X = toX - controlPointOffset;
+      const cp2Y = toY;
+
+      // Generate points for Bezier curve
+      const newPoints = [
+        fromX, fromY,
+        cp1X, cp1Y,
+        cp2X, cp2Y,
+        toX, toY,
+      ];
+
+      lineRef.current.to({
+        points: newPoints,
+        duration: 0.6,
+        easing: Konva.Easings.EaseInOut,
+      });
+    }
+  }, [fromNode.position.x, fromNode.position.y, toNode.position.x, toNode.position.y]);
+
   // Calculate connection points
   // From: right center of parent node
   const fromX = fromNode.position.x + NODE_WIDTH;

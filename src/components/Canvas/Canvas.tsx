@@ -76,13 +76,13 @@ export default function Canvas() {
     setPosition(stage.x(), stage.y());
   };
   
-  // Get all visible nodes
-  const visibleNodes = Object.values(nodes).filter(node => node.isVisible);
-  
-  // Get all connectors (between visible parent and child nodes)
+  // Get all nodes (including invisible ones for fade-out animation)
+  const allNodes = Object.values(nodes);
+
+  // Get all connectors (between parent and child nodes where both exist)
   const connectors: Array<{ from: string; to: string }> = [];
-  visibleNodes.forEach(node => {
-    if (node.parentId && nodes[node.parentId]?.isVisible) {
+  allNodes.forEach(node => {
+    if (node.parentId && nodes[node.parentId]) {
       connectors.push({ from: node.parentId, to: node.id });
     }
   });
@@ -116,8 +116,8 @@ export default function Canvas() {
               />
             ))}
             
-            {/* Render visible nodes */}
-            {visibleNodes.map(node => (
+            {/* Render all nodes (visibility handled by component) */}
+            {allNodes.map(node => (
               <NodeComponent
                 key={node.id}
                 node={node}

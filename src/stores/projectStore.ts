@@ -7,6 +7,7 @@ import { create } from 'zustand';
 import { Project, ProjectId } from '../types/project';
 import { Node, NodeId } from '../types/node';
 import { Action } from '../types/action';
+import { calculateLayout } from '../utils/layoutEngine';
 
 interface ProjectState {
   // Current project
@@ -136,24 +137,24 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   
   // Toggle node expansion
   toggleNodeExpansion: (nodeId: NodeId) => {
-    const { nodes } = get();
+    const { nodes, rootNodeId } = get();
     const node = nodes[nodeId];
-    if (!node) return;
-    
+    if (!node || !rootNodeId) return;
+
     const newExpanded = !node.isExpanded;
-    
+
     // Update node expansion state
-    const updatedNodes = { ...nodes };
+    let updatedNodes = { ...nodes };
     updatedNodes[nodeId] = {
       ...node,
       isExpanded: newExpanded,
     };
-    
+
     // Update children visibility
     const updateChildrenVisibility = (parentId: NodeId, visible: boolean) => {
       const parent = updatedNodes[parentId];
       if (!parent) return;
-      
+
       parent.children.forEach((childId) => {
         const child = updatedNodes[childId];
         if (child) {
@@ -161,7 +162,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             ...child,
             isVisible: visible,
           };
-          
+
           // Recursively hide children if parent is collapsed
           if (!visible || !child.isExpanded) {
             updateChildrenVisibility(childId, false);
@@ -169,9 +170,13 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         }
       });
     };
-    
+
     updateChildrenVisibility(nodeId, newExpanded);
-    set({ nodes: updatedNodes });
+
+    // Recalculate layout to prevent overlaps
+    const { nodes: layoutedNodes } = calculateLayout(updatedNodes, rootNodeId);
+
+    set({ nodes: layoutedNodes });
   },
   
   // Record an action

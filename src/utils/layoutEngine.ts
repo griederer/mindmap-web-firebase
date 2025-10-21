@@ -1,6 +1,6 @@
 /**
  * Layout Engine
- * Calculates node positions in horizontal tree layout
+ * Calculates node positions in horizontal tree layout with proper subtree spacing
  */
 
 import { Node, NodeId } from '../types/node';
@@ -15,15 +15,42 @@ interface LayoutResult {
 }
 
 /**
+ * Calculate the total height of a subtree (only visible/expanded nodes)
+ */
+function calculateSubtreeHeight(
+  nodes: Record<NodeId, Node>,
+  nodeId: NodeId
+): number {
+  const node = nodes[nodeId];
+  if (!node) return 0;
+
+  // If node has no visible children, return just its own height
+  if (!node.isExpanded || node.children.length === 0) {
+    return NODE_HEIGHT;
+  }
+
+  // Calculate height of all visible children
+  const childrenHeight = node.children.reduce((total, childId) => {
+    const child = nodes[childId];
+    if (!child || !child.isVisible) return total;
+    return total + calculateSubtreeHeight(nodes, childId) + VERTICAL_SPACING;
+  }, 0) - VERTICAL_SPACING; // Remove last spacing
+
+  // Return the larger of: node height or children total height
+  return Math.max(NODE_HEIGHT, childrenHeight);
+}
+
+/**
  * Calculate horizontal tree layout
  * Children are positioned to the right of parent with vertical spacing
+ * Takes into account subtree heights to avoid overlaps
  */
 export function calculateLayout(
   nodes: Record<NodeId, Node>,
   rootNodeId: NodeId
 ): LayoutResult {
   const updatedNodes = { ...nodes };
-  
+
   // Start root at origin
   if (updatedNodes[rootNodeId]) {
     updatedNodes[rootNodeId] = {
@@ -31,41 +58,58 @@ export function calculateLayout(
       position: { x: 100, y: 300 },
     };
   }
-  
+
   // Recursively position children
-  const positionChildren = (parentId: NodeId, parentY: number) => {
+  const positionChildren = (parentId: NodeId, parentCenterY: number) => {
     const parent = updatedNodes[parentId];
-    if (!parent || parent.children.length === 0) return;
-    
-    const childIds = parent.children;
-    const totalHeight = childIds.length * NODE_HEIGHT + (childIds.length - 1) * VERTICAL_SPACING;
-    
-    // Center children vertically around parent
-    let currentY = parentY - totalHeight / 2 + NODE_HEIGHT / 2;
-    
-    childIds.forEach((childId) => {
+    if (!parent || !parent.isExpanded || parent.children.length === 0) return;
+
+    const visibleChildren = parent.children.filter(
+      childId => updatedNodes[childId]?.isVisible
+    );
+
+    if (visibleChildren.length === 0) return;
+
+    // Calculate total height needed for all children and their subtrees
+    const subtreeHeights = visibleChildren.map(childId =>
+      calculateSubtreeHeight(updatedNodes, childId)
+    );
+
+    const totalHeight = subtreeHeights.reduce((sum, h) => sum + h, 0) +
+      (visibleChildren.length - 1) * VERTICAL_SPACING;
+
+    // Start positioning from top
+    let currentY = parentCenterY - totalHeight / 2;
+
+    visibleChildren.forEach((childId, index) => {
       const child = updatedNodes[childId];
+      const subtreeHeight = subtreeHeights[index];
+
       if (child) {
         // Position child to the right of parent
         const childX = parent.position.x + NODE_WIDTH + HORIZONTAL_SPACING;
-        
+
+        // Center the child within its subtree height
+        const childCenterY = currentY + subtreeHeight / 2;
+
         updatedNodes[childId] = {
           ...child,
-          position: { x: childX, y: currentY },
+          position: { x: childX, y: childCenterY - NODE_HEIGHT / 2 },
         };
-        
+
         // Recursively position this child's children
-        positionChildren(childId, currentY + NODE_HEIGHT / 2);
-        
-        // Move to next sibling position
-        currentY += NODE_HEIGHT + VERTICAL_SPACING;
+        positionChildren(childId, childCenterY);
+
+        // Move to next sibling position (after this subtree)
+        currentY += subtreeHeight + VERTICAL_SPACING;
       }
     });
   };
-  
+
   // Start layout from root
-  positionChildren(rootNodeId, updatedNodes[rootNodeId]?.position.y || 300);
-  
+  const rootY = updatedNodes[rootNodeId]?.position.y || 300;
+  positionChildren(rootNodeId, rootY + NODE_HEIGHT / 2);
+
   return { nodes: updatedNodes };
 }
 
