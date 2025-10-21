@@ -1,10 +1,12 @@
 /**
  * Connector Component - Konva
- * Renders Bezier curve connectors between parent and child nodes
+ * Renders animated Bezier curve connectors between parent and child nodes
  */
 
+import { useEffect, useRef } from 'react';
 import { Line } from 'react-konva';
 import { Node } from '../../types/node';
+import Konva from 'konva';
 
 interface ConnectorProps {
   fromNode: Node;
@@ -17,6 +19,18 @@ const CONNECTOR_COLOR = '#fb923c'; // Orange-400
 const CONNECTOR_WIDTH = 2;
 
 export default function Connector({ fromNode, toNode }: ConnectorProps) {
+  const lineRef = useRef<Konva.Line>(null);
+
+  // Animate connector appearance
+  useEffect(() => {
+    if (lineRef.current) {
+      lineRef.current.to({
+        opacity: 1,
+        duration: 0.4,
+        easing: Konva.Easings.EaseOut,
+      });
+    }
+  }, []);
   // Calculate connection points
   // From: right center of parent node
   const fromX = fromNode.position.x + NODE_WIDTH;
@@ -43,6 +57,7 @@ export default function Connector({ fromNode, toNode }: ConnectorProps) {
   
   return (
     <Line
+      ref={lineRef}
       points={points}
       stroke={CONNECTOR_COLOR}
       strokeWidth={CONNECTOR_WIDTH}
@@ -50,6 +65,7 @@ export default function Connector({ fromNode, toNode }: ConnectorProps) {
       tension={0}
       lineCap="round"
       lineJoin="round"
+      opacity={0}
     />
   );
 }

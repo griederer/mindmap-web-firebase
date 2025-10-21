@@ -3,10 +3,12 @@
  * Renders individual mind map node with title and expand button
  */
 
+import { useEffect, useRef } from 'react';
 import { Group, Rect, Text, Circle } from 'react-konva';
 import { Node } from '../../types/node';
 import { useProjectStore } from '../../stores/projectStore';
 import { useUIStore } from '../../stores/uiStore';
+import Konva from 'konva';
 
 interface NodeComponentProps {
   node: Node;
@@ -20,9 +22,23 @@ const EXPAND_BUTTON_RADIUS = 8;
 export default function NodeComponent({ node }: NodeComponentProps) {
   const { toggleNodeExpansion } = useProjectStore();
   const { selectedNodeId, selectNode } = useUIStore();
-  
+  const groupRef = useRef<Konva.Group>(null);
+
   const isSelected = selectedNodeId === node.id;
   const hasChildren = node.children.length > 0;
+
+  // Animate node appearance
+  useEffect(() => {
+    if (groupRef.current) {
+      groupRef.current.to({
+        opacity: 1,
+        scaleX: 1,
+        scaleY: 1,
+        duration: 0.3,
+        easing: Konva.Easings.EaseOut,
+      });
+    }
+  }, []);
   
   const handleClick = () => {
     selectNode(node.id);
@@ -35,8 +51,12 @@ export default function NodeComponent({ node }: NodeComponentProps) {
   
   return (
     <Group
+      ref={groupRef}
       x={node.position.x}
       y={node.position.y}
+      opacity={0}
+      scaleX={0.8}
+      scaleY={0.8}
       onClick={handleClick}
     >
       {/* Node background */}

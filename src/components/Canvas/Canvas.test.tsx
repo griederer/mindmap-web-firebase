@@ -9,7 +9,6 @@ describe('Canvas', () => {
     useProjectStore.setState({
       nodes: {},
       rootNodeId: null,
-      projectId: null,
     });
     useViewportStore.setState({
       width: 800,
@@ -107,7 +106,7 @@ describe('Canvas', () => {
   });
 
   it('handles viewport size updates', () => {
-    const { container } = render(<Canvas />);
+    render(<Canvas />);
 
     useViewportStore.setState({ width: 1024, height: 768 });
 
