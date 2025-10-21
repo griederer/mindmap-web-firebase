@@ -9,27 +9,30 @@ import { NodeId } from '../types/node';
 interface UIState {
   // Node selection
   selectedNodeId: NodeId | null;
-  
+
   // Focus mode (blur non-focused nodes)
   focusedNodeId: NodeId | null;
   isFocusMode: boolean;
-  
+
   // Detail panel
   detailPanelOpen: boolean;
   detailPanelNodeId: NodeId | null;
-  
+  detailNodeId: NodeId | null; // Alias for compatibility
+
   // Fullscreen image
   fullscreenImageUrl: string | null;
-  
+
   // Sidebar
   sidebarOpen: boolean;
-  
+
   // Operations
   selectNode: (nodeId: NodeId | null) => void;
   setFocusMode: (nodeId: NodeId | null) => void;
   clearFocus: () => void;
   openDetailPanel: (nodeId: NodeId) => void;
+  openDetails: (nodeId: NodeId) => void; // Alias
   closeDetailPanel: () => void;
+  closeDetails: () => void; // Alias
   toggleDetailPanel: () => void;
   openFullscreenImage: (imageUrl: string) => void;
   closeFullscreenImage: () => void;
@@ -44,6 +47,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   isFocusMode: false,
   detailPanelOpen: false,
   detailPanelNodeId: null,
+  detailNodeId: null,
   fullscreenImageUrl: null,
   sidebarOpen: true,
   
@@ -73,14 +77,34 @@ export const useUIStore = create<UIState>((set, get) => ({
     set({
       detailPanelOpen: true,
       detailPanelNodeId: nodeId,
+      detailNodeId: nodeId,
     });
   },
-  
+
+  // Alias for openDetailPanel
+  openDetails: (nodeId: NodeId) => {
+    set({
+      detailPanelOpen: true,
+      detailPanelNodeId: nodeId,
+      detailNodeId: nodeId,
+    });
+  },
+
   // Close detail panel
   closeDetailPanel: () => {
     set({
       detailPanelOpen: false,
       detailPanelNodeId: null,
+      detailNodeId: null,
+    });
+  },
+
+  // Alias for closeDetailPanel
+  closeDetails: () => {
+    set({
+      detailPanelOpen: false,
+      detailPanelNodeId: null,
+      detailNodeId: null,
     });
   },
   

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Canvas from './components/Canvas/Canvas';
 import Sidebar from './components/Layout/Sidebar';
+import NodeDetails from './components/Canvas/NodeDetails';
 import { useProjectStore } from './stores/projectStore';
 import { calculateLayout } from './utils/layoutEngine';
 
@@ -51,6 +52,9 @@ function App() {
           <Canvas />
         </main>
       </div>
+
+      {/* Node Details Panel */}
+      <NodeDetails />
     </div>
   );
 }

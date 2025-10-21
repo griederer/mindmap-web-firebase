@@ -21,11 +21,12 @@ const EXPAND_BUTTON_RADIUS = 8;
 
 export default function NodeComponent({ node }: NodeComponentProps) {
   const { toggleNodeExpansion } = useProjectStore();
-  const { selectedNodeId, selectNode } = useUIStore();
+  const { selectedNodeId, selectNode, openDetails } = useUIStore();
   const groupRef = useRef<Konva.Group>(null);
 
   const isSelected = selectedNodeId === node.id;
   const hasChildren = node.children.length > 0;
+  const hasDetails = node.description || node.image;
 
   // Animate node appearance
   useEffect(() => {
@@ -39,14 +40,19 @@ export default function NodeComponent({ node }: NodeComponentProps) {
       });
     }
   }, []);
-  
+
   const handleClick = () => {
     selectNode(node.id);
   };
-  
+
   const handleExpandClick = (e: any) => {
     e.cancelBubble = true; // Prevent node selection
     toggleNodeExpansion(node.id);
+  };
+
+  const handleInfoClick = (e: any) => {
+    e.cancelBubble = true; // Prevent node selection
+    openDetails(node.id);
   };
   
   return (
@@ -87,6 +93,46 @@ export default function NodeComponent({ node }: NodeComponentProps) {
         ellipsis={true}
       />
       
+      {/* Info button (top-right) */}
+      {hasDetails && (
+        <Group
+          x={NODE_WIDTH - 16}
+          y={16}
+        >
+          {/* Button background */}
+          <Circle
+            radius={6}
+            fill="#3b82f6"
+            stroke="#2563eb"
+            strokeWidth={1}
+            onClick={handleInfoClick}
+            onMouseEnter={(e) => {
+              const container = e.target.getStage()?.container();
+              if (container) container.style.cursor = 'pointer';
+            }}
+            onMouseLeave={(e) => {
+              const container = e.target.getStage()?.container();
+              if (container) container.style.cursor = 'default';
+            }}
+          />
+
+          {/* Info icon (i) */}
+          <Text
+            x={-6}
+            y={-6}
+            width={12}
+            height={12}
+            text="i"
+            fontSize={10}
+            fontFamily="system-ui"
+            fontStyle="italic bold"
+            fill="white"
+            align="center"
+            verticalAlign="middle"
+          />
+        </Group>
+      )}
+
       {/* Expand/collapse button */}
       {hasChildren && (
         <Group
@@ -101,7 +147,7 @@ export default function NodeComponent({ node }: NodeComponentProps) {
             stroke={node.isExpanded ? '#ea580c' : '#d1d5db'}
             strokeWidth={1}
           />
-          
+
           {/* Plus/minus icon */}
           <Text
             x={-EXPAND_BUTTON_RADIUS}
@@ -117,7 +163,7 @@ export default function NodeComponent({ node }: NodeComponentProps) {
           />
         </Group>
       )}
-      
+
       {/* Level indicator (visual debugging) */}
       {node.level > 0 && (
         <Text
