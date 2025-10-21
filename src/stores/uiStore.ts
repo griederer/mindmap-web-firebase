@@ -1,0 +1,123 @@
+/**
+ * UI Store - Zustand
+ * Manages UI state (selected node, focus mode, panels, etc.)
+ */
+
+import { create } from 'zustand';
+import { NodeId } from '../types/node';
+
+interface UIState {
+  // Node selection
+  selectedNodeId: NodeId | null;
+  
+  // Focus mode (blur non-focused nodes)
+  focusedNodeId: NodeId | null;
+  isFocusMode: boolean;
+  
+  // Detail panel
+  detailPanelOpen: boolean;
+  detailPanelNodeId: NodeId | null;
+  
+  // Fullscreen image
+  fullscreenImageUrl: string | null;
+  
+  // Sidebar
+  sidebarOpen: boolean;
+  
+  // Operations
+  selectNode: (nodeId: NodeId | null) => void;
+  setFocusMode: (nodeId: NodeId | null) => void;
+  clearFocus: () => void;
+  openDetailPanel: (nodeId: NodeId) => void;
+  closeDetailPanel: () => void;
+  toggleDetailPanel: () => void;
+  openFullscreenImage: (imageUrl: string) => void;
+  closeFullscreenImage: () => void;
+  toggleSidebar: () => void;
+  setSidebarOpen: (open: boolean) => void;
+}
+
+export const useUIStore = create<UIState>((set, get) => ({
+  // Initial state
+  selectedNodeId: null,
+  focusedNodeId: null,
+  isFocusMode: false,
+  detailPanelOpen: false,
+  detailPanelNodeId: null,
+  fullscreenImageUrl: null,
+  sidebarOpen: true,
+  
+  // Select a node
+  selectNode: (nodeId: NodeId | null) => {
+    set({ selectedNodeId: nodeId });
+  },
+  
+  // Set focus mode on a specific node
+  setFocusMode: (nodeId: NodeId | null) => {
+    set({
+      focusedNodeId: nodeId,
+      isFocusMode: nodeId !== null,
+    });
+  },
+  
+  // Clear focus mode
+  clearFocus: () => {
+    set({
+      focusedNodeId: null,
+      isFocusMode: false,
+    });
+  },
+  
+  // Open detail panel for a node
+  openDetailPanel: (nodeId: NodeId) => {
+    set({
+      detailPanelOpen: true,
+      detailPanelNodeId: nodeId,
+    });
+  },
+  
+  // Close detail panel
+  closeDetailPanel: () => {
+    set({
+      detailPanelOpen: false,
+      detailPanelNodeId: null,
+    });
+  },
+  
+  // Toggle detail panel
+  toggleDetailPanel: () => {
+    const { detailPanelOpen } = get();
+    if (detailPanelOpen) {
+      set({
+        detailPanelOpen: false,
+        detailPanelNodeId: null,
+      });
+    } else if (get().selectedNodeId) {
+      set({
+        detailPanelOpen: true,
+        detailPanelNodeId: get().selectedNodeId,
+      });
+    }
+  },
+  
+  // Open fullscreen image
+  openFullscreenImage: (imageUrl: string) => {
+    set({ fullscreenImageUrl: imageUrl });
+  },
+  
+  // Close fullscreen image
+  closeFullscreenImage: () => {
+    set({ fullscreenImageUrl: null });
+  },
+  
+  // Toggle sidebar
+  toggleSidebar: () => {
+    const { sidebarOpen } = get();
+    set({ sidebarOpen: !sidebarOpen });
+  },
+  
+  // Set sidebar state
+  setSidebarOpen: (open: boolean) => {
+    set({ sidebarOpen: open });
+  },
+}));
