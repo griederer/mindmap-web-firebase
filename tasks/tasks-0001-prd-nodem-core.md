@@ -73,19 +73,19 @@ Based on PRD: `0001-prd-nodem-core.md`
 
 ## Tasks
 
-- [ ] 1.0 Project Setup and Infrastructure
-  - [ ] 1.1 Initialize Vite + React + TypeScript project
-  - [ ] 1.2 Install core dependencies (Zustand, Framer Motion, Zod)
-  - [ ] 1.3 Install UI dependencies (Tailwind CSS, Lucide React icons)
-  - [ ] 1.4 Configure Tailwind CSS (tailwind.config.js, globals.css)
-  - [ ] 1.5 Configure TypeScript (tsconfig.json with strict mode)
-  - [ ] 1.6 Set up testing framework (Vitest + React Testing Library)
-  - [ ] 1.7 Create basic folder structure (components, stores, utils, types)
-  - [ ] 1.8 Configure Git ignore (.gitignore for node_modules, dist, .env)
-  - [ ] 1.9 Write initial README with setup instructions
-  - [ ] 1.10 Verify dev server runs successfully
-  - [ ] 1.11 Write tests for basic setup
-  - [ ] 1.12 Commit initial project setup
+- [x] 1.0 Project Setup and Infrastructure
+  - [x] 1.1 Initialize Vite + React + TypeScript project
+  - [x] 1.2 Install core dependencies (Zustand, Framer Motion, Zod)
+  - [x] 1.3 Install UI dependencies (Tailwind CSS, Lucide React icons)
+  - [x] 1.4 Configure Tailwind CSS (tailwind.config.js, globals.css)
+  - [x] 1.5 Configure TypeScript (tsconfig.json with strict mode)
+  - [x] 1.6 Set up testing framework (Vitest + React Testing Library)
+  - [x] 1.7 Create basic folder structure (components, stores, utils, types)
+  - [x] 1.8 Configure Git ignore (.gitignore for node_modules, dist, .env)
+  - [x] 1.9 Write initial README with setup instructions
+  - [x] 1.10 Verify dev server runs successfully
+  - [x] 1.11 Write tests for basic setup
+  - [x] 1.12 Commit initial project setup
 
 - [ ] 2.0 Core Data Layer (Types, Stores, Validation)
   - [ ] 2.1 Define Node type interface (id, title, description, image, children, level, position)
