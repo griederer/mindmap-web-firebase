@@ -21,12 +21,19 @@ const EXPAND_BUTTON_RADIUS = 8;
 
 export default function NodeComponent({ node }: NodeComponentProps) {
   const { toggleNodeExpansion } = useProjectStore();
-  const { selectedNodeId, selectNode, openDetails } = useUIStore();
+  const {
+    selectedNodeId,
+    selectNode,
+    isFocusMode,
+    focusedNodeId,
+  } = useUIStore();
   const groupRef = useRef<Konva.Group>(null);
 
   const isSelected = selectedNodeId === node.id;
   const hasChildren = node.children.length > 0;
-  const hasDetails = node.description || node.image;
+  const isFocused = focusedNodeId === node.id;
+  // Only blur visible nodes that are not focused
+  const isBlurred = isFocusMode && !isFocused && node.isVisible;
 
   // Animate node appearance on mount with smooth fade
   useEffect(() => {
@@ -56,8 +63,9 @@ export default function NodeComponent({ node }: NodeComponentProps) {
     if (groupRef.current) {
       if (node.isVisible) {
         // Fade in when becoming visible
+        const targetOpacity = isBlurred ? 0.3 : 1;
         groupRef.current.to({
-          opacity: 1,
+          opacity: targetOpacity,
           duration: 0.4,
           easing: Konva.Easings.EaseOut,
         });
@@ -70,7 +78,19 @@ export default function NodeComponent({ node }: NodeComponentProps) {
         });
       }
     }
-  }, [node.isVisible]);
+  }, [node.isVisible, isBlurred]);
+
+  // Animate focus/blur transitions
+  useEffect(() => {
+    if (groupRef.current && node.isVisible) {
+      const targetOpacity = isBlurred ? 0.3 : 1;
+      groupRef.current.to({
+        opacity: targetOpacity,
+        duration: 0.5,
+        easing: Konva.Easings.EaseInOut,
+      });
+    }
+  }, [isBlurred, node.isVisible]);
 
   const handleClick = () => {
     selectNode(node.id);
@@ -81,30 +101,42 @@ export default function NodeComponent({ node }: NodeComponentProps) {
     toggleNodeExpansion(node.id);
   };
 
-  const handleInfoClick = (e: any) => {
-    e.cancelBubble = true; // Prevent node selection
-    openDetails(node.id);
-  };
   
   return (
     <Group
       ref={groupRef}
       x={node.position.x}
       y={node.position.y}
-      opacity={0}
+      opacity={isBlurred ? 0.3 : 0}
       onClick={handleClick}
     >
+      {/* Glow effect for focused node */}
+      {isFocused && (
+        <Rect
+          width={NODE_WIDTH + 16}
+          height={NODE_HEIGHT + 16}
+          x={-8}
+          y={-8}
+          fill="transparent"
+          cornerRadius={12}
+          shadowColor="#fb923c"
+          shadowBlur={25}
+          shadowOpacity={0.6}
+          shadowEnabled={true}
+        />
+      )}
+
       {/* Node background */}
       <Rect
         width={NODE_WIDTH}
         height={NODE_HEIGHT}
         fill="white"
         cornerRadius={8}
-        shadowColor="rgba(0, 0, 0, 0.1)"
-        shadowBlur={10}
-        shadowOffsetY={2}
-        stroke={isSelected ? '#fb923c' : '#e5e7eb'}
-        strokeWidth={isSelected ? 2 : 1}
+        shadowColor={isFocused ? 'rgba(251, 146, 60, 0.3)' : 'rgba(0, 0, 0, 0.1)'}
+        shadowBlur={isFocused ? 20 : 10}
+        shadowOffsetY={isFocused ? 4 : 2}
+        stroke={isSelected ? '#fb923c' : (isFocused ? '#fb923c' : '#e5e7eb')}
+        strokeWidth={isSelected || isFocused ? 2 : 1}
       />
       
       {/* Node title */}
@@ -122,45 +154,6 @@ export default function NodeComponent({ node }: NodeComponentProps) {
         ellipsis={true}
       />
       
-      {/* Info button (top-right) */}
-      {hasDetails && (
-        <Group
-          x={NODE_WIDTH - 16}
-          y={16}
-        >
-          {/* Button background */}
-          <Circle
-            radius={6}
-            fill="#3b82f6"
-            stroke="#2563eb"
-            strokeWidth={1}
-            onClick={handleInfoClick}
-            onMouseEnter={(e) => {
-              const container = e.target.getStage()?.container();
-              if (container) container.style.cursor = 'pointer';
-            }}
-            onMouseLeave={(e) => {
-              const container = e.target.getStage()?.container();
-              if (container) container.style.cursor = 'default';
-            }}
-          />
-
-          {/* Info icon (i) */}
-          <Text
-            x={-6}
-            y={-6}
-            width={12}
-            height={12}
-            text="i"
-            fontSize={10}
-            fontFamily="system-ui"
-            fontStyle="italic bold"
-            fill="white"
-            align="center"
-            verticalAlign="middle"
-          />
-        </Group>
-      )}
 
       {/* Expand/collapse button */}
       {hasChildren && (

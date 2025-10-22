@@ -100,21 +100,35 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   
   // Add a new node
   addNode: (node: Node) => {
-    const { nodes } = get();
-    set({
-      nodes: {
-        ...nodes,
-        [node.id]: node,
-      },
-    });
+    const { nodes, rootNodeId } = get();
+    const updatedNodes = {
+      ...nodes,
+      [node.id]: node,
+    };
+
+    // Update parent's children array
+    if (node.parentId && updatedNodes[node.parentId]) {
+      updatedNodes[node.parentId] = {
+        ...updatedNodes[node.parentId],
+        children: [...updatedNodes[node.parentId].children, node.id],
+      };
+    }
+
+    // Recalculate layout
+    if (rootNodeId) {
+      const { nodes: layoutedNodes } = calculateLayout(updatedNodes, rootNodeId);
+      set({ nodes: layoutedNodes });
+    } else {
+      set({ nodes: updatedNodes });
+    }
   },
   
   // Delete a node and all its children
   deleteNode: (nodeId: NodeId) => {
-    const { nodes } = get();
+    const { nodes, rootNodeId } = get();
     const nodeToDelete = nodes[nodeId];
     if (!nodeToDelete) return;
-    
+
     // Recursively collect all child nodes
     const nodesToDelete = new Set<NodeId>([nodeId]);
     const collectChildren = (id: NodeId) => {
@@ -127,12 +141,26 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       }
     };
     collectChildren(nodeId);
-    
+
     // Remove all collected nodes
     const newNodes = { ...nodes };
     nodesToDelete.forEach((id) => delete newNodes[id]);
-    
-    set({ nodes: newNodes });
+
+    // Update parent's children array
+    if (nodeToDelete.parentId && newNodes[nodeToDelete.parentId]) {
+      newNodes[nodeToDelete.parentId] = {
+        ...newNodes[nodeToDelete.parentId],
+        children: newNodes[nodeToDelete.parentId].children.filter(id => id !== nodeId),
+      };
+    }
+
+    // Recalculate layout
+    if (rootNodeId) {
+      const { nodes: layoutedNodes } = calculateLayout(newNodes, rootNodeId);
+      set({ nodes: layoutedNodes });
+    } else {
+      set({ nodes: newNodes });
+    }
   },
   
   // Toggle node expansion

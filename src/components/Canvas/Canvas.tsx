@@ -3,14 +3,19 @@
  * Main canvas container for rendering mind map with zoom and pan
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
 import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
+import { useUIStore } from '../../stores/uiStore';
+import { Node } from '../../types/node';
 import NodeComponent from './NodeComponent';
 import Connector from './Connector';
 import ZoomControls from './ZoomControls';
+import NodeActionMenu from './NodeActionMenu';
+import NodeInfoPanel from './NodeInfoPanel';
+import NodeEditModal from './NodeEditModal';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -24,7 +29,20 @@ export default function Canvas() {
   const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition } = useViewportStore();
 
   // Project state
-  const { nodes, rootNodeId } = useProjectStore();
+  const { nodes, rootNodeId, addNode, deleteNode, updateNode } = useProjectStore();
+
+  // UI state
+  const {
+    selectedNodeId,
+    infoPanelNodeId,
+    focusedNodeId,
+    toggleInfoPanel,
+    setFocusMode,
+  } = useUIStore();
+
+  // Edit modal state
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [nodeToEdit, setNodeToEdit] = useState<Node | null>(null);
   
   // Update viewport size on mount and resize
   useEffect(() => {
@@ -86,6 +104,70 @@ export default function Canvas() {
       connectors.push({ from: node.parentId, to: node.id });
     }
   });
+
+  // Get selected node for action menu positioning
+  const selectedNode = selectedNodeId ? nodes[selectedNodeId] : null;
+  const NODE_WIDTH = 200;
+  const NODE_HEIGHT = 60;
+
+  // Action menu handlers
+  const handleEdit = () => {
+    if (selectedNodeId && selectedNode) {
+      setNodeToEdit(selectedNode);
+      setEditModalOpen(true);
+    }
+  };
+
+  const handleSaveEdit = (nodeId: string, updates: { title: string; description: string }) => {
+    updateNode(nodeId, updates);
+  };
+
+  const handleShowInfo = () => {
+    if (selectedNodeId) {
+      toggleInfoPanel(selectedNodeId);
+    }
+  };
+
+  const handleFocus = () => {
+    if (selectedNodeId) {
+      // Toggle focus - if already focused, turn it off
+      if (focusedNodeId === selectedNodeId) {
+        setFocusMode(null);
+      } else {
+        setFocusMode(selectedNodeId);
+      }
+    }
+  };
+
+  const handleAddChild = () => {
+    if (selectedNodeId && selectedNode) {
+      const title = prompt('Enter child node title:');
+      if (title) {
+        const newNode: Node = {
+          id: `node-${Date.now()}`,
+          title,
+          description: '',
+          level: selectedNode.level + 1,
+          position: { x: 0, y: 0 }, // Will be calculated by layout
+          children: [],
+          parentId: selectedNodeId,
+          isExpanded: true,
+          isVisible: true,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+        addNode(newNode);
+      }
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectedNodeId && selectedNode && selectedNode.parentId) {
+      if (confirm(`Delete "${selectedNode.title}"?`)) {
+        deleteNode(selectedNodeId);
+      }
+    }
+  };
   
   return (
     <div 
@@ -123,6 +205,28 @@ export default function Canvas() {
                 node={node}
               />
             ))}
+
+            {/* Render action menu above selected node */}
+            {selectedNode && (
+              <NodeActionMenu
+                x={selectedNode.position.x}
+                y={selectedNode.position.y}
+                onEdit={handleEdit}
+                onShowInfo={handleShowInfo}
+                onFocus={handleFocus}
+                onAddChild={handleAddChild}
+                onDelete={handleDelete}
+              />
+            )}
+
+            {/* Render info panel next to node */}
+            {infoPanelNodeId && nodes[infoPanelNodeId] && (
+              <NodeInfoPanel
+                node={nodes[infoPanelNodeId]}
+                nodeWidth={NODE_WIDTH}
+                nodeHeight={NODE_HEIGHT}
+              />
+            )}
           </Layer>
         </Stage>
       )}
@@ -139,6 +243,19 @@ export default function Canvas() {
 
       {/* Zoom controls */}
       {rootNodeId && <ZoomControls />}
+
+      {/* Edit modal */}
+      {nodeToEdit && (
+        <NodeEditModal
+          node={nodeToEdit}
+          isOpen={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          onSave={handleSaveEdit}
+          viewportX={x}
+          viewportY={y}
+          zoom={zoom}
+        />
+      )}
     </div>
   );
 }

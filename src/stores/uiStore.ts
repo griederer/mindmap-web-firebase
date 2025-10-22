@@ -19,6 +19,9 @@ interface UIState {
   detailPanelNodeId: NodeId | null;
   detailNodeId: NodeId | null; // Alias for compatibility
 
+  // Inline info panel (shows on canvas)
+  infoPanelNodeId: NodeId | null;
+
   // Fullscreen image
   fullscreenImageUrl: string | null;
 
@@ -34,6 +37,7 @@ interface UIState {
   closeDetailPanel: () => void;
   closeDetails: () => void; // Alias
   toggleDetailPanel: () => void;
+  toggleInfoPanel: (nodeId: NodeId | null) => void;
   openFullscreenImage: (imageUrl: string) => void;
   closeFullscreenImage: () => void;
   toggleSidebar: () => void;
@@ -48,6 +52,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   detailPanelOpen: false,
   detailPanelNodeId: null,
   detailNodeId: null,
+  infoPanelNodeId: null,
   fullscreenImageUrl: null,
   sidebarOpen: true,
   
@@ -121,6 +126,16 @@ export const useUIStore = create<UIState>((set, get) => ({
         detailPanelOpen: true,
         detailPanelNodeId: get().selectedNodeId,
       });
+    }
+  },
+
+  // Toggle inline info panel
+  toggleInfoPanel: (nodeId: NodeId | null) => {
+    const { infoPanelNodeId } = get();
+    if (infoPanelNodeId === nodeId) {
+      set({ infoPanelNodeId: null });
+    } else {
+      set({ infoPanelNodeId: nodeId });
     }
   },
   
