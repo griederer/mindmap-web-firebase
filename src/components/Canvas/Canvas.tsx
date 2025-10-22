@@ -34,6 +34,7 @@ export default function Canvas() {
   // UI state
   const {
     selectedNodeId,
+    selectNode,
     infoPanelNodeId,
     focusedNodeId,
     toggleInfoPanel,
@@ -92,6 +93,15 @@ export default function Canvas() {
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
     const stage = e.target as Konva.Stage;
     setPosition(stage.x(), stage.y());
+  };
+
+  // Handle stage click to deselect node (click on empty space)
+  const handleStageClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    // Only deselect if clicking on the stage itself (not on a node)
+    const clickedOnEmpty = e.target === e.target.getStage();
+    if (clickedOnEmpty) {
+      selectNode(null);
+    }
   };
   
   // Get all nodes (including invisible ones for fade-out animation)
@@ -187,6 +197,7 @@ export default function Canvas() {
           draggable
           onWheel={handleWheel}
           onDragEnd={handleDragEnd}
+          onClick={handleStageClick}
         >
           <Layer>
             {/* Render connectors first (behind nodes) */}
@@ -206,8 +217,8 @@ export default function Canvas() {
               />
             ))}
 
-            {/* Render action menu above selected node */}
-            {selectedNode && (
+            {/* Render action menu above selected node (only if visible) */}
+            {selectedNode && selectedNode.isVisible && (
               <NodeActionMenu
                 x={selectedNode.position.x}
                 y={selectedNode.position.y}

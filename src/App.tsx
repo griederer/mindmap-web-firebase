@@ -8,9 +8,9 @@ import { calculateLayout } from './utils/layoutEngine';
 function App() {
   const { loadProject, nodes, rootNodeId } = useProjectStore();
 
-  // Load demo project on mount
+  // Load WWII project on mount
   useEffect(() => {
-    fetch('/examples/demo-project.json')
+    fetch('/examples/wwii-project.json')
       .then(res => res.json())
       .then(project => {
         // Calculate layout for nodes
@@ -22,7 +22,7 @@ function App() {
           nodes: layoutedNodes,
         });
       })
-      .catch(err => console.error('Failed to load demo project:', err));
+      .catch(err => console.error('Failed to load WWII project:', err));
   }, [loadProject]);
 
   return (
@@ -33,7 +33,7 @@ function App() {
           <h1 className="text-2xl font-bold text-gray-900">NODEM</h1>
           <div className="h-6 w-px bg-gray-300"></div>
           <p className="text-sm text-gray-600">
-            {nodes && rootNodeId ? 'Demo Project' : 'Loading...'}
+            {nodes && rootNodeId ? 'Segunda Guerra Mundial' : 'Loading...'}
           </p>
         </div>
 

@@ -24,9 +24,13 @@ export default function NodeInfoPanel({ node, nodeWidth, nodeHeight }: NodeInfoP
   const panelY = node.position.y;
 
   // Calculate panel height based on text content
-  const lines = node.description.split('\n');
-  const lineHeight = 18;
-  const panelHeight = Math.max(80, lines.length * lineHeight + PANEL_PADDING * 2);
+  // Estimate wrapped lines: avg 40 chars per line with word wrap
+  const fontSize = 13;
+  const lineHeight = fontSize * 1.4; // lineHeight multiplier
+  const textWidth = PANEL_WIDTH - PANEL_PADDING * 2;
+  const avgCharsPerLine = Math.floor(textWidth / (fontSize * 0.6)); // Rough estimate
+  const estimatedLines = Math.ceil(node.description.length / avgCharsPerLine);
+  const panelHeight = Math.max(80, estimatedLines * lineHeight + PANEL_PADDING * 2 + 10);
 
   // Connection line from node to panel
   const lineStartX = node.position.x + nodeWidth;
@@ -54,9 +58,10 @@ export default function NodeInfoPanel({ node, nodeWidth, nodeHeight }: NodeInfoP
         stroke="#FB923C"
         strokeWidth={2}
         cornerRadius={8}
-        shadowColor="rgba(0, 0, 0, 0.1)"
-        shadowBlur={10}
-        shadowOffsetY={2}
+        shadowColor="rgba(0, 0, 0, 0.3)"
+        shadowBlur={20}
+        shadowOffsetY={4}
+        shadowEnabled={true}
       />
 
       {/* Panel content */}
