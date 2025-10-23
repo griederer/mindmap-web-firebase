@@ -4,7 +4,7 @@
     "title": "Segunda Guerra Mundial",
     "description": "Mapa mental sobre los principales eventos y aspectos de la Segunda Guerra Mundial (1939-1945)",
     "createdAt": 1729554000000,
-    "updatedAt": 1729554000000,
+    "updatedAt": 1761230122824,
     "version": "1.0.0"
   },
   "rootNodeId": "root",
@@ -15,8 +15,15 @@
       "description": "La Segunda Guerra Mundial fue el conflicto militar más grande de la historia, que tuvo lugar entre 1939 y 1945. Involucró a la mayoría de las naciones del mundo, incluyendo todas las grandes potencias, organizadas en dos alianzas militares opuestas: los Aliados y las Potencias del Eje. Fue la guerra más mortífera de la historia, con más de 70 millones de víctimas, incluyendo civiles y militares.",
       "level": 0,
       "parentId": null,
-      "position": { "x": 100, "y": 300 },
-      "children": ["allies", "axis", "major-battles"],
+      "position": {
+        "x": 100,
+        "y": 300
+      },
+      "children": [
+        "allies",
+        "axis",
+        "major-battles"
+      ],
       "isExpanded": false,
       "isVisible": true,
       "createdAt": 1729554000000,
@@ -28,8 +35,15 @@
       "description": "Los Aliados fueron la coalición de países que se opusieron a las Potencias del Eje durante la Segunda Guerra Mundial. Las principales potencias aliadas fueron Estados Unidos, el Reino Unido, la Unión Soviética, China y Francia. Juntos, movilizaron más de 100 millones de soldados y coordinaron estrategias militares a través de conferencias como Yalta y Potsdam.",
       "level": 1,
       "parentId": "root",
-      "position": { "x": 0, "y": 0 },
-      "children": ["usa", "uk", "ussr"],
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "children": [
+        "usa",
+        "uk",
+        "ussr"
+      ],
       "isExpanded": false,
       "isVisible": false,
       "createdAt": 1729554000000,
@@ -41,7 +55,10 @@
       "description": "Estados Unidos entró oficialmente en la guerra el 8 de diciembre de 1941, tras el ataque japonés a Pearl Harbor. Aportó recursos industriales masivos, tecnología avanzada y millones de soldados. El programa Lend-Lease proporcionó suministros vitales a los aliados. Los estadounidenses lideraron campañas clave en el Pacífico contra Japón y participaron en la liberación de Europa Occidental, incluyendo el Día D en Normandía.",
       "level": 2,
       "parentId": "allies",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
@@ -54,7 +71,10 @@
       "description": "El Reino Unido, bajo el liderazgo de Winston Churchill, fue uno de los únicos países europeos que resistió la ocupación nazi desde el principio. Sobrevivió a la Batalla de Inglaterra (1940), donde la RAF derrotó a la Luftwaffe alemana. Los británicos desempeñaron un papel crucial en el norte de África, la guerra naval en el Atlántico y la campaña de bombardeos estratégicos sobre Alemania. Su inteligencia militar, incluyendo el descifrado de Enigma en Bletchley Park, fue decisiva.",
       "level": 2,
       "parentId": "allies",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
@@ -67,7 +87,10 @@
       "description": "La Unión Soviética, bajo el liderazgo de Joseph Stalin, soportó el peso más pesado de la guerra contra Alemania en el Frente Oriental. Después de la Operación Barbarroja (1941), los soviéticos detuvieron el avance alemán en Stalingrado (1942-1943) y Kursk (1943). El Ejército Rojo luego avanzó hacia el oeste, liberando Europa del Este y capturando Berlín en mayo de 1945. Se estima que la URSS sufrió entre 20-27 millones de muertes, la mayoría del total de víctimas de la guerra.",
       "level": 2,
       "parentId": "allies",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
@@ -80,8 +103,15 @@
       "description": "Las Potencias del Eje fueron la coalición liderada por Alemania, Italia y Japón, que buscaban expandir sus territorios y establecer un nuevo orden mundial. Firmaron el Pacto Tripartito en 1940, comprometiéndose a apoyarse mutuamente. Sus ideologías fascistas y militaristas los llevaron a cometer atrocidades masivas, incluyendo el Holocausto y crímenes de guerra en Asia.",
       "level": 1,
       "parentId": "root",
-      "position": { "x": 0, "y": 0 },
-      "children": ["germany", "italy", "japan"],
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "children": [
+        "germany",
+        "italy",
+        "japan"
+      ],
       "isExpanded": false,
       "isVisible": false,
       "createdAt": 1729554000000,
@@ -93,7 +123,10 @@
       "description": "Bajo el liderazgo de Adolf Hitler y el Partido Nazi, Alemania inició la guerra invadiendo Polonia el 1 de septiembre de 1939. Utilizó la táctica de Blitzkrieg (guerra relámpago) para conquistar rápidamente gran parte de Europa. La Alemania Nazi implementó el Holocausto, resultando en el genocidio de 6 millones de judíos y millones de otras víctimas. Su derrota final llegó con la caída de Berlín y el suicidio de Hitler el 30 de abril de 1945.",
       "level": 2,
       "parentId": "axis",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
@@ -106,7 +139,10 @@
       "description": "Italia, bajo Benito Mussolini, se unió a la guerra del lado alemán en junio de 1940. Combatió principalmente en el norte de África y los Balcanes, pero sufrió derrotas significativas. La invasión aliada de Sicilia en 1943 llevó a la caída de Mussolini. Italia se rindió en septiembre de 1943 y posteriormente se unió a los Aliados, aunque el norte del país permaneció bajo control alemán hasta 1945.",
       "level": 2,
       "parentId": "axis",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
@@ -119,7 +155,10 @@
       "description": "Japón buscó expandir su imperio en Asia y el Pacífico. El ataque sorpresa a Pearl Harbor el 7 de diciembre de 1941 llevó a Estados Unidos a la guerra. Japón conquistó vastos territorios en el sudeste asiático y el Pacífico, pero fue detenido en batallas clave como Midway (1942) y Guadalcanal. La guerra terminó después de que Estados Unidos lanzara bombas atómicas sobre Hiroshima y Nagasaki en agosto de 1945, llevando a la rendición incondicional de Japón.",
       "level": 2,
       "parentId": "axis",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
@@ -132,8 +171,15 @@
       "description": "La Segunda Guerra Mundial vio algunas de las batallas más grandes y sangrientas de la historia. Estas batallas decisivas cambiaron el curso de la guerra y determinaron el destino de naciones enteras. Desde los combates urbanos devastadores hasta los enfrentamientos navales masivos, estas batallas involucraron millones de soldados y resultaron en pérdidas humanas sin precedentes.",
       "level": 1,
       "parentId": "root",
-      "position": { "x": 0, "y": 0 },
-      "children": ["stalingrad", "normandy", "midway"],
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "children": [
+        "stalingrad",
+        "normandy",
+        "midway"
+      ],
       "isExpanded": false,
       "isVisible": false,
       "createdAt": 1729554000000,
@@ -145,24 +191,20 @@
       "description": "La Batalla de Stalingrado (agosto 1942 - febrero 1943) fue uno de los puntos de inflexión más importantes de la guerra. Las fuerzas alemanas intentaron capturar la ciudad industrial soviética en el río Volga. Después de meses de combates brutales urbanos, el Ejército Rojo rodeó y destruyó el 6º Ejército alemán. La batalla resultó en aproximadamente 2 millones de víctimas y marcó el comienzo del retroceso alemán en el Frente Oriental. Fue considerada una de las batallas más sangrientas de la historia.",
       "level": 2,
       "parentId": "major-battles",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
       "images": [
         {
-          "id": "img-stalingrad-1",
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y20AAAAAElFTkSuQmCC",
-          "filename": "stalingrad-ruins.png",
-          "size": 69,
-          "addedAt": 1729554000000
-        },
-        {
-          "id": "img-stalingrad-2",
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y20AAAAAElFTkSuQmCC",
-          "filename": "soviet-soldiers.png",
-          "size": 69,
-          "addedAt": 1729554000000
+          "id": "img-stalingrad-1761230122824",
+          "data": "data:image/png;base64,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",
+          "filename": "stalingrad-battle.png",
+          "size": 10598,
+          "addedAt": 1761230122824
         }
       ],
       "createdAt": 1729554000000,
@@ -174,31 +216,20 @@
       "description": "El Día D (6 de junio de 1944) fue la invasión aliada más grande por mar en la historia. Operación Overlord involucró el desembarco de más de 150,000 soldados aliados en cinco playas de Normandía, Francia. A pesar de las fuertes defensas alemanas y numerosas bajas, los Aliados establecieron una cabeza de playa exitosa. Esta operación abrió el Frente Occidental y comenzó la liberación de Europa Occidental de la ocupación nazi. Fue un logro monumental de planificación militar, coordinación y valentía.",
       "level": 2,
       "parentId": "major-battles",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
       "images": [
         {
-          "id": "img-normandy-1",
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12MAAPj/AAADAQEAfU9eAAAAAElFTkSuQmCC",
-          "filename": "d-day-landing.png",
-          "size": 69,
-          "addedAt": 1729554000000
-        },
-        {
-          "id": "img-normandy-2",
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12MAAPj/AAADAQEAfU9eAAAAAElFTkSuQmCC",
-          "filename": "omaha-beach.png",
-          "size": 69,
-          "addedAt": 1729554000000
-        },
-        {
-          "id": "img-normandy-3",
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12MAAPj/AAADAQEAfU9eAAAAAElFTkSuQmCC",
-          "filename": "allied-forces.png",
-          "size": 69,
-          "addedAt": 1729554000000
+          "id": "img-normandy-1761230122824",
+          "data": "data:image/png;base64,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",
+          "filename": "d-day-normandy.png",
+          "size": 11382,
+          "addedAt": 1761230122824
         }
       ],
       "createdAt": 1729554000000,
@@ -210,24 +241,20 @@
       "description": "La Batalla de Midway (4-7 de junio de 1942) fue el punto de inflexión de la Guerra del Pacífico. La armada estadounidense, utilizando inteligencia descifrada, tendió una emboscada a la flota japonesa cerca del atolón de Midway. Estados Unidos hundió cuatro portaaviones japoneses, destruyendo la capacidad ofensiva de Japón en el Pacífico. Esta victoria estratégica cambió el equilibrio de poder naval y puso a Japón a la defensiva por el resto de la guerra. Demostró la importancia crucial de los portaaviones y la guerra aeronaval moderna.",
       "level": 2,
       "parentId": "major-battles",
-      "position": { "x": 0, "y": 0 },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
       "children": [],
       "isExpanded": false,
       "isVisible": false,
       "images": [
         {
-          "id": "img-midway-1",
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4/wAAAAMBAQC3nlpPAAAAAElFTkSuQmCC",
-          "filename": "uss-yorktown.png",
-          "size": 69,
-          "addedAt": 1729554000000
-        },
-        {
-          "id": "img-midway-2",
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4/wAAAAMBAQC3nlpPAAAAAElFTkSuQmCC",
-          "filename": "dive-bombers.png",
-          "size": 69,
-          "addedAt": 1729554000000
+          "id": "img-midway-1761230122824",
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAEsCAIAAABi1XKVAAAaHklEQVR4nO3deVzVVf7H8e+97Mgmi6wiCoo7CmouueSSZdqeWWbTMtqvpqZp5ldTTU01lTPzm2qamX451S/ba9qspsbErbTcQUVxQUERBVwAEZAd7u8Bh/v1671wuSoEH3w9/zpcvvfeLy3vxznn+znnmCwWiwYAEpg7+gYAwFkEFgAxCCwAYhBYAMRwtfk5adH8DroTALCVeu8bxh/pYQEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQg8ACIAaBBUAMAguAGAQWADEILABiEFgAxCCwAIhBYAEQw7WjbwC2vN08fvj5K8ZXvju47b+Xver8JySExS2+7rfGV17e8Nl725P1H28ePPmR8beo9g0fPZldfPQ87vP1ax5Oiuinado3GeufWv3WeXwCcK7oYQkwLnqwt5un89dPix3RnrcDdBgCSwB3F7eJMQlOXmzSTJP7JLbzHQEdg8CSYVrcSCevHBoWG+rTvZ1vB+gYzGF1apW11Z6u7pqmjek5qJu71+nqCufHg+U1Vd5uHs1e83H66o/TV7f1zQLtjh5Wp/bjoZ0WzdI4KnSdFDPsnMaDPx7a0f43CPykCKxOraC8eMfRLNWeFjfinMaDqw6ktvPdAT81hoSdmovJZXlmSkJYnKZpo3sO9PXwLq0qd2Y8mFWUm1N8/AK/fUBIr6v7j0uKiO/RLcDF7HKsrGhf4ZElu9em5O7VOlS0f48Z/UYnRcT37h7u6+FdV19fWl1+qPjojqNZK7JSMwpyOvb20H4IrE7N1eyyMivlN+NuNptMbmbXSb2Hfb13vTPjwRVZqWazqaUrW63D8nB1e2jM7JsGTzK+2Lt7eO/u4dPjRq7NTnti1Zv2H3vPyKsXjJil2g8nL1p9YKv9NR/N/n2/oJ6q/dTqt77JaObPuXfUNT9PmqlpWlVtzaTFD1bX1ei/8nbzfOTSW66KH2M2nfnrXM0uHq7+wd7+SRHxdybOWJez85nv3iksP2X8zJsGT3p0/FzVfj9txV/Xf9LSPxxN0x4Yff0dw69U7cdXvJ6cucXBxfgpMSTs1FzNLgXlp7bn71c/Tosd6eR4cEXmFheTy/l9qdlkfvGKX9ikldGEmIS/Xnm/h4ubzes/Htqpt1VNqQ0/D++4wCj9xxER8c1+/sjI/qqRkrfXmFaeru5vXvfIrP5jjWllb1z0kLevf8zXw9v44vLMlNr6OtWeGpvk4O2apk3p03RBeU3l99nbHV+MnxI9rE7N1aUhdFZkpSQ2/v9/SdQAPw/vkhZGhcbxYHbx0YSw2PP70l+Ovn5Mz0GqXV1X8+725cszNx8pOeHt5jkqsv+CkVfHBIQ1m0e7j2efrCjt7uWradrw8GYuSIzoZ8yapMhmAsvLzWNQj972Cahp2vwRM/Xe2cGT+W+m/mdr/r7C8hJXs0uEb/CY6EHzEi4P6RagaVqEb9D8pJkvGbpRpyrL1uekT2gsZwvzCRzUo/eu4web/fPjg3v29O+h2qsPbK2qPZOY6HD0sDo1s6nhX9DKrNR6S8OzQlezy2W9E1sdDy7PTGl4xWE3pCW9AsJuHTpNtYsry+Z9/vyizV9mFeVV1dacrChNztxy66d/2HRkT7PvtWiWDYd3qXbfoCgfdy+bCxLPTrEI36Bw3yC7a/q6mpv6hutyzgSW2WS6uv841c4szL3984Xf7t90rOxkbX1dZW31gZN5H6StuPXTZwusI8Epdt2opfs26u1pLXeyphrWCRjfgs6AwOrUVOQUVZRsy9/n+FmhcTy4MqshsM7PghGzXMxN/1U8vuL1zMJcmwuqamseTl6k54INPWLMJtOw8L42v02yjgHr6uttXrEfD2YXH80tKdBfjwkID/TyU+3XUv5dXlNp/+1FFSVf7F6r2qE+3fXgU9Zkp+mFbJOtgz4HgXXidPGWjn68ABsElgyq06Rp2qjIAf6ePq2OB8/vW3zcvSb3Ga7a63LSW+pJna6uWJy6tNlfrc/ZpTqDqq9k8+H9ghsGdOU1Vd8d3NrSNNbIyAHNjgd7WOPYolkc5EheaaFqmDST19l1s9V1NauszwEi/YIHhPSyf3u/oJ7R1vFgcuZm/W9BJ0FgybD6QGq9paFX4mI265niYDx4fi7tNdTdOpW+dN8GB1cmZ25WFa02SqpOpx8/oNpq3k03PLyvmsDalr9fHznaTGP5eXirULMZD2qatvHwrqRF85MWzR+xaIGD2o4ejXNYLTEO8YxDP8OLZ3pejAc7IQJLhqKK0pTcjJaeFbbVeHBIaNNst6ZpW/OaBqHNKq4syzOM14zWHUpXjQEhvdS6IkWfp0/J3av33WymsUZE9lehVl5TtS2v6dmok8wm89jowbclXO7gmtS8jGNlJx08K9RfzCrKyyg4fE43gJ8ATwnFWJGVMiqqYbg0MjI+wNOnuLKsbceDaqZcNcqqK46fLnZ8cXbxsUi/EPvX1+XsvHfUNeoRQUJYrJ5NemcqJTcjv7TwSMmJqMa3J0XE69VY+gTW5iO7a+prHXx7pF9wXGBkpF9IlH9IlF9IpF9IhG+wu0sr/z3XWyzJmZtvHzZd07Qov5D44GhjlWlcUGSvgDDV/nb/JscfhQ5BYImx+sDWR8fPdTGbzSbzlD5Jn+9e07bjQU3TAjx99SKAVi8ua2El9t4TOUUVJWqCPDGinwosbzfP/sHRav5rb2NGbD6yJ2pgQ2CNMASWSuSGCayzx4M6P49u84ZdflW/0aE+gef3N/5n3wYVWKo/ZQwsPfctmmUZgdUpMSQUo7iyLCVvr/2zwrYaD6p5cdWorK1u9eIaQ0mnkUWzrM9pGhXq1VjDw+NUicbW/P1qMm6zXc8r2Ns/xtrB0T/BaFTUgC9ufe6uxBn2aVVXX59VlPuvnau/3POD49vOLMzdX3jEpkDUZlZrW97+fOvkPToVeliSLM/ccknUQDUfFOjlW1RRauwXZBZe0HiwIYOsozB96t0Br5Y3QV2Xkz4zfqyaFHMzu9bU1+rlC/o6xC25ey2axaSZ1DRWfmmh3r3KLMzVZ5p0A0NiXr7yAQ/Xphurqa9Nyc3YcTTrwMn8nOJj2cX51XUNNz/P2ntyYOm+jQ+OubGx6Cy0b1CUyq/YwEg9LhkPdlr0sCRZfWCbWl9iNplVJdHZ6wcvqHulnvGphqpWdyygueoKZcPhXaob5e7iNig0xlhvtcX66KC4smxfQVNPR/1Wn8Bqdjz435fO0dMqOXPLVe89ev83L7+e8vXKrJR9hYdVWjlp2f5Ner2CPsuul5JW19VeYEcV7YfAkqSk6rQ+krq8cQ/SNhwPapqWX1qkGj7uXo7rAzRN69M9vKVflVaV7zxmLW4I7+fl5qGKnkqryvcXnnn0tiV3j7EaSw8sm4IGTdPCfYP0lUY7jx14YuUbNmubdfYrHO0dP12cmpdhMwzUGz8c2tHS4id0OAJLGL0bNTy8b5C3fxuOBzVNS7emjKowcHBl7+7hjnthetlnYkS/YWFxqno+NW+fsRTTOI0V5Rei6htKq8rTjmbafFq8tThLHdLjoJ4z3NepyXi9xiomICw2MCI2MKK3NX8dF6ChYxFYwnx3cJuaaTKbTNNik9pwPKhpmrG0/cq+lzi40vFv1TSWaiSExeqTU/pDA2Vr/n41wo3wDdLXCW46sltfuKPzcT+z9YKDegsXs/nSXkM1J6wyrGqe0idJn30vriyzqbBHp0JgCVNaVb7p8G7Vvjtp5pn9ZNoisDIKcnYdz1btsdGDh4T2afayYG//W4ZObfWj1HpDbzfPawdcql7Ua1+Vipqq9GNNWybcMnSKgwmsUuvkWmO6Bbf0pfMSpgd7+2tOOF1dsfZQmmpPjR2hjweX7d+s70KDTojAkkfPpkDroCyzMPfQBY8Hlf9L/UZvL5y2wH4my9vN44Ur7mvpeAsjvTTBz6Obqu2yX0q96UhT+KqDFy2aRS+UN9p1PFtfCTRnyORudvtAmE3mO4Zf8YtLrjO+aGpaPN7KqFANCVW72Q0F0XkQWPJ8f3C7zUOxNuleKWuz0/T/kyN8g/41+6l5w6ZH+/dwd3EL8PSZHjfyg5t+r3peh0+1sgWzzdx5at4+++WHm63z7saiU/uPKig/tc46Uuvp3+P9G5+Y0icx0Mu3m7tXXFDk7cOmf3Lz0w+MvsFsMhkHjCMj4xs3I21+Gn59TrpxtUBjr/DwnhOHHP9R6FjUYclTVl2x8fAutRddmweWpmnPr3mvR7cANenu7+nzqzE3/qqxasloye61JVXldwy/wsHnbDzcMBulb1ZjMx5U0o8dNB5HZv98UPfiuo8TwuLUPqLR/j3+Z/q99tdsyd377PfvfjX3edW3Utc8+/27zVaT1tbXrchMMW6susS6eACdFj0skZYbdhlvw/GgUllb/eDSf3y198dmf1tvsby9bdkf177f6ueUVVcYn/elWCsJjGrr67ZZN4C231LGKOfU8fv/83JL1QzlNVUvrf/kvq//mltywvlZc+N+DOU1lUv3US/a2ZksZz8hTlo0v+NuBp1LQljsdQMmJEb0DekWUF5TdaysaMPhXV/vXX/h9RPnzcfda86QyZN6D4/27+Hp6nGq6nRm4ZF1OTu/ztigr38M8PR5bMLcsdFDPFzccksLFq55r6X9s8wm05q7/66mzz5J/+7PP3z40/41aF3qvW8YfySwcPEaFz3k71f9Uk323/jR7zswiOFkYDEkxMXrtoSm3evX5+wirUQgsHCRGhgSo1e0vrs9uaNvB04hsHAR6R8SHezt72p2GdQj5k+X36NeTDua1eFnWcNJlDXgIjI/adak3sNsXnxl05IOuh2cMwKri4sLipweN+qSqAGhPoEBnj5VtdX5pUVpxzKX7tu4Pd92jXH78XLzGN9r6JQ+STEBYUHefr6Nx8EWlZekHcv88dDOH7J3NHukxU/g7W3fOt69Hp0KgSXJ4ut+mxAWp2naDR892eoksaer+2/G3XztgPHGw5ZdG0vD44Iibxg4cV1O+tOrF6tdAM/Dg2NuVHsN7zlx6LbPnnNw5eQ+iU9MnGdzOlmgl2+gl6+6k4yCnKdXv73PsPNMO8krLaisrXZ3cS2pKt974tDnu9euth78BREILDFCfboPCXX29HkvN4+/zXjA/phSo3HRg9+94Xd3ffGnVs+bsHdJ1MB5wxydT6O7Z+TVC0bMcnxNfHD0G9c+/MA3f9txLEtrTy+u+/jFdR+361egXRFYYtyddJWxr+TYw5fO0dPqZEXp4q1L12anHT990svNc2hon3nDLle/DfcNeunK+3+2ZKH9ji4OBHr5PjvlLsdLi5UJMQnzR8xUbYtmWbpv41d71h08mVdaVRHczX9Mz0F3Js6IaNwGy8fd60+X3zPnk6fZPA8O8JRQALPJNDdh2g0DJzp5fVJE/DX9m3Z0yS4+OueTZz7csfJIyYnqutpTlWU/HNqx4KsX3t62TF0wIKTXzYMnO38zJs309OS7gpzYxcXN7Pq7ifNUrtVbLL9N/ufvVy1Ozcsoqiitqa/NLy1csnvtLZ88k3a0qVcV6tN9fmt9MVzkCKxOys+jW3xw9Ix+ox8Zf8u/5/7x12NnO/9efU1ybX3dI8mL1L5UNl7ZuETfru9nw69wMzvb156bMHVc9GBnrrysz3B9d6oP0pbrx8QblVVXPJK8SD+k5/qBE9RCGaBZDAk7o9jAyE9ufvr83hvo5TsmepBqr8xKySrKa/Yyi2Z5Z9uySxorJ4O9/Uf3HPjDoR2tfnj/kOj7R1+v2tV1NY4P17m01xDVqKuv1zt09grKTy3P3KJ2HPV0dR8V1f/7g9tbvRNcnOhhdTWJEfH67JLj//O35e/Xz/Wa1Ht4q5/s5eaxcOoC1Rf7JmO9fuZNS9TBEw37TBXm2Ow8ZUMfFTaePn1m+3bABoHV1fQKCNXb+omhzaquqyk43TRa1M+kceDR8beqD885ddyZjQ3USfSaph0oynd8pfGg6QDPhu1JgWYxJOyMsopy7bfNeHzibc7Mu6v9iJXSFk6T15XXVKlGTPcwdxe36hYOc9Y07Yq+o9TZqDX1tY+teE1/Y0vcXdz0AePJ5jYRNTIewFNWXen4YlzMCKyuptY6ymtMjVb+/fq4N81wmzRTmE/3nBZ2PY70C3l8wm2q/crGJXtP5LR6G9V1Nc5vVaSOs1aOlLSy8zIuZgwJuxpj5boqcWqJu4tboLef/mNwCyenuppdFk6dr859WJ+T/kHayja934YzB/XDyiyaZaP1TCDAHoHV1ey2ntOlJuAdXJkQFmusZvBydW/2svtGXTs4tLemaYXlp55avbhtF/2FdAv4y/R79YLYFZkpJ8697B4XDwKrq0k/dlAvFr9uwKUtnRmjyq+MPzZbo3BJ1IDbhzcsGLRolidXnf/Cw2YNDIl5+/rHIq1z8yVV5WycAMcIrK6mpr720/TvVDvUJ/Cx8bfZr6Exm0wPjb1pTM9BZ7/R9gDR7l6+f5hyt3r7u9uS9TMEL5yL2Xxn4oy3rn80zKfpZPnqutpHl7+WW1LQVl+BLolJ9y7one3JV/QdpXous/qPjQ4I/SBt+fajWacqy/w8vJMi4ucNmz6oR4xKN31UqJebKybN9MzkO1Wp+q7j2a9u/rKtbm9ASK8nJ90eHxytv1JUUfJI8j+Nx+cAzSKwuqDT1RUPJy96ddavAxp3dEkIi00Ia+YUv+q6mg93rLxj+JXqx7Lqs1Yd39qwBKehVL28pvLxFa+3yQHu3m4e9466ds6QyWbTma79upydz3z3TkvndwFGBFbXlFFw+M4lf3xu6nzVk7J34nTx71a+YSwrP1papLfjg6MfsC7BWbjm/SMlJy78lsZGD35i4rxQ6xhQ1Yu+tP5TToeH8wisLivn1PHbP39+QkzClD6JQ8Pigr39XM0uheUl+wqPrDm4PTlzc2Vt9bTYkeriipoq4+qZhdPmW5fgbPh2/4UeL+pqdnlo7Ow5Q87sCWHRLF/tWff3jZ8ba9yBVhFYXdza7LS12Wkt/bZfcJRq2Oz2Ge3fQzVmxo+ZGT/G8VcMCOmlHx53qrJs8lsPGX/r7ebxwhX3GUtDMwpyFq59P/3YwXP/a3CxI7AuXq5mF33mu53iw2wy/2X6vXpa1dTXvrbl63e3Lzun/QIBHYF18Roc2tvTWiyq743Vtu4ZOWu0tXiiqKLkN9++2t6bIKNrI7AuXpN7Ny2IKa+p3JJ7VmCN/GfTmX0OvDLzV6qSq6VDKMJ8AtUpFWqouOCrFw6ebGXbBsAxAquriQ+O/vCmJ1X7uTXvfrH7h2Yv83LzuMo6ObUyK7W67syS6bYye/BlevX8U6vfIq1w4ah072rySwv15X6jDVPdNuYnzVRVWpqmfbRjVXvcyZX9RqvGhsO7nNnOFGgVgdXVlFSd3nnsgGpP7pOoij9tzBkyWV9IuGz/pvY4EDA+uGcP6/YPX+5pvpcHnCuGhF3Qm6lL/zbjAfWQ7uUZ93+2a803GesPnsw3mcz9g6PnJkybGJOgriwsP/XS+k/b4x6GGrYw/fPl/+X8G1/e8Nl725Pb45bQBRBYXdCPh3Z8tGPVLUOnqMyaPfiy2YMvs7+srLri18v+t53WxMQFNlV4AW2IIWHX9OK6j/+x8XP9jAl7+wuP3P3ln9uvejPUp3s7fTIuZiaL5az92Jzf1hadX5C3/9X9x42MjO/TPcLPo5vJZDpZUbr7RPbyzC2rDqRSvYnOT19EoTAk7MoKy0+9tXXpW1uXdvSNAG2DISEAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIgBoEFQAwCC4AYBBYAMQgsAGIQWADEILAAiEFgARCDwAIghslisXT0PQCAU+hhARCDwAIgBoEFQAwCC4Amxf8DWd1h+6wQH40AAAAASUVORK5CYII=",
+          "filename": "battle-of-midway.png",
+          "size": 9014,
+          "addedAt": 1761230122824
         }
       ],
       "createdAt": 1729554000000,
