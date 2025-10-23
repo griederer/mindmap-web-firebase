@@ -44,7 +44,15 @@ export default function Canvas() {
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [nodeToEdit, setNodeToEdit] = useState<Node | null>(null);
-  
+
+  // Close edit modal if node becomes invisible
+  useEffect(() => {
+    if (nodeToEdit && !nodes[nodeToEdit.id]?.isVisible) {
+      setEditModalOpen(false);
+      setNodeToEdit(null);
+    }
+  }, [nodeToEdit, nodes]);
+
   // Update viewport size on mount and resize
   useEffect(() => {
     const updateSize = () => {
