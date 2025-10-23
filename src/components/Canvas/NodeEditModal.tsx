@@ -4,13 +4,14 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Node } from '../../types/node';
+import { Node, NodeImage } from '../../types/node';
+import ImageUpload from './ImageUpload';
 
 interface NodeEditModalProps {
   node: Node;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (nodeId: string, updates: { title: string; description: string }) => void;
+  onSave: (nodeId: string, updates: { title: string; description: string; images?: NodeImage[] }) => void;
   viewportX?: number;
   viewportY?: number;
   zoom?: number;
@@ -27,10 +28,12 @@ export default function NodeEditModal({
 }: NodeEditModalProps) {
   const [title, setTitle] = useState(node.title);
   const [description, setDescription] = useState(node.description || '');
+  const [images, setImages] = useState<NodeImage[]>(node.images || []);
 
   useEffect(() => {
     setTitle(node.title);
     setDescription(node.description || '');
+    setImages(node.images || []);
   }, [node]);
 
   // Keyboard shortcuts
@@ -51,7 +54,7 @@ export default function NodeEditModal({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, title, description]);
+  }, [isOpen, title, description, images]);
 
   if (!isOpen) return null;
 
@@ -67,13 +70,14 @@ export default function NodeEditModal({
   const modalTop = screenY;
 
   const handleSave = () => {
-    onSave(node.id, { title, description });
+    onSave(node.id, { title, description, images });
     onClose();
   };
 
   const handleCancel = () => {
     setTitle(node.title);
     setDescription(node.description || '');
+    setImages(node.images || []);
     onClose();
   };
 
@@ -141,6 +145,9 @@ export default function NodeEditModal({
               rows={12}
             />
           </div>
+
+          {/* Images section */}
+          <ImageUpload images={images} onChange={setImages} />
 
           {/* Keyboard shortcuts hint */}
           <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">

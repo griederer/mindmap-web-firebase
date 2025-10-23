@@ -149,6 +149,22 @@
       "children": [],
       "isExpanded": false,
       "isVisible": false,
+      "images": [
+        {
+          "id": "img-stalingrad-1",
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y20AAAAAElFTkSuQmCC",
+          "filename": "stalingrad-ruins.png",
+          "size": 69,
+          "addedAt": 1729554000000
+        },
+        {
+          "id": "img-stalingrad-2",
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y20AAAAAElFTkSuQmCC",
+          "filename": "soviet-soldiers.png",
+          "size": 69,
+          "addedAt": 1729554000000
+        }
+      ],
       "createdAt": 1729554000000,
       "updatedAt": 1729554000000
     },
@@ -162,6 +178,29 @@
       "children": [],
       "isExpanded": false,
       "isVisible": false,
+      "images": [
+        {
+          "id": "img-normandy-1",
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12MAAPj/AAADAQEAfU9eAAAAAElFTkSuQmCC",
+          "filename": "d-day-landing.png",
+          "size": 69,
+          "addedAt": 1729554000000
+        },
+        {
+          "id": "img-normandy-2",
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12MAAPj/AAADAQEAfU9eAAAAAElFTkSuQmCC",
+          "filename": "omaha-beach.png",
+          "size": 69,
+          "addedAt": 1729554000000
+        },
+        {
+          "id": "img-normandy-3",
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12MAAPj/AAADAQEAfU9eAAAAAElFTkSuQmCC",
+          "filename": "allied-forces.png",
+          "size": 69,
+          "addedAt": 1729554000000
+        }
+      ],
       "createdAt": 1729554000000,
       "updatedAt": 1729554000000
     },
@@ -175,6 +214,22 @@
       "children": [],
       "isExpanded": false,
       "isVisible": false,
+      "images": [
+        {
+          "id": "img-midway-1",
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4/wAAAAMBAQC3nlpPAAAAAElFTkSuQmCC",
+          "filename": "uss-yorktown.png",
+          "size": 69,
+          "addedAt": 1729554000000
+        },
+        {
+          "id": "img-midway-2",
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4/wAAAAMBAQC3nlpPAAAAAElFTkSuQmCC",
+          "filename": "dive-bombers.png",
+          "size": 69,
+          "addedAt": 1729554000000
+        }
+      ],
       "createdAt": 1729554000000,
       "updatedAt": 1729554000000
     }

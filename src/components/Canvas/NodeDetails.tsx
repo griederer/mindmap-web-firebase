@@ -62,18 +62,25 @@ export default function NodeDetails() {
             </div>
           )}
 
-          {/* Image */}
-          {node.image && (
+          {/* Images */}
+          {node.images && node.images.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
-              <img
-                src={node.image}
-                alt={node.title}
-                className="w-full rounded-lg border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => {
-                  // TODO: Implement fullscreen image view
-                }}
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Images ({node.images.length})
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {node.images.map((image) => (
+                  <img
+                    key={image.id}
+                    src={image.data}
+                    alt={image.filename}
+                    className="w-full rounded-lg border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => {
+                      // TODO: Implement fullscreen image view
+                    }}
+                  />
+                ))}
+              </div>
             </div>
           )}
 

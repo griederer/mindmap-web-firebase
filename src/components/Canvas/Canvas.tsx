@@ -16,6 +16,7 @@ import ZoomControls from './ZoomControls';
 import NodeActionMenu from './NodeActionMenu';
 import NodeInfoPanel from './NodeInfoPanel';
 import NodeEditModal from './NodeEditModal';
+import ImageViewer from './ImageViewer';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -44,6 +45,11 @@ export default function Canvas() {
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [nodeToEdit, setNodeToEdit] = useState<Node | null>(null);
+
+  // Image viewer state
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
+  const [viewerImages, setViewerImages] = useState<import('../../types/node').NodeImage[]>([]);
+  const [viewerInitialIndex, setViewerInitialIndex] = useState(0);
 
   // Close edit modal if node becomes invisible
   useEffect(() => {
@@ -136,7 +142,7 @@ export default function Canvas() {
     }
   };
 
-  const handleSaveEdit = (nodeId: string, updates: { title: string; description: string }) => {
+  const handleSaveEdit = (nodeId: string, updates: { title: string; description: string; images?: import('../../types/node').NodeImage[] }) => {
     updateNode(nodeId, updates);
   };
 
@@ -244,6 +250,14 @@ export default function Canvas() {
                 node={nodes[infoPanelNodeId]}
                 nodeWidth={NODE_WIDTH}
                 nodeHeight={NODE_HEIGHT}
+                onImageClick={(index) => {
+                  const node = nodes[infoPanelNodeId];
+                  if (node.images && node.images.length > 0) {
+                    setViewerImages(node.images);
+                    setViewerInitialIndex(index);
+                    setImageViewerOpen(true);
+                  }
+                }}
               />
             )}
           </Layer>
@@ -275,6 +289,14 @@ export default function Canvas() {
           zoom={zoom}
         />
       )}
+
+      {/* Image viewer */}
+      <ImageViewer
+        images={viewerImages}
+        initialIndex={viewerInitialIndex}
+        isOpen={imageViewerOpen}
+        onClose={() => setImageViewerOpen(false)}
+      />
     </div>
   );
 }
