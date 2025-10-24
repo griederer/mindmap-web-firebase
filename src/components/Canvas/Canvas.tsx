@@ -27,7 +27,7 @@ export default function Canvas() {
   const stageRef = useRef<Konva.Stage>(null);
 
   // Viewport state
-  const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition } = useViewportStore();
+  const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, focusOnNodes, focusOnNodeWithPanel } = useViewportStore();
 
   // Project state
   const { nodes, rootNodeId, addNode, deleteNode, updateNode } = useProjectStore();
@@ -58,6 +58,59 @@ export default function Canvas() {
       setNodeToEdit(null);
     }
   }, [nodeToEdit, nodes]);
+
+  // Auto Focus: Watch for node expansion and focus on expanded node + children
+  useEffect(() => {
+    if (!autoFocusEnabled) return;
+
+    // Find recently expanded nodes (isExpanded = true with visible children)
+    const expandedNodes = Object.values(nodes).filter(node => {
+      return node.isExpanded && node.children.length > 0 &&
+             node.children.some(childId => nodes[childId]?.isVisible);
+    });
+
+    if (expandedNodes.length === 0) return;
+
+    // Focus on the most recently expanded node (last one in state)
+    const lastExpanded = expandedNodes[expandedNodes.length - 1];
+
+    // Collect node + all visible children
+    const nodesToFocus = [
+      lastExpanded.id,
+      ...lastExpanded.children.filter(childId => nodes[childId]?.isVisible)
+    ];
+
+    // Trigger Auto Focus with delay to allow layout to update
+    const timer = setTimeout(() => {
+      focusOnNodes(nodesToFocus, true);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [nodes, autoFocusEnabled, focusOnNodes]);
+
+  // Auto Focus: Watch for info panel display and focus on node + panel
+  useEffect(() => {
+    if (!autoFocusEnabled || !infoPanelNodeId) return;
+
+    const node = nodes[infoPanelNodeId];
+    if (!node) return;
+
+    // Calculate approximate panel height based on content
+    // Base height + description lines + images
+    const PANEL_WIDTH = 240;
+    const BASE_HEIGHT = 120; // Header + padding
+    const descriptionLines = Math.ceil((node.description?.length || 0) / 30);
+    const descriptionHeight = descriptionLines * 20;
+    const imagesHeight = (node.images?.length || 0) * 80; // Thumbnail height
+    const estimatedPanelHeight = BASE_HEIGHT + descriptionHeight + imagesHeight;
+
+    // Trigger Auto Focus with delay to allow panel to render
+    const timer = setTimeout(() => {
+      focusOnNodeWithPanel(infoPanelNodeId, PANEL_WIDTH, estimatedPanelHeight, true);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [infoPanelNodeId, autoFocusEnabled, nodes, focusOnNodeWithPanel]);
 
   // Update viewport size on mount and resize
   useEffect(() => {
@@ -115,6 +168,10 @@ export default function Canvas() {
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
       selectNode(null);
+      // Also close info panel when clicking on empty space
+      if (infoPanelNodeId) {
+        toggleInfoPanel(null);
+      }
     }
   };
   
@@ -212,6 +269,9 @@ export default function Canvas() {
           onWheel={handleWheel}
           onDragEnd={handleDragEnd}
           onClick={handleStageClick}
+          style={{
+            transition: 'transform 1800ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+          }}
         >
           <Layer>
             {/* Render connectors first (behind nodes) */}

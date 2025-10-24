@@ -58,7 +58,13 @@ export const useUIStore = create<UIState>((set, get) => ({
   
   // Select a node
   selectNode: (nodeId: NodeId | null) => {
-    set({ selectedNodeId: nodeId });
+    // Close info panel when selecting a different node
+    const { infoPanelNodeId } = get();
+    if (infoPanelNodeId && infoPanelNodeId !== nodeId) {
+      set({ selectedNodeId: nodeId, infoPanelNodeId: null });
+    } else {
+      set({ selectedNodeId: nodeId });
+    }
   },
   
   // Set focus mode on a specific node

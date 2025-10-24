@@ -8,6 +8,7 @@ import { Project, ProjectId } from '../types/project';
 import { Node, NodeId } from '../types/node';
 import { Action } from '../types/action';
 import { calculateLayout } from '../utils/layoutEngine';
+import { useUIStore } from './uiStore';
 
 interface ProjectState {
   // Current project
@@ -168,6 +169,12 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const { nodes, rootNodeId } = get();
     const node = nodes[nodeId];
     if (!node || !rootNodeId) return;
+
+    // Close info panel when expanding/collapsing nodes
+    const { infoPanelNodeId, toggleInfoPanel } = useUIStore.getState();
+    if (infoPanelNodeId) {
+      toggleInfoPanel(null);
+    }
 
     const newExpanded = !node.isExpanded;
 
