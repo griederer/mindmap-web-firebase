@@ -142,6 +142,7 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
 
   // Focus camera on a set of nodes with dynamic zoom
   focusOnNodes: (nodeIds: string[], _animate: boolean = true) => {
+    console.log('[ViewportStore] focusOnNodes called:', { nodeIds, animate: _animate });
     const { width, height } = get();
     const nodes = useProjectStore.getState().nodes;
 
@@ -149,18 +150,25 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
     const bbox = calculateBoundingBox(nodes, nodeIds);
 
     // Handle empty bounding box
-    if (bbox.width === 0 || bbox.height === 0) return;
+    if (bbox.width === 0 || bbox.height === 0) {
+      console.log('[ViewportStore] Empty bounding box, aborting');
+      return;
+    }
 
     // Calculate optimal zoom and camera position
     const optimalZoom = calculateOptimalZoom(bbox, { width, height });
     const camera = calculateCameraPosition(bbox, optimalZoom, { width, height });
 
-    // Update viewport (animation handled by CSS transitions)
-    set({
+    console.log('[ViewportStore] Calculated target:', { x: camera.x, y: camera.y, zoom: optimalZoom });
+
+    // CRITICAL: Update ALL properties in a single set() call
+    // Use function form to ensure React batches the update as one transaction
+    set((state) => ({
+      ...state,
       x: camera.x,
       y: camera.y,
       zoom: optimalZoom,
-    });
+    }));
   },
 
   // Focus camera on a node with its info panel visible
@@ -170,6 +178,12 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
     panelHeight: number,
     _animate: boolean = true
   ) => {
+    console.log('[ViewportStore] focusOnNodeWithPanel called:', {
+      nodeId,
+      panelWidth,
+      panelHeight,
+      animate: _animate
+    });
     const { width, height } = get();
     const nodes = useProjectStore.getState().nodes;
 
@@ -177,17 +191,24 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
     const bbox = calculateBoundingBoxWithPanel(nodes, nodeId, panelWidth, panelHeight);
 
     // Handle empty bounding box
-    if (bbox.width === 0 || bbox.height === 0) return;
+    if (bbox.width === 0 || bbox.height === 0) {
+      console.log('[ViewportStore] Empty bounding box, aborting');
+      return;
+    }
 
     // Calculate optimal zoom and camera position
     const optimalZoom = calculateOptimalZoom(bbox, { width, height });
     const camera = calculateCameraPosition(bbox, optimalZoom, { width, height });
 
-    // Update viewport (animation handled by CSS transitions)
-    set({
+    console.log('[ViewportStore] Calculated target:', { x: camera.x, y: camera.y, zoom: optimalZoom });
+
+    // CRITICAL: Update ALL properties in a single set() call
+    // Use function form to ensure React batches the update as one transaction
+    set((state) => ({
+      ...state,
       x: camera.x,
       y: camera.y,
       zoom: optimalZoom,
-    });
+    }));
   },
 }));

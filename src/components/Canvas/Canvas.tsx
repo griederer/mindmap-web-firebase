@@ -80,12 +80,13 @@ export default function Canvas() {
       ...lastExpanded.children.filter(childId => nodes[childId]?.isVisible)
     ];
 
-    // Trigger Auto Focus with delay to allow layout to update
-    const timer = setTimeout(() => {
-      focusOnNodes(nodesToFocus, true);
-    }, 200);
+    console.log('[Auto Focus] Node expansion detected:', { nodeId: lastExpanded.id, nodesToFocus });
 
-    return () => clearTimeout(timer);
+    // CRITICAL: Call Auto Focus IMMEDIATELY (no delay)
+    // The 50ms debounce in the animation system will handle batching
+    // Delay removed because layout is already calculated by layoutEngine before this effect runs
+    console.log('[Auto Focus] Calling focusOnNodes immediately');
+    focusOnNodes(nodesToFocus, true);
   }, [nodes, autoFocusEnabled, focusOnNodes]);
 
   // Auto Focus: Watch for info panel display and focus on node + panel
@@ -104,13 +105,110 @@ export default function Canvas() {
     const imagesHeight = (node.images?.length || 0) * 80; // Thumbnail height
     const estimatedPanelHeight = BASE_HEIGHT + descriptionHeight + imagesHeight;
 
-    // Trigger Auto Focus with delay to allow panel to render
-    const timer = setTimeout(() => {
-      focusOnNodeWithPanel(infoPanelNodeId, PANEL_WIDTH, estimatedPanelHeight, true);
-    }, 250);
+    console.log('[Auto Focus] Info panel detected:', {
+      nodeId: infoPanelNodeId,
+      panelWidth: PANEL_WIDTH,
+      panelHeight: estimatedPanelHeight
+    });
 
-    return () => clearTimeout(timer);
+    // CRITICAL: Call Auto Focus IMMEDIATELY (no delay)
+    // The 50ms debounce in the animation system will handle batching
+    console.log('[Auto Focus] Calling focusOnNodeWithPanel immediately');
+    focusOnNodeWithPanel(infoPanelNodeId, PANEL_WIDTH, estimatedPanelHeight, true);
   }, [infoPanelNodeId, autoFocusEnabled, nodes, focusOnNodeWithPanel]);
+
+  // Track if we should animate (vs instant update for manual interactions)
+  const shouldAnimateRef = useRef(true);
+  const previousValuesRef = useRef({ x, y, zoom });
+  const animationTimeoutRef = useRef<number | null>(null);
+
+  // Smooth camera transitions using Konva animations
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const prev = previousValuesRef.current;
+    const hasChanged = prev.x !== x || prev.y !== y || prev.zoom !== zoom;
+
+    if (!hasChanged) return;
+
+    // Check if this is a manual interaction (wheel or drag)
+    const isManualInteraction = !shouldAnimateRef.current;
+
+    // DEBUG: Log animation trigger
+    console.log('[Animation]', {
+      type: isManualInteraction ? 'MANUAL' : 'AUTO_FOCUS',
+      from: { x: prev.x, y: prev.y, zoom: prev.zoom },
+      to: { x, y, zoom },
+      shouldAnimate: shouldAnimateRef.current,
+      timeoutPending: animationTimeoutRef.current !== null
+    });
+
+    if (isManualInteraction) {
+      // Instant update for manual interactions
+      console.log('[Animation] Applying instant update');
+      stage.x(x);
+      stage.y(y);
+      stage.scaleX(zoom);
+      stage.scaleY(zoom);
+      shouldAnimateRef.current = true; // Reset for next Auto Focus
+      previousValuesRef.current = { x, y, zoom };
+    } else {
+      // Debounce: Wait for all values (x, y, zoom) to arrive before animating
+      if (animationTimeoutRef.current !== null) {
+        console.log('[Animation] Clearing previous timeout');
+        clearTimeout(animationTimeoutRef.current);
+      }
+
+      animationTimeoutRef.current = window.setTimeout(() => {
+        console.log('[Animation] Starting smooth animation from', {
+          fromX: stage.x(),
+          fromY: stage.y(),
+          fromZoom: stage.scaleX()
+        }, 'to', { x, y, zoom });
+
+        // CRITICAL FIX: Ensure stage is at current position before animating
+        // This prevents Konva from starting animation from wrong position
+        const currentX = stage.x();
+        const currentY = stage.y();
+        const currentZoom = stage.scaleX();
+
+        // Only animate if there's actually a change
+        const hasSignificantChange =
+          Math.abs(currentX - x) > 0.1 ||
+          Math.abs(currentY - y) > 0.1 ||
+          Math.abs(currentZoom - zoom) > 0.01;
+
+        if (!hasSignificantChange) {
+          console.log('[Animation] No significant change, skipping animation');
+          previousValuesRef.current = { x, y, zoom };
+          return;
+        }
+
+        // Smooth animation for Auto Focus
+        // Note: Konva's .to() automatically stops previous animations on same properties
+        stage.to({
+          x,
+          y,
+          scaleX: zoom,
+          scaleY: zoom,
+          duration: 2.0, // 2 seconds for very smooth movement
+          easing: Konva.Easings.EaseInOut,
+          onFinish: () => {
+            console.log('[Animation] Animation completed');
+            previousValuesRef.current = { x, y, zoom };
+          }
+        });
+      }, 50); // Wait 50ms for all state updates to batch together
+    }
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (animationTimeoutRef.current !== null) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, [x, y, zoom]);
 
   // Update viewport size on mount and resize
   useEffect(() => {
@@ -132,6 +230,9 @@ export default function Canvas() {
 
     const stage = stageRef.current;
     if (!stage) return;
+
+    // Disable animation for manual wheel zoom
+    shouldAnimateRef.current = false;
 
     const oldZoom = zoom;
     const pointer = stage.getPointerPosition();
@@ -158,6 +259,9 @@ export default function Canvas() {
 
   // Handle stage drag to update viewport state
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    // Disable animation for manual drag
+    shouldAnimateRef.current = false;
+
     const stage = e.target as Konva.Stage;
     setPosition(stage.x(), stage.y());
   };
@@ -269,9 +373,6 @@ export default function Canvas() {
           onWheel={handleWheel}
           onDragEnd={handleDragEnd}
           onClick={handleStageClick}
-          style={{
-            transition: 'transform 1800ms cubic-bezier(0.22, 0.61, 0.36, 1)',
-          }}
         >
           <Layer>
             {/* Render connectors first (behind nodes) */}
