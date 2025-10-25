@@ -3,7 +3,9 @@
  * Displays detailed information/description for a node
  */
 
+import { useEffect, useRef } from 'react';
 import { Group, Rect, Text, Line } from 'react-konva';
+import Konva from 'konva';
 import { Node } from '../../types/node';
 import ImageGallery, { getGalleryHeight } from './ImageGallery';
 
@@ -19,11 +21,25 @@ const PANEL_PADDING = 16;
 const PANEL_OFFSET_X = 20;
 
 export default function NodeInfoPanel({ node, nodeWidth, nodeHeight, onImageClick }: NodeInfoPanelProps) {
+  const groupRef = useRef<Konva.Group>(null);
+
   if (!node.description && (!node.images || node.images.length === 0)) return null;
 
   // Position panel to the right of the node
   const panelX = node.position.x + nodeWidth + PANEL_OFFSET_X;
   const panelY = node.position.y;
+
+  // Animate panel appearance on mount
+  useEffect(() => {
+    if (groupRef.current) {
+      groupRef.current.to({
+        opacity: 1,
+        x: 0, // Slide from offset to final position
+        duration: 0.8,
+        easing: Konva.Easings.EaseOut,
+      });
+    }
+  }, []);
 
   // Calculate panel height based on text content
   // Estimate wrapped lines: avg 40 chars per line with word wrap
@@ -45,7 +61,11 @@ export default function NodeInfoPanel({ node, nodeWidth, nodeHeight, onImageClic
   const lineEndY = panelY + panelHeight / 2;
 
   return (
-    <Group>
+    <Group
+      ref={groupRef}
+      x={20} // Start offset to the right
+      opacity={0} // Start invisible
+    >
       {/* Connector line */}
       <Line
         points={[lineStartX, lineStartY, lineEndX, lineEndY]}

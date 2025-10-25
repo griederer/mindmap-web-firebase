@@ -40,8 +40,10 @@ export default function NodeComponent({ node }: NodeComponentProps) {
     if (groupRef.current) {
       groupRef.current.to({
         opacity: 1,
-        duration: 0.4,
-        easing: Konva.Easings.EaseInOut,
+        scaleX: 1,
+        scaleY: 1,
+        duration: 1.2,
+        easing: Konva.Easings.EaseOut,
       });
     }
   }, []);
@@ -66,14 +68,18 @@ export default function NodeComponent({ node }: NodeComponentProps) {
         const targetOpacity = isBlurred ? 0.3 : 1;
         groupRef.current.to({
           opacity: targetOpacity,
-          duration: 0.4,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 1.2, // Smooth 1.2s fade in
           easing: Konva.Easings.EaseOut,
         });
       } else {
         // Fade out when becoming invisible
         groupRef.current.to({
           opacity: 0,
-          duration: 0.35,
+          scaleX: 0.95,
+          scaleY: 0.95,
+          duration: 1.0, // Smooth 1.0s fade out
           easing: Konva.Easings.EaseIn,
         });
       }
@@ -108,6 +114,8 @@ export default function NodeComponent({ node }: NodeComponentProps) {
       x={node.position.x}
       y={node.position.y}
       opacity={isBlurred ? 0.3 : 0}
+      scaleX={0.95}
+      scaleY={0.95}
       onClick={handleClick}
     >
       {/* Glow effect for focused node */}
