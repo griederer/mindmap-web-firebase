@@ -59,34 +59,52 @@ export default function Canvas() {
     }
   }, [nodeToEdit, nodes]);
 
-  // Auto Focus: Watch for node expansion and focus on expanded node + children
+  // Track previous visible nodes to detect changes
+  const previousVisibleNodesRef = useRef<Set<string>>(new Set());
+
+  // Auto Focus: Watch for node expansion/collapse
   useEffect(() => {
     if (!autoFocusEnabled) return;
 
-    // Find recently expanded nodes (isExpanded = true with visible children)
-    const expandedNodes = Object.values(nodes).filter(node => {
-      return node.isExpanded && node.children.length > 0 &&
-             node.children.some(childId => nodes[childId]?.isVisible);
+    // Get current visible node IDs
+    const currentVisibleIds = new Set(
+      Object.values(nodes).filter(node => node.isVisible).map(node => node.id)
+    );
+
+    const previousVisibleIds = previousVisibleNodesRef.current;
+
+    // Detect if this is the first render (no previous state)
+    if (previousVisibleIds.size === 0) {
+      previousVisibleNodesRef.current = currentVisibleIds;
+      return;
+    }
+
+    // Check if visible nodes changed
+    const visibilityChanged =
+      currentVisibleIds.size !== previousVisibleIds.size ||
+      [...currentVisibleIds].some(id => !previousVisibleIds.has(id)) ||
+      [...previousVisibleIds].some(id => !currentVisibleIds.has(id));
+
+    if (!visibilityChanged) return;
+
+    // Focus on ALL currently visible nodes
+    const nodesToFocus = [...currentVisibleIds];
+
+    console.log('[Auto Focus] Visibility change detected:', {
+      previous: previousVisibleIds.size,
+      current: currentVisibleIds.size,
+      nodesToFocus: nodesToFocus.slice(0, 5) // Show first 5 for debugging
     });
 
-    if (expandedNodes.length === 0) return;
-
-    // Focus on the most recently expanded node (last one in state)
-    const lastExpanded = expandedNodes[expandedNodes.length - 1];
-
-    // Collect node + all visible children
-    const nodesToFocus = [
-      lastExpanded.id,
-      ...lastExpanded.children.filter(childId => nodes[childId]?.isVisible)
-    ];
-
-    console.log('[Auto Focus] Node expansion detected:', { nodeId: lastExpanded.id, nodesToFocus });
-
-    // CRITICAL: Call Auto Focus IMMEDIATELY (no delay)
-    // The 50ms debounce in the animation system will handle batching
-    // Delay removed because layout is already calculated by layoutEngine before this effect runs
-    console.log('[Auto Focus] Calling focusOnNodes immediately');
+    // Trigger Auto Focus FIRST
     focusOnNodes(nodesToFocus, true);
+
+    // CRITICAL: Update ref AFTER calling focusOnNodes
+    // This ensures the viewport state change happens before we update our tracking
+    // Small delay allows the animation system to process the state change
+    setTimeout(() => {
+      previousVisibleNodesRef.current = currentVisibleIds;
+    }, 100);
   }, [nodes, autoFocusEnabled, focusOnNodes]);
 
   // Auto Focus: Watch for info panel display and focus on node + panel
@@ -121,11 +139,24 @@ export default function Canvas() {
   const shouldAnimateRef = useRef(true);
   const previousValuesRef = useRef({ x, y, zoom });
   const animationTimeoutRef = useRef<number | null>(null);
+  const initialPositionSetRef = useRef(false);
+
+  // Set initial position once
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || initialPositionSetRef.current) return;
+
+    stage.x(x);
+    stage.y(y);
+    stage.scaleX(zoom);
+    stage.scaleY(zoom);
+    initialPositionSetRef.current = true;
+  }, [x, y, zoom]);
 
   // Smooth camera transitions using Konva animations
   useEffect(() => {
     const stage = stageRef.current;
-    if (!stage) return;
+    if (!stage || !initialPositionSetRef.current) return;
 
     const prev = previousValuesRef.current;
     const hasChanged = prev.x !== x || prev.y !== y || prev.zoom !== zoom;
@@ -161,11 +192,17 @@ export default function Canvas() {
       }
 
       animationTimeoutRef.current = window.setTimeout(() => {
-        console.log('[Animation] Starting smooth animation from', {
-          fromX: stage.x(),
-          fromY: stage.y(),
-          fromZoom: stage.scaleX()
-        }, 'to', { x, y, zoom });
+        const from = { x: stage.x(), y: stage.y(), zoom: stage.scaleX() };
+        const to = { x, y, zoom };
+        const distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
+
+        console.log('[Animation] Starting smooth animation:', {
+          from,
+          to,
+          distance: distance.toFixed(2),
+          zoomChange: (to.zoom - from.zoom).toFixed(3),
+          duration: '4.0s'
+        });
 
         // CRITICAL FIX: Ensure stage is at current position before animating
         // This prevents Konva from starting animation from wrong position
@@ -192,7 +229,7 @@ export default function Canvas() {
           y,
           scaleX: zoom,
           scaleY: zoom,
-          duration: 2.0, // 2 seconds for very smooth movement
+          duration: 5.2, // 5.2 seconds (30% slower than 4s)
           easing: Konva.Easings.EaseInOut,
           onFinish: () => {
             console.log('[Animation] Animation completed');
@@ -365,10 +402,6 @@ export default function Canvas() {
           ref={stageRef}
           width={width}
           height={height}
-          scaleX={zoom}
-          scaleY={zoom}
-          x={x}
-          y={y}
           draggable
           onWheel={handleWheel}
           onDragEnd={handleDragEnd}
