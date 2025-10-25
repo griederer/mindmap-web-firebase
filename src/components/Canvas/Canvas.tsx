@@ -229,7 +229,7 @@ export default function Canvas() {
           y,
           scaleX: zoom,
           scaleY: zoom,
-          duration: 5.2, // 5.2 seconds (30% slower than 4s)
+          duration: 4.0, // 4 seconds
           easing: Konva.Easings.EaseInOut,
           onFinish: () => {
             console.log('[Animation] Animation completed');
