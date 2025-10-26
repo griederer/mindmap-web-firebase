@@ -17,6 +17,9 @@ import NodeActionMenu from './NodeActionMenu';
 import NodeInfoPanel from './NodeInfoPanel';
 import NodeEditModal from './NodeEditModal';
 import ImageViewer from './ImageViewer';
+import RelationshipSidebar from '../RelationshipSidebar/RelationshipSidebar';
+import RelationshipAssignMenu from './RelationshipAssignMenu';
+import RelationshipLines from './RelationshipLines';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -50,6 +53,12 @@ export default function Canvas() {
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [viewerImages, setViewerImages] = useState<import('../../types/node').NodeImage[]>([]);
   const [viewerInitialIndex, setViewerInitialIndex] = useState(0);
+
+  // Relationship sidebar state
+  const [relationshipSidebarOpen, setRelationshipSidebarOpen] = useState(false);
+
+  // Relationship assignment submenu state
+  const [relationshipAssignOpen, setRelationshipAssignOpen] = useState(false);
 
   // Close edit modal if node becomes invisible
   useEffect(() => {
@@ -390,7 +399,11 @@ export default function Canvas() {
       }
     }
   };
-  
+
+  const handleManageRelationships = () => {
+    setRelationshipAssignOpen(true);
+  };
+
   return (
     <div 
       ref={containerRef}
@@ -416,7 +429,10 @@ export default function Canvas() {
                 toNode={nodes[to]}
               />
             ))}
-            
+
+            {/* Render relationship lines (above connectors, behind nodes) */}
+            <RelationshipLines />
+
             {/* Render all nodes (visibility handled by component) */}
             {allNodes.map(node => (
               <NodeComponent
@@ -435,6 +451,7 @@ export default function Canvas() {
                 onFocus={handleFocus}
                 onAddChild={handleAddChild}
                 onDelete={handleDelete}
+                onManageRelationships={handleManageRelationships}
               />
             )}
 
@@ -491,6 +508,51 @@ export default function Canvas() {
         isOpen={imageViewerOpen}
         onClose={() => setImageViewerOpen(false)}
       />
+
+      {/* Relationship sidebar */}
+      <RelationshipSidebar
+        isOpen={relationshipSidebarOpen}
+        onClose={() => setRelationshipSidebarOpen(false)}
+      />
+
+      {/* Relationship sidebar trigger button */}
+      {rootNodeId && (
+        <button
+          onClick={() => setRelationshipSidebarOpen(true)}
+          className="fixed right-4 top-4 bg-gray-900 bg-opacity-90 hover:bg-opacity-100 text-white p-3 rounded-lg shadow-lg transition-all z-40 group"
+          aria-label="Manage relationships"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+            />
+          </svg>
+          <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-sm px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Relationships
+          </span>
+        </button>
+      )}
+
+      {/* Relationship assignment submenu */}
+      {relationshipAssignOpen && selectedNode && (
+        <RelationshipAssignMenu
+          nodeId={selectedNode.id}
+          nodeX={selectedNode.position.x}
+          nodeY={selectedNode.position.y}
+          viewportX={x}
+          viewportY={y}
+          zoom={zoom}
+          onClose={() => setRelationshipAssignOpen(false)}
+        />
+      )}
     </div>
   );
 }

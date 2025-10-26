@@ -14,6 +14,7 @@ interface NodeActionMenuProps {
   onFocus: () => void;
   onAddChild: () => void;
   onDelete: () => void;
+  onManageRelationships: () => void;
 }
 
 const ICON_SIZE = 32;
@@ -31,11 +32,13 @@ export default function NodeActionMenu({
   onFocus,
   onAddChild,
   onDelete,
+  onManageRelationships,
 }: NodeActionMenuProps) {
   const buttons = [
     { symbol: '✎', onClick: onEdit, label: 'Edit' },
     { symbol: 'i', onClick: onShowInfo, label: 'Info' },
     { symbol: '◉', onClick: onFocus, label: 'Focus' },
+    { symbol: '⛓', onClick: onManageRelationships, label: 'Relationships' },
     { symbol: '+', onClick: onAddChild, label: 'Add' },
     { symbol: '×', onClick: onDelete, label: 'Delete' },
   ];

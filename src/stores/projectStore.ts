@@ -9,6 +9,7 @@ import { Node, NodeId } from '../types/node';
 import { Action } from '../types/action';
 import { calculateLayout } from '../utils/layoutEngine';
 import { useUIStore } from './uiStore';
+import { useRelationshipStore } from './relationshipStore';
 
 interface ProjectState {
   // Current project
@@ -52,6 +53,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       rootNodeId: project.rootNodeId,
       recordedActions: project.actions || [],
     });
+
+    // Load relationships into relationshipStore
+    const { setRelationships } = useRelationshipStore.getState();
+    setRelationships(project.relationships || []);
   },
 
   // Save current project (returns current state as Project)
@@ -59,10 +64,14 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const { currentProject, nodes, rootNodeId, recordedActions } = get();
     if (!currentProject) return null;
 
+    // Get relationships from relationshipStore
+    const { relationships } = useRelationshipStore.getState();
+
     return {
       ...currentProject,
       nodes,
       rootNodeId: rootNodeId || '',
+      relationships, // Include relationships in saved project
       actions: recordedActions,
       metadata: {
         ...currentProject.metadata,
@@ -80,6 +89,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       rootNodeId: null,
       recordedActions: [],
     });
+
+    // Clear relationships
+    const { setRelationships } = useRelationshipStore.getState();
+    setRelationships([]);
   },
   
   // Update a node
@@ -146,6 +159,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     // Remove all collected nodes
     const newNodes = { ...nodes };
     nodesToDelete.forEach((id) => delete newNodes[id]);
+
+    // Clean up relationships: remove all deleted nodes from all relationships
+    const removeNodeFromRelationships = useRelationshipStore.getState().removeNodeFromAllRelationships;
+    nodesToDelete.forEach((id) => removeNodeFromRelationships(id));
 
     // Update parent's children array
     if (nodeToDelete.parentId && newNodes[nodeToDelete.parentId]) {

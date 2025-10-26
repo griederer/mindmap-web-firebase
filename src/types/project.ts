@@ -5,6 +5,7 @@
 
 import { Node } from './node';
 import { Action } from './action';
+import { Relationship } from './relationship';
 
 export interface ProjectMetadata {
   title: string;
@@ -20,17 +21,20 @@ export interface ProjectMetadata {
 export interface Project {
   // Core identification
   projectId: string;
-  
+
   // Metadata
   metadata: ProjectMetadata;
-  
+
   // Data structure
   nodes: Record<string, Node>; // Map of nodeId -> Node
   rootNodeId: string; // ID of the root node
-  
+
+  // Relationships
+  relationships?: Relationship[]; // Custom node relationships
+
   // Presentation
   actions: Action[]; // Ordered array of recorded actions
-  
+
   // Settings
   settings?: {
     defaultZoom?: number;
