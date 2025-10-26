@@ -14,7 +14,8 @@ NODEM is a web-based interactive mind map presentation tool designed to replace 
 ### Key Features
 
 - **Node-Based Presentations** - Hierarchical mind maps with expandable nodes
-- **Smooth Animations** - 60fps transitions using Framer Motion
+- **Custom Relationships** - Connect nodes beyond hierarchy with curved mesh lines
+- **Smooth Animations** - Fluid transitions for nodes, panels, and camera movements
 - **Action Recording** - Record interaction sequences and replay as presentations
 - **Smart Camera** - Auto-positioning and zoom for optimal content viewing
 - **Focus Mode** - Blur non-relevant nodes to emphasize key content
@@ -62,10 +63,18 @@ nodem-clean/
 
 ## 📚 Documentation
 
+### Core Documentation
 - **[Product Requirements Document](tasks/0001-prd-nodem-core.md)** - Complete feature specifications
 - **[Task List](tasks/tasks-0001-prd-nodem-core.md)** - 136 implementation tasks
 - **[Firebase Analysis](FIREBASE-ANALYSIS.md)** - Infrastructure documentation
 - **[Migration Plan](CLEAN-MIGRATION-PLAN.md)** - Setup and deployment guide
+
+### Feature Documentation
+- **[Relationship System](docs/RELATIONSHIPS.md)** - Custom node relationships guide
+  - Implementation details
+  - API reference
+  - Usage examples
+  - Technical architecture
 
 ---
 
@@ -116,27 +125,49 @@ npm run deploy:prod
 
 ---
 
-## 🎨 Features Roadmap
+## 🎨 Features
 
-### Phase 1: MVP (Current)
-- [ ] Core node rendering with Konva
-- [ ] Expand/collapse with smooth animations
-- [ ] Node collision avoidance
-- [ ] Detail panels and image display
-- [ ] Focus mode
-- [ ] Zoom and pan controls
-- [ ] Project management (Firestore)
-- [ ] Action recording and playback
-- [ ] Presentation mode with smart camera
+### ✅ Completed Features
 
-### Phase 2: Enhancement
+#### Core Presentation System
+- ✅ **Node Rendering** - Konva-based canvas with hierarchical layout
+- ✅ **Expand/Collapse** - Smooth animations with fade and scale effects
+- ✅ **Node Collision Avoidance** - Smart layout engine prevents overlaps
+- ✅ **Detail Panels** - Rich node information with image galleries
+- ✅ **Focus Mode** - Blur non-relevant nodes with single-node emphasis
+- ✅ **Zoom & Pan Controls** - Smooth camera movements with mouse/touch
+- ✅ **Auto Focus** - Camera automatically frames visible nodes
+
+#### Relationship System (v1.3)
+- ✅ **Custom Relationships** - Create named relationships between any nodes
+- ✅ **Curved Mesh Lines** - Bézier curves connect all node pairs
+- ✅ **Visual Customization**:
+  - 8 preset colors
+  - 3 line styles (solid/dashed/dotted)
+  - Adjustable width (1-5px)
+- ✅ **Interactive Management**:
+  - Collapsible sidebar with create/edit/delete
+  - Node assignment via action menu
+  - Toggle visibility per relationship
+  - Click to focus camera on relationship nodes
+- ✅ **Dynamic Updates** - Lines update when nodes move/collapse/delete
+- ✅ **Persistent Storage** - Saved in .pmap project files
+
+#### Data Management
+- ✅ **Project System** - Save/load projects with Firebase Storage
+- ✅ **Action Recording** - Record interaction sequences
+- ✅ **Presentation Mode** - Playback recorded actions
+
+### 🚧 In Development
+
+#### Phase 2: Enhancement
 - [ ] Real-time collaboration
 - [ ] Cloud sync across devices
 - [ ] Custom node styling
 - [ ] Keyboard shortcuts
 - [ ] Undo/Redo
 
-### Phase 3: Advanced
+#### Phase 3: Advanced
 - [ ] Export to PDF/image
 - [ ] Mobile app
 - [ ] AI-powered content generation
@@ -186,4 +217,5 @@ MIT License - See [LICENSE](LICENSE) for details
 **Built with** ❤️ **to replace PowerPoint with something better**
 
 **Status**: 🟢 Active Development
-**Last Updated**: 2025-01-21
+**Version**: v1.3.0 (Relationship System)
+**Last Updated**: 2025-01-26
