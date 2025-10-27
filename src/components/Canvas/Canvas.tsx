@@ -406,9 +406,9 @@ export default function Canvas() {
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className="w-full h-full bg-gray-50"
+      className="w-full h-full bg-gray-50 dark:bg-obsidian-bg"
       style={{ overflow: 'hidden' }}
     >
       {width > 0 && height > 0 && (

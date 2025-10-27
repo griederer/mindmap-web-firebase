@@ -4,9 +4,20 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable dark mode with class strategy
   theme: {
     extend: {
       colors: {
+        // Obsidian-inspired dark mode colors
+        obsidian: {
+          bg: '#1E1E1E',      // Main background
+          sidebar: '#2D2D2D',  // Sidebar background
+          card: '#252525',     // Card background
+          border: 'rgba(255, 255, 255, 0.1)', // Subtle borders
+          text: '#DCDDDE',     // Main text
+          'text-muted': '#8E8E93', // Muted text
+          accent: '#6C9EF8',   // Blue accent
+        },
         orange: {
           50: '#fff7ed',
           100: '#ffedd5',

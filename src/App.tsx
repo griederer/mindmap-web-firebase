@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import Canvas from './components/Canvas/Canvas';
 import Sidebar from './components/Layout/Sidebar';
 import NodeDetails from './components/Canvas/NodeDetails';
+import ThemeToggle from './components/ThemeToggle';
 import { useProjectStore } from './stores/projectStore';
 import { calculateLayout } from './utils/layoutEngine';
 
@@ -26,19 +27,21 @@ function App() {
   }, [loadProject]);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-50 dark:bg-obsidian-bg">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+      <header className="bg-white dark:bg-obsidian-sidebar border-b border-gray-200 dark:border-obsidian-border px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold text-gray-900">NODEM</h1>
-          <div className="h-6 w-px bg-gray-300"></div>
-          <p className="text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-obsidian-text">NODEM</h1>
+          <div className="h-6 w-px bg-gray-300 dark:bg-obsidian-border"></div>
+          <p className="text-sm text-gray-600 dark:text-obsidian-text-muted">
             {nodes && rootNodeId ? 'Segunda Guerra Mundial' : 'Loading...'}
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 text-xs text-gray-500">
-          <span className="font-mono">{window.location.hostname}</span>
+        <div className="flex items-center space-x-3">
+          <ThemeToggle />
+          <div className="h-4 w-px bg-gray-300 dark:bg-obsidian-border"></div>
+          <span className="text-xs text-gray-500 dark:text-obsidian-text-muted font-mono">{window.location.hostname}</span>
         </div>
       </header>
 

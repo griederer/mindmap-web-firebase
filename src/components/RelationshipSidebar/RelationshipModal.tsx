@@ -76,24 +76,24 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-[60]"
+        className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 z-[60]"
         onClick={onClose}
       />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-[70] p-4">
         <div
-          className="bg-white rounded-lg shadow-2xl w-full max-w-md border border-gray-200/50"
+          className="bg-white dark:bg-obsidian-sidebar rounded-lg shadow-2xl w-full max-w-md border border-gray-200/50 dark:border-obsidian-border"
           style={{ animation: 'scaleIn 0.2s ease-out' }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200/50">
-            <h2 className="text-base font-semibold text-gray-900">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200/50 dark:border-obsidian-border">
+            <h2 className="text-base font-semibold text-gray-900 dark:text-obsidian-text">
               {relationship ? 'Edit Relationship' : 'New Relationship'}
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-150 w-7 h-7 flex items-center justify-center rounded-md"
+              className="text-gray-400 dark:text-obsidian-text-muted hover:text-gray-600 dark:hover:text-obsidian-text hover:bg-gray-100 dark:hover:bg-obsidian-card transition-colors duration-150 w-7 h-7 flex items-center justify-center rounded-md"
               aria-label="Close modal"
             >
               <X size={16} strokeWidth={1.5} />
@@ -104,7 +104,7 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
           <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
             {/* Title */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-obsidian-text mb-2 uppercase tracking-wide">
                 Title
               </label>
               <input
@@ -112,14 +112,14 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Dependencies, Cross-references"
-                className="w-full bg-white text-gray-900 text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition-all duration-150 placeholder:text-gray-400"
+                className="w-full bg-white dark:bg-obsidian-card text-gray-900 dark:text-obsidian-text text-sm border border-gray-300 dark:border-obsidian-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-obsidian-accent/20 focus:border-indigo-400 dark:focus:border-obsidian-accent transition-all duration-150 placeholder:text-gray-400 dark:placeholder:text-obsidian-text-muted"
                 autoFocus
               />
             </div>
 
             {/* Color */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-obsidian-text mb-2 uppercase tracking-wide">
                 Color
               </label>
               <div className="grid grid-cols-8 gap-2">
@@ -129,7 +129,7 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
                     type="button"
                     onClick={() => setColor(c)}
                     className={`w-7 h-7 rounded-md transition-all duration-150 ${
-                      color === c ? 'ring-2 ring-indigo-400 ring-offset-2 ring-offset-white scale-105' : 'hover:scale-105'
+                      color === c ? 'ring-2 ring-indigo-400 dark:ring-obsidian-accent ring-offset-2 ring-offset-white dark:ring-offset-obsidian-sidebar scale-105' : 'hover:scale-105'
                     }`}
                     style={{ backgroundColor: c }}
                     aria-label={`Select color ${c}`}
@@ -140,7 +140,7 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
 
             {/* Line Type */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-obsidian-text mb-2 uppercase tracking-wide">
                 Line Type
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -151,12 +151,12 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
                     onClick={() => setLineType(lt.value)}
                     className={`px-3 py-2.5 rounded-md border transition-all duration-150 ${
                       lineType === lt.value
-                        ? 'bg-indigo-50 border-indigo-300 text-indigo-900'
-                        : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                        ? 'bg-indigo-50 dark:bg-obsidian-accent/10 border-indigo-300 dark:border-obsidian-accent/30 text-indigo-900 dark:text-obsidian-accent'
+                        : 'bg-white dark:bg-obsidian-card border-gray-200 dark:border-obsidian-border text-gray-700 dark:text-obsidian-text hover:border-gray-300 dark:hover:border-obsidian-border hover:bg-gray-50 dark:hover:bg-obsidian-bg'
                     }`}
                   >
                     <div className="text-xs font-semibold mb-1">{lt.label}</div>
-                    <div className="text-xs text-gray-500">{lt.preview}</div>
+                    <div className="text-xs text-gray-500 dark:text-obsidian-text-muted">{lt.preview}</div>
                   </button>
                 ))}
               </div>
@@ -164,7 +164,7 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
 
             {/* Line Width */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-obsidian-text mb-2 uppercase tracking-wide">
                 Line Width: {lineWidth}px
               </label>
               <input
@@ -174,9 +174,9 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
                 step="1"
                 value={lineWidth}
                 onChange={(e) => setLineWidth(Number(e.target.value))}
-                className="w-full accent-indigo-500"
+                className="w-full accent-indigo-500 dark:accent-obsidian-accent"
               />
-              <div className="flex justify-between text-xs text-gray-400 mt-2">
+              <div className="flex justify-between text-xs text-gray-400 dark:text-obsidian-text-muted mt-2">
                 <span>1px</span>
                 <span>5px</span>
               </div>
@@ -187,13 +187,13 @@ export default function RelationshipModal({ isOpen, onClose, relationship }: Rel
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 text-sm rounded-md border border-gray-200 hover:border-gray-300 transition-colors duration-150"
+                className="flex-1 bg-white dark:bg-obsidian-card hover:bg-gray-50 dark:hover:bg-obsidian-bg text-gray-700 dark:text-obsidian-text font-medium py-2 px-4 text-sm rounded-md border border-gray-200 dark:border-obsidian-border hover:border-gray-300 dark:hover:border-obsidian-border transition-colors duration-150"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-medium py-2 px-4 text-sm rounded-md transition-colors duration-150"
+                className="flex-1 bg-gray-900 dark:bg-obsidian-accent hover:bg-gray-800 dark:hover:bg-obsidian-accent/80 text-white font-medium py-2 px-4 text-sm rounded-md transition-colors duration-150"
               >
                 {relationship ? 'Update' : 'Create'}
               </button>
