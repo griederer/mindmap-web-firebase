@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
 import { Node, NodeImage } from '../../types/node';
 import ImageUpload from './ImageUpload';
 
@@ -90,20 +91,20 @@ export default function NodeEditModal({
       }}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl w-[800px] max-h-[90vh] min-h-[500px] overflow-hidden pointer-events-auto flex flex-col"
+        className="bg-white rounded-xl shadow-xl border border-gray-200 w-[800px] max-h-[90vh] min-h-[500px] overflow-hidden pointer-events-auto flex flex-col"
         style={{
           animation: 'fadeSlideIn 0.3s ease-out',
         }}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-10 py-6 flex items-center justify-between flex-shrink-0">
-          <h2 className="text-2xl font-semibold text-white tracking-tight">Edit Node</h2>
+        <div className="bg-white px-8 py-5 flex items-center justify-between flex-shrink-0 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900">Edit Node</h2>
           <button
             onClick={handleCancel}
-            className="text-white hover:text-gray-200 transition-colors text-3xl leading-none w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-lg"
+            className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all duration-150 w-8 h-8 flex items-center justify-center rounded-lg"
             aria-label="Close modal"
           >
-            ×
+            <X size={20} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -113,7 +114,7 @@ export default function NodeEditModal({
           <div>
             <label
               htmlFor="node-title"
-              className="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Title
             </label>
@@ -122,7 +123,7 @@ export default function NodeEditModal({
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-3.5 text-base border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+              className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-150"
               placeholder="Enter node title"
               autoFocus
             />
@@ -132,7 +133,7 @@ export default function NodeEditModal({
           <div>
             <label
               htmlFor="node-description"
-              className="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
               Description
             </label>
@@ -140,7 +141,7 @@ export default function NodeEditModal({
               id="node-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-4 text-base border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none transition-all leading-relaxed"
+              className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none transition-all duration-150 leading-relaxed"
               placeholder="Add description (optional)"
               rows={12}
             />
@@ -151,21 +152,21 @@ export default function NodeEditModal({
 
           {/* Keyboard shortcuts hint */}
           <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
-            <span className="font-medium">Tip:</span> Press <kbd className="px-2 py-1 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Esc</kbd> to cancel or <kbd className="px-2 py-1 bg-gray-100 border border-gray-300 rounded text-xs font-mono">⌘/Ctrl+Enter</kbd> to save
+            <span className="font-medium">Tip:</span> Press <kbd className="px-2 py-1 bg-gray-100 border border-gray-200 rounded text-xs font-mono">Esc</kbd> to cancel or <kbd className="px-2 py-1 bg-gray-100 border border-gray-200 rounded text-xs font-mono">⌘/Ctrl+Enter</kbd> to save
           </div>
         </div>
 
         {/* Action buttons */}
-        <div className="flex justify-end gap-3 px-10 py-6 bg-gray-50 border-t border-gray-200 flex-shrink-0">
+        <div className="flex justify-end gap-3 px-8 py-4 bg-gray-50 border-t border-gray-200 flex-shrink-0">
           <button
             onClick={handleCancel}
-            className="px-6 py-2.5 text-base text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all font-medium min-w-[100px]"
+            className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-150 font-medium"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="px-6 py-2.5 text-base text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all font-medium shadow-md hover:shadow-lg min-w-[140px]"
+            className="px-4 py-2 text-sm text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all duration-150 font-medium shadow-sm hover:shadow"
           >
             Save Changes
           </button>

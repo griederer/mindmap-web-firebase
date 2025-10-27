@@ -108,7 +108,7 @@ export default function ImageUpload({
     <div className="space-y-3">
       {/* Section header */}
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+        <label className="block text-sm font-medium text-gray-700">
           Images ({images.length}/{maxImages})
         </label>
         {error && (
@@ -128,7 +128,7 @@ export default function ImageUpload({
             <img
               src={image.data}
               alt={image.filename}
-              className="w-full h-full object-cover rounded-lg border-2 border-gray-300"
+              className="w-full h-full object-cover rounded-lg border border-gray-200"
             />
 
             {/* Delete button */}
@@ -146,12 +146,13 @@ export default function ImageUpload({
         {canAddMore && (
           <button
             onClick={handleAddClick}
-            className="w-[60px] h-[60px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-orange-500 hover:bg-orange-50 transition-colors group"
+            className="w-[60px] h-[60px] border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center hover:border-orange-500 hover:bg-orange-50 transition-all duration-150 group"
             aria-label="Add image"
           >
             <Upload
               size={24}
-              className="text-gray-400 group-hover:text-orange-500 transition-colors"
+              strokeWidth={1.5}
+              className="text-gray-400 group-hover:text-orange-500 transition-colors duration-150"
             />
           </button>
         )}

@@ -45,14 +45,14 @@ export default function RelationshipAssignMenu({
 
         {/* Empty state message */}
         <div
-          className="fixed bg-gray-900 text-white rounded-lg shadow-2xl p-4 z-[70] border border-gray-700"
+          className="fixed bg-white rounded-lg shadow-xl p-4 z-[70] border border-gray-200"
           style={{
             left: `${screenX + 100}px`,
             top: `${screenY - 40}px`,
             minWidth: '250px',
           }}
         >
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-600">
             No relationships created yet. Use the Relationships button (top right) to create one.
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function RelationshipAssignMenu({
 
       {/* Submenu */}
       <div
-        className="fixed bg-gray-900 rounded-lg shadow-2xl p-3 z-[70] border border-gray-700"
+        className="fixed bg-white rounded-lg shadow-xl p-3 z-[70] border border-gray-200"
         style={{
           left: `${screenX + 100}px`,
           top: `${screenY - 40}px`,
@@ -80,7 +80,7 @@ export default function RelationshipAssignMenu({
           overflowY: 'auto',
         }}
       >
-        <h3 className="text-white font-medium text-sm mb-3">
+        <h3 className="text-gray-900 font-medium text-sm mb-3">
           Assign to Relationships
         </h3>
 
@@ -91,19 +91,19 @@ export default function RelationshipAssignMenu({
             return (
               <label
                 key={rel.id}
-                className="flex items-center gap-3 p-2 rounded hover:bg-gray-800 cursor-pointer transition-colors"
+                className="flex items-center gap-3 p-2 rounded hover:bg-gray-50 cursor-pointer transition-all duration-150"
               >
                 <input
                   type="checkbox"
                   checked={isAssigned}
                   onChange={() => handleToggle(rel.id)}
-                  className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-orange-500 focus:ring-orange-500 focus:ring-offset-gray-900 cursor-pointer"
+                  className="w-4 h-4 rounded border-gray-300 bg-white text-orange-500 focus:ring-orange-500 focus:ring-offset-white cursor-pointer"
                 />
                 <div
                   className="w-3 h-3 rounded-full flex-shrink-0"
                   style={{ backgroundColor: rel.color }}
                 />
-                <span className="text-white text-sm flex-1 truncate">
+                <span className="text-gray-900 text-sm flex-1 truncate">
                   {rel.title}
                 </span>
                 <span className="text-xs text-gray-500">

@@ -74,20 +74,20 @@ export default function ImageViewer({
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
+        className="absolute top-4 right-4 p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition-all duration-150"
         title="Close (ESC)"
       >
-        <X className="w-6 h-6" />
+        <X size={24} strokeWidth={1.5} />
       </button>
 
       {/* Previous button - only show if multiple images */}
       {images.length > 1 && (
         <button
           onClick={handlePrevious}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
+          className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition-all duration-150"
           title="Previous (←)"
         >
-          <ChevronLeft className="w-8 h-8" />
+          <ChevronLeft size={32} strokeWidth={1.5} />
         </button>
       )}
 
@@ -95,10 +95,10 @@ export default function ImageViewer({
       {images.length > 1 && (
         <button
           onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition-all duration-150"
           title="Next (→)"
         >
-          <ChevronRight className="w-8 h-8" />
+          <ChevronRight size={32} strokeWidth={1.5} />
         </button>
       )}
 

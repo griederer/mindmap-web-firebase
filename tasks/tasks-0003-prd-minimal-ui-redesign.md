@@ -79,14 +79,14 @@
   - [x] 4.6 Adjust `RelationshipLines.tsx` - ensure parent-child lines are subtle
   - [x] 4.7 Test all node interactions - expand/collapse, action menu, info panel
 
-- [ ] 5.0 Modal & Overlay Transformation
-  - [ ] 5.1 Transform `NodeEditModal.tsx` - white modal with refined header
-  - [ ] 5.2 Update modal form inputs - light borders, orange focus rings
-  - [ ] 5.3 Replace modal icons with Lucide React components
-  - [ ] 5.4 Transform `RelationshipAssignMenu.tsx` - white background, light theme
-  - [ ] 5.5 Update `ImageViewer.tsx` - refined close button with Lucide X icon
-  - [ ] 5.6 Update `ImageUpload.tsx` - minimal upload button with Lucide Upload icon
-  - [ ] 5.7 Test all modals - verify open/close, form submission, image upload
+- [x] 5.0 Modal & Overlay Transformation
+  - [x] 5.1 Transform `NodeEditModal.tsx` - white modal with refined header
+  - [x] 5.2 Update modal form inputs - light borders, orange focus rings
+  - [x] 5.3 Replace modal icons with Lucide React components
+  - [x] 5.4 Transform `RelationshipAssignMenu.tsx` - white background, light theme
+  - [x] 5.5 Update `ImageViewer.tsx` - refined close button with Lucide X icon
+  - [x] 5.6 Update `ImageUpload.tsx` - minimal upload button with Lucide Upload icon
+  - [x] 5.7 Test all modals - verify open/close, form submission, image upload
 
 - [ ] 6.0 Relationship System Redesign
   - [ ] 6.1 Transform `RelationshipSidebar.tsx` - keep dark theme but refine
