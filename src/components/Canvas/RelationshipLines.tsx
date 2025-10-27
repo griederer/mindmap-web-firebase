@@ -3,7 +3,7 @@
  * Renders mesh connections for custom node relationships with curved lines
  */
 
-import { Line, Path } from 'react-konva';
+import { Path } from 'react-konva';
 import { useRelationshipStore } from '../../stores/relationshipStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { Node } from '../../types/node';
