@@ -1,189 +1,120 @@
-# NODEM - Interactive Mind Map Presentation Tool
+# MyMindmap - Interactive Mind Mapping Application
 
-**Replace PowerPoint with interactive, node-based presentations**
+![Status](https://img.shields.io/badge/status-stable-success)
+![Version](https://img.shields.io/badge/version-1.3-blue)
+![React](https://img.shields.io/badge/React-18.3.1-61dafb)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.6.2-blue)
 
-![Status](https://img.shields.io/badge/Status-In%20Development-yellow)
-![Firebase](https://img.shields.io/badge/Firebase-mymindmap--f77a5-orange)
+## 🚀 Production
 
----
+**Live App**: https://mymindmap-f77a5.web.app
 
-## 🎯 Overview
+## 📋 Overview
 
-NODEM is a web-based interactive mind map presentation tool designed to replace traditional PowerPoint presentations with dynamic, node-based visual storytelling.
+MyMindmap is a professional-grade interactive mind mapping application built with React, TypeScript, and Konva. It features an infinite canvas, hierarchical and custom node relationships, smooth animations, and a powerful camera system.
 
-### Key Features
+## ✨ Key Features
 
-- **Node-Based Presentations** - Hierarchical mind maps with expandable nodes
-- **Smooth Animations** - 60fps transitions using Framer Motion
-- **Action Recording** - Record interaction sequences and replay as presentations
-- **Smart Camera** - Auto-positioning and zoom for optimal content viewing
-- **Focus Mode** - Blur non-relevant nodes to emphasize key content
-- **Firebase Backend** - Cloud storage with real-time sync
-- **Multi-Environment** - Independent dev/staging/prod deployments
+- **Infinite Canvas**: Zoom (0.25x-4x) and pan with smooth animations
+- **Node Management**: Create, edit, delete, expand/collapse nodes
+- **Dual Relationship System**:
+  - Hierarchical (parent-child tree structure)
+  - Custom (many-to-many mesh connections with curved lines)
+- **Auto-Focus Camera**: Smooth 4-second transitions to selected nodes
+- **Image Attachments**: Upload and view images on any node
+- **Project Management**: Create and switch between multiple mind maps
+- **Professional UI**: Modern design with Tailwind CSS
 
----
+## 🛠️ Tech Stack
 
-## 🚀 Quick Start
+- **React** 18.3.1 with TypeScript
+- **Vite** 6.4.1 (build tool)
+- **Konva** 9.3.18 (canvas rendering)
+- **Zustand** 4.5.2 (state management)
+- **Firebase** 11.1.0 (backend & hosting)
+- **Tailwind CSS** 3.4.1
+
+## 📦 Installation
 
 ```bash
+# Clone repository
+git clone https://github.com/griederer/mindmap-web-firebase.git
+cd nodem-clean
+
 # Install dependencies
 npm install
 
 # Start development server
 npm run dev
+```
 
+## 🚀 Deployment
+
+```bash
 # Build for production
 npm run build
 
-# Run tests
-npm test
+# Deploy to Firebase
+npx firebase deploy --only hosting
 ```
-
----
 
 ## 📁 Project Structure
 
 ```
-nodem-clean/
-├── src/
-│   ├── components/       # React components
-│   ├── stores/          # Zustand state management
-│   ├── types/           # TypeScript definitions
-│   ├── utils/           # Helper functions
-│   └── lib/
-│       └── firebase.ts  # Firebase configuration
-├── tasks/               # PRDs and task lists
-├── projects/            # Example mind map projects
-├── functions/           # Cloud Functions
-└── firebase.json        # Firebase configuration
+src/
+├── components/
+│   ├── Canvas/              # Main canvas components
+│   ├── Layout/              # App layout
+│   └── RelationshipSidebar/ # Relationship management
+├── stores/                  # Zustand state stores
+├── types/                   # TypeScript definitions
+└── lib/                     # Firebase & utilities
 ```
 
----
+## 🔄 Stable Version
+
+This repository is currently on the **stable v1.3** release.
+
+- **Branch**: `release/v1.3`
+- **Commit**: `86f0a8e`
+- **Tag**: `v1.3-stable`
+
+See [STABLE-VERSION.md](./STABLE-VERSION.md) for complete documentation.
+
+## 🧪 Development
+
+```bash
+# Development server
+npm run dev
+
+# Type checking
+npm run type-check
+
+# Build
+npm run build
+
+# Preview production build
+npm run preview
+```
 
 ## 📚 Documentation
 
-- **[Product Requirements Document](tasks/0001-prd-nodem-core.md)** - Complete feature specifications
-- **[Task List](tasks/tasks-0001-prd-nodem-core.md)** - 136 implementation tasks
-- **[Firebase Analysis](FIREBASE-ANALYSIS.md)** - Infrastructure documentation
-- **[Migration Plan](CLEAN-MIGRATION-PLAN.md)** - Setup and deployment guide
+- [STABLE-VERSION.md](./STABLE-VERSION.md) - Complete stable version documentation
+- [Firebase Console](https://console.firebase.google.com/project/mymindmap-f77a5/overview)
 
----
+## 🤝 Contributing
 
-## 🔧 Technology Stack
+When creating new features:
 
-**Frontend**:
-- React 18 + TypeScript
-- Zustand (state management)
-- Framer Motion (animations)
-- Konva (canvas rendering)
-- Tailwind CSS (styling)
+1. Always branch from `release/v1.3`
+2. Test locally before deploying
+3. Build and verify before pushing
+4. Document significant changes
 
-**Backend**:
-- Firebase Authentication
-- Cloud Firestore (database)
-- Cloud Storage (file hosting)
-- Firebase Hosting (deployment)
+## 📄 License
 
-**Development**:
-- Vite (build tool)
-- Vitest (testing)
-- ESLint + Prettier (code quality)
-
----
-
-## 🌐 Deployment
-
-### Environments
-
-```
-Production  → https://mymindmap-f77a5.web.app
-Staging     → https://mymindmap-f77a5--staging-[hash].web.app
-Development → https://mymindmap-f77a5--dev-[hash].web.app
-```
-
-### Deploy Commands
-
-```bash
-# Deploy to development
-npm run deploy:dev
-
-# Deploy to staging
-npm run deploy:staging
-
-# Deploy to production
-npm run deploy:prod
-```
-
----
-
-## 🎨 Features Roadmap
-
-### Phase 1: MVP (Current)
-- [ ] Core node rendering with Konva
-- [ ] Expand/collapse with smooth animations
-- [ ] Node collision avoidance
-- [ ] Detail panels and image display
-- [ ] Focus mode
-- [ ] Zoom and pan controls
-- [ ] Project management (Firestore)
-- [ ] Action recording and playback
-- [ ] Presentation mode with smart camera
-
-### Phase 2: Enhancement
-- [ ] Real-time collaboration
-- [ ] Cloud sync across devices
-- [ ] Custom node styling
-- [ ] Keyboard shortcuts
-- [ ] Undo/Redo
-
-### Phase 3: Advanced
-- [ ] Export to PDF/image
-- [ ] Mobile app
-- [ ] AI-powered content generation
-- [ ] Presentation analytics
-
----
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run tests with UI
-npm run test:ui
-```
-
-**Test Coverage Goal**: 80%+
-
----
-
-## 🔗 Links
-
-- **Repository**: https://github.com/griederer/mindmap-web-firebase
-- **Firebase Console**: https://console.firebase.google.com/project/mymindmap-f77a5
-- **Issues**: https://github.com/griederer/mindmap-web-firebase/issues
-
----
-
-## 📝 License
-
-MIT License - See [LICENSE](LICENSE) for details
-
----
+MIT
 
 ## 👤 Author
 
-**Gonzalo Riederer**
-- GitHub: [@griederer](https://github.com/griederer)
-- Email: gonzaloriederer@gmail.com
-
----
-
-**Built with** ❤️ **to replace PowerPoint with something better**
-
-**Status**: 🟢 Active Development
-**Last Updated**: 2025-01-21
+Gonzalo Riederer - [GitHub](https://github.com/griederer)
