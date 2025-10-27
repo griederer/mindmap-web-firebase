@@ -114,22 +114,22 @@ export default function ProjectGallery({ onProjectSelect, onNewProject }: Projec
   return (
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-obsidian-bg">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white dark:bg-obsidian-sidebar border-b-2 border-gray-200 dark:border-obsidian-border px-12 py-8 shadow-md">
-        <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-obsidian-text">
+      <div className="sticky top-0 z-10 bg-white dark:bg-obsidian-sidebar border-b-2 border-gray-200 dark:border-obsidian-border px-16 py-10 shadow-md">
+        <div className="max-w-[1800px] mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-5xl font-bold text-gray-900 dark:text-obsidian-text">
               Your Projects
             </h1>
             <ThemeToggle />
           </div>
 
           {/* Search and Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             {/* Search */}
-            <div className="flex-1 max-w-md relative">
+            <div className="flex-1 max-w-lg relative">
               <Search
-                size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-obsidian-text-muted"
+                size={20}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-obsidian-text-muted"
                 strokeWidth={1.5}
               />
               <input
@@ -137,7 +137,7 @@ export default function ProjectGallery({ onProjectSelect, onNewProject }: Projec
                 placeholder="Search projects..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-obsidian-card border border-gray-200 dark:border-obsidian-border rounded-lg text-sm text-gray-900 dark:text-obsidian-text placeholder:text-gray-400 dark:placeholder:text-obsidian-text-muted focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-obsidian-accent/20 focus:border-indigo-300 dark:focus:border-obsidian-accent transition-all"
+                className="w-full pl-12 pr-5 py-3.5 bg-gray-50 dark:bg-obsidian-card border border-gray-200 dark:border-obsidian-border rounded-lg text-base text-gray-900 dark:text-obsidian-text placeholder:text-gray-400 dark:placeholder:text-obsidian-text-muted focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-obsidian-accent/20 focus:border-indigo-300 dark:focus:border-obsidian-accent transition-all"
               />
             </div>
 
@@ -145,17 +145,17 @@ export default function ProjectGallery({ onProjectSelect, onNewProject }: Projec
             <button
               onClick={handleLoadFromFile}
               disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-obsidian-card border border-gray-200 dark:border-obsidian-border text-gray-700 dark:text-obsidian-text rounded-lg hover:bg-gray-50 dark:hover:bg-obsidian-bg transition-colors text-sm font-medium disabled:opacity-50"
+              className="flex items-center gap-2.5 px-6 py-3.5 bg-white dark:bg-obsidian-card border border-gray-200 dark:border-obsidian-border text-gray-700 dark:text-obsidian-text rounded-lg hover:bg-gray-50 dark:hover:bg-obsidian-bg transition-colors text-base font-medium disabled:opacity-50"
             >
-              <FolderOpen size={18} strokeWidth={1.5} />
+              <FolderOpen size={20} strokeWidth={1.5} />
               Open File
             </button>
 
             <button
               onClick={onNewProject}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 dark:bg-obsidian-accent text-white rounded-lg hover:bg-gray-800 dark:hover:bg-obsidian-accent/80 transition-colors text-sm font-medium"
+              className="flex items-center gap-2.5 px-6 py-3.5 bg-gray-900 dark:bg-obsidian-accent text-white rounded-lg hover:bg-gray-800 dark:hover:bg-obsidian-accent/80 transition-colors text-base font-medium"
             >
-              <Plus size={18} strokeWidth={2} />
+              <Plus size={20} strokeWidth={2} />
               New Project
             </button>
           </div>
@@ -176,33 +176,33 @@ export default function ProjectGallery({ onProjectSelect, onNewProject }: Projec
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
               {filteredProjects.map((project) => (
                 <button
                   key={project.id}
                   onClick={() => handleProjectClick(project.id)}
                   disabled={isLoading}
-                  className="group relative bg-white dark:bg-obsidian-card border-2 border-gray-200 dark:border-obsidian-border rounded-2xl p-10 hover:shadow-2xl hover:border-indigo-400 dark:hover:border-obsidian-accent/50 dark:hover:bg-obsidian-sidebar transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="group relative bg-white dark:bg-obsidian-card border-2 border-gray-200 dark:border-obsidian-border rounded-2xl p-12 hover:shadow-2xl hover:border-indigo-400 dark:hover:border-obsidian-accent/50 dark:hover:bg-obsidian-sidebar transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed min-h-[420px]"
                 >
                   {/* Thumbnail placeholder */}
-                  <div className="aspect-[16/9] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-obsidian-bg dark:to-obsidian-card rounded-xl mb-8 flex items-center justify-center border border-gray-200 dark:border-obsidian-border">
+                  <div className="aspect-[16/9] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-obsidian-bg dark:to-obsidian-card rounded-xl mb-10 flex items-center justify-center border border-gray-200 dark:border-obsidian-border min-h-[240px]">
                     <FileText
-                      size={96}
+                      size={120}
                       className="text-gray-300 dark:text-obsidian-text-muted"
-                      strokeWidth={1}
+                      strokeWidth={0.8}
                     />
                   </div>
 
                   {/* Project info */}
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-obsidian-text mb-4 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-obsidian-accent transition-colors">
+                  <h3 className="text-3xl font-bold text-gray-900 dark:text-obsidian-text mb-5 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-obsidian-accent transition-colors">
                     {project.name}
                   </h3>
 
-                  <div className="flex items-center gap-5 text-base text-gray-500 dark:text-obsidian-text-muted">
+                  <div className="flex items-center gap-6 text-lg text-gray-500 dark:text-obsidian-text-muted">
                     <span className="font-semibold">{project.nodeCount} nodes</span>
                     <span className="text-gray-300 dark:text-obsidian-border">•</span>
                     <div className="flex items-center gap-2">
-                      <Clock size={16} strokeWidth={1.5} />
+                      <Clock size={18} strokeWidth={1.5} />
                       <span>{project.lastModified}</span>
                     </div>
                   </div>
