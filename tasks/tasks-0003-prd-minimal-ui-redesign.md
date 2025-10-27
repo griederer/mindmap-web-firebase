@@ -88,12 +88,12 @@
   - [x] 5.6 Update `ImageUpload.tsx` - minimal upload button with Lucide Upload icon
   - [x] 5.7 Test all modals - verify open/close, form submission, image upload
 
-- [ ] 6.0 Relationship System Redesign
-  - [ ] 6.1 Transform `RelationshipSidebar.tsx` - keep dark theme but refine
-  - [ ] 6.2 Update `RelationshipList.tsx` - improve spacing and hover states
-  - [ ] 6.3 Transform `RelationshipModal.tsx` - white modal with light theme
-  - [ ] 6.4 Replace relationship icons with Lucide React components (Link2, Edit2, Trash2)
-  - [ ] 6.5 Test relationship system - create, edit, delete, assign nodes
+- [x] 6.0 Relationship System Redesign
+  - [x] 6.1 Transform `RelationshipSidebar.tsx` - keep dark theme but refine
+  - [x] 6.2 Update `RelationshipList.tsx` - improve spacing and hover states
+  - [x] 6.3 Transform `RelationshipModal.tsx` - white modal with light theme
+  - [x] 6.4 Replace relationship icons with Lucide React components (Link2, Edit2, Trash2)
+  - [x] 6.5 Test relationship system - create, edit, delete, assign nodes
 
 - [ ] 7.0 Final Refinements & Documentation
   - [ ] 7.1 Visual audit - verify consistent spacing across all components

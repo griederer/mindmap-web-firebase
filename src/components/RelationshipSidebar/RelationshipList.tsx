@@ -3,6 +3,7 @@
  * Displays all relationships with toggle, edit, and delete actions
  */
 
+import { Edit2, Trash2 } from 'lucide-react';
 import { useRelationshipStore } from '../../stores/relationshipStore';
 import { useViewportStore } from '../../stores/viewportStore';
 
@@ -72,14 +73,16 @@ export default function RelationshipList({ onEdit }: RelationshipListProps) {
           <div className="flex gap-2 ml-7">
             <button
               onClick={() => onEdit(rel.id)}
-              className="flex-1 bg-gray-700 hover:bg-gray-600 text-white text-xs py-1.5 px-3 rounded transition-colors"
+              className="flex-1 bg-gray-700 hover:bg-gray-600 text-white text-xs py-1.5 px-3 rounded transition-all duration-150 flex items-center justify-center gap-1.5"
             >
+              <Edit2 size={12} strokeWidth={2} />
               Edit
             </button>
             <button
               onClick={() => handleDelete(rel.id)}
-              className="bg-red-900 hover:bg-red-800 text-white text-xs py-1.5 px-3 rounded transition-colors"
+              className="bg-red-900 hover:bg-red-800 text-white text-xs py-1.5 px-3 rounded transition-all duration-150 flex items-center justify-center gap-1.5"
             >
+              <Trash2 size={12} strokeWidth={2} />
               Delete
             </button>
           </div>
