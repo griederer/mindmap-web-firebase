@@ -1,24 +1,39 @@
 /**
- * Sidebar Component
- * Left sidebar with project list and management controls
+ * Sidebar Component - Linear Style
+ * Minimalist project management sidebar with collapse functionality
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Plus, FolderOpen, Circle, CircleDot } from 'lucide-react';
 import { useProjectStore } from '../../stores/projectStore';
+import { useSidebarStore } from '../../stores/sidebarStore';
 import { calculateLayout } from '../../utils/layoutEngine';
 
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const { loadProject, currentProject, saveProject } = useProjectStore();
+  const { isCollapsed, toggleCollapse } = useSidebarStore();
+
+  // Keyboard shortcut: Cmd+B to toggle sidebar
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+        e.preventDefault();
+        toggleCollapse();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleCollapse]);
 
   const handleLoadProject = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Use File System Access API to load JSON file
       const [fileHandle] = await (window as any).showOpenFilePicker({
         types: [
           {
@@ -36,15 +51,12 @@ export default function Sidebar() {
       const contents = await file.text();
       const project = JSON.parse(contents);
 
-      // Validate project structure
       if (!project.projectId || !project.nodes || !project.rootNodeId) {
         throw new Error('Invalid project file: missing required fields');
       }
 
-      // Calculate layout for nodes
       const { nodes: layoutedNodes } = calculateLayout(project.nodes, project.rootNodeId);
 
-      // Load project with calculated positions
       loadProject({
         ...project,
         nodes: layoutedNodes,
@@ -53,51 +65,10 @@ export default function Sidebar() {
       setIsLoading(false);
     } catch (err: any) {
       if (err.name === 'AbortError') {
-        // User cancelled - not an error
         setIsLoading(false);
         return;
       }
       setError(err.message || 'Failed to load project');
-      setIsLoading(false);
-    }
-  };
-
-  const handleSaveProject = async () => {
-    if (!currentProject) {
-      setError('No project loaded');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      // Use File System Access API to save JSON file
-      const fileHandle = await (window as any).showSaveFilePicker({
-        suggestedName: `${currentProject.metadata.title || 'project'}.json`,
-        types: [
-          {
-            description: 'NODEM Project Files',
-            accept: {
-              'application/json': ['.json'],
-            },
-          },
-        ],
-      });
-
-      const writable = await fileHandle.createWritable();
-      const projectData = saveProject();
-      await writable.write(JSON.stringify(projectData, null, 2));
-      await writable.close();
-
-      setIsLoading(false);
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
-        // User cancelled - not an error
-        setIsLoading(false);
-        return;
-      }
-      setError(err.message || 'Failed to save project');
       setIsLoading(false);
     }
   };
@@ -134,111 +105,144 @@ export default function Sidebar() {
     loadProject(newProject);
   };
 
-  return (
-    <>
-      {/* Sidebar container */}
-      <div
-        className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ${
-          isOpen ? 'w-64' : 'w-0'
-        }`}
-        style={{ overflow: 'hidden' }}
-      >
-        {/* Sidebar header */}
-        <div className="p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Projects</h2>
-        </div>
+  // Collapsed state (48px width)
+  if (isCollapsed) {
+    return (
+      <div className="w-12 bg-white border-r border-gray-200 flex flex-col items-center py-3 transition-all duration-300">
+        {/* Expand button */}
+        <button
+          onClick={toggleCollapse}
+          className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors mb-4"
+          title="Expand sidebar (⌘B)"
+        >
+          <ChevronRight className="w-4 h-4 text-gray-600" strokeWidth={2} />
+        </button>
 
-        {/* Project actions */}
-        <div className="p-4 space-y-2 border-b border-gray-200">
-          <button
-            onClick={handleNewProject}
-            disabled={isLoading}
-            className="w-full px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            + New Project
-          </button>
-
-          <button
-            onClick={handleLoadProject}
-            disabled={isLoading}
-            className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Loading...' : 'Open Project'}
-          </button>
-
-          <button
-            onClick={handleSaveProject}
-            disabled={isLoading || !currentProject}
-            className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Saving...' : 'Save Project'}
-          </button>
-        </div>
-
-        {/* Error display */}
-        {error && (
-          <div className="mx-4 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-800">{error}</p>
-            <button
-              onClick={() => setError(null)}
-              className="mt-2 text-xs text-red-600 hover:text-red-800 underline"
-            >
-              Dismiss
-            </button>
+        {/* Logo letter */}
+        <div className="mb-6">
+          <div className="w-8 h-8 flex items-center justify-center">
+            <span className="text-lg font-semibold text-gray-900">N</span>
           </div>
-        )}
+        </div>
 
-        {/* Current project info */}
+        {/* Project indicator */}
         {currentProject && (
-          <div className="p-4">
-            <div className="bg-gray-50 rounded-lg p-3">
-              <h3 className="text-sm font-medium text-gray-900 mb-1">Current Project</h3>
-              <p className="text-sm text-gray-600">{currentProject.metadata.title}</p>
-              <p className="text-xs text-gray-500 mt-1">
-                {Object.keys(currentProject.nodes).length} nodes
-              </p>
+          <div className="flex-1 flex flex-col items-center gap-2">
+            <div className="w-6 h-6 flex items-center justify-center">
+              <CircleDot className="w-4 h-4 text-orange-500" strokeWidth={2} />
             </div>
           </div>
         )}
 
-        {/* Spacer */}
-        <div className="flex-1"></div>
+        {/* Action icons */}
+        <div className="mt-auto flex flex-col gap-1">
+          <button
+            onClick={handleNewProject}
+            disabled={isLoading}
+            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50"
+            title="New Project"
+          >
+            <Plus className="w-4 h-4 text-gray-600" strokeWidth={2} />
+          </button>
+          <button
+            onClick={handleLoadProject}
+            disabled={isLoading}
+            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50"
+            title="Open Project"
+          >
+            <FolderOpen className="w-4 h-4 text-gray-600" strokeWidth={2} />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200">
-          <p className="text-xs text-gray-500 text-center">NODEM v1.0</p>
+  // Expanded state (256px width)
+  return (
+    <div className="w-64 bg-white border-r border-gray-200 flex flex-col transition-all duration-300">
+      {/* Header */}
+      <div className="flex items-center justify-between px-3 py-3 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleCollapse}
+            className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors"
+            title="Collapse sidebar (⌘B)"
+          >
+            <ChevronLeft className="w-4 h-4 text-gray-600" strokeWidth={2} />
+          </button>
+          <span className="text-sm font-semibold text-gray-900">NODEM</span>
         </div>
       </div>
 
-      {/* Toggle button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="absolute top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 transition-colors"
-        title={isOpen ? 'Hide Sidebar' : 'Show Sidebar'}
-      >
-        <svg
-          className="w-5 h-5 text-gray-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          {isOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-            />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 5l7 7-7 7M5 5l7 7-7 7"
-            />
+      {/* Projects section */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="px-3 py-3">
+          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+            Projects
+          </h3>
+
+          {/* Current project */}
+          {currentProject && (
+            <div className="mb-4">
+              <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 transition-colors text-left">
+                <CircleDot className="w-4 h-4 text-orange-500 flex-shrink-0" strokeWidth={2} />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-900 truncate">
+                    {currentProject.metadata.title}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {Object.keys(currentProject.nodes).length} nodes
+                  </div>
+                </div>
+              </button>
+            </div>
           )}
-        </svg>
-      </button>
-    </>
+
+          {/* Divider */}
+          <div className="border-t border-gray-200 my-3"></div>
+
+          {/* Action buttons */}
+          <div className="space-y-1">
+            <button
+              onClick={handleNewProject}
+              disabled={isLoading}
+              className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Plus className="w-4 h-4 text-gray-600" strokeWidth={2} />
+              <span className="text-sm text-gray-700">New Project</span>
+            </button>
+
+            <button
+              onClick={handleLoadProject}
+              disabled={isLoading}
+              className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FolderOpen className="w-4 h-4 text-gray-600" strokeWidth={2} />
+              <span className="text-sm text-gray-700">
+                {isLoading ? 'Loading...' : 'Open Project'}
+              </span>
+            </button>
+          </div>
+
+          {/* Error display */}
+          {error && (
+            <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-xs text-red-800">{error}</p>
+              <button
+                onClick={() => setError(null)}
+                className="mt-1 text-xs text-red-600 hover:text-red-800 underline"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="px-3 py-2 border-t border-gray-200">
+        <div className="text-xs text-gray-400 text-center">v1.4.0</div>
+      </div>
+    </div>
   );
 }
