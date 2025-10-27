@@ -114,10 +114,10 @@ export default function ProjectGallery({ onProjectSelect, onNewProject }: Projec
   return (
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-obsidian-bg">
       {/* Header */}
-      <div className="bg-white dark:bg-obsidian-sidebar border-b border-gray-200 dark:border-obsidian-border px-8 py-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-obsidian-text">
+      <div className="sticky top-0 z-10 bg-white dark:bg-obsidian-sidebar border-b border-gray-200 dark:border-obsidian-border px-12 py-8 shadow-sm">
+        <div className="max-w-[1600px] mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-obsidian-text">
               Your Projects
             </h1>
             <ThemeToggle />
@@ -163,8 +163,8 @@ export default function ProjectGallery({ onProjectSelect, onNewProject }: Projec
       </div>
 
       {/* Project Grid */}
-      <div className="flex-1 overflow-y-auto px-12 py-10">
-        <div className="max-w-[1400px] mx-auto">
+      <div className="flex-1 overflow-y-auto px-16 py-12">
+        <div className="max-w-[1600px] mx-auto">
           {filteredProjects.length === 0 ? (
             <div className="text-center py-32">
               <FileText size={80} className="mx-auto text-gray-300 dark:text-obsidian-text-muted mb-6" strokeWidth={1} />
@@ -176,33 +176,33 @@ export default function ProjectGallery({ onProjectSelect, onNewProject }: Projec
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
               {filteredProjects.map((project) => (
                 <button
                   key={project.id}
                   onClick={() => handleProjectClick(project.id)}
                   disabled={isLoading}
-                  className="group relative bg-white dark:bg-obsidian-card border-2 border-gray-200 dark:border-obsidian-border rounded-xl p-8 hover:shadow-2xl hover:border-indigo-300 dark:hover:border-obsidian-accent/50 dark:hover:bg-obsidian-sidebar transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="group relative bg-white dark:bg-obsidian-card border-2 border-gray-200 dark:border-obsidian-border rounded-2xl p-10 hover:shadow-2xl hover:border-indigo-400 dark:hover:border-obsidian-accent/50 dark:hover:bg-obsidian-sidebar transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {/* Thumbnail placeholder */}
-                  <div className="aspect-[16/10] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-obsidian-bg dark:to-obsidian-card rounded-lg mb-6 flex items-center justify-center">
+                  <div className="aspect-[16/9] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-obsidian-bg dark:to-obsidian-card rounded-xl mb-8 flex items-center justify-center border border-gray-200 dark:border-obsidian-border">
                     <FileText
-                      size={72}
+                      size={96}
                       className="text-gray-300 dark:text-obsidian-text-muted"
                       strokeWidth={1}
                     />
                   </div>
 
                   {/* Project info */}
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-obsidian-text mb-3 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-obsidian-accent transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-obsidian-text mb-4 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-obsidian-accent transition-colors">
                     {project.name}
                   </h3>
 
-                  <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-obsidian-text-muted">
-                    <span className="font-medium">{project.nodeCount} nodes</span>
-                    <span>•</span>
-                    <div className="flex items-center gap-1.5">
-                      <Clock size={14} strokeWidth={1.5} />
+                  <div className="flex items-center gap-5 text-base text-gray-500 dark:text-obsidian-text-muted">
+                    <span className="font-semibold">{project.nodeCount} nodes</span>
+                    <span className="text-gray-300 dark:text-obsidian-border">•</span>
+                    <div className="flex items-center gap-2">
+                      <Clock size={16} strokeWidth={1.5} />
                       <span>{project.lastModified}</span>
                     </div>
                   </div>
