@@ -114,7 +114,7 @@ export default function ProjectGallery({ onProjectSelect, onNewProject }: Projec
   return (
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-obsidian-bg">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white dark:bg-obsidian-sidebar border-b border-gray-200 dark:border-obsidian-border px-12 py-8 shadow-sm">
+      <div className="sticky top-0 z-10 bg-white dark:bg-obsidian-sidebar border-b-2 border-gray-200 dark:border-obsidian-border px-12 py-8 shadow-md">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-obsidian-text">
