@@ -78,6 +78,40 @@ nodem-clean/
 
 ---
 
+## 🎨 Design System
+
+**Linear-Inspired Minimal Interface** (v1.4)
+
+NODEM features a refined, professional design system following Linear's minimal aesthetic:
+
+### Visual Language
+- **White Space** - Clean, uncluttered interface with generous spacing
+- **Subtle Shadows** - Low opacity (0.08-0.1) for depth without heaviness
+- **Refined Typography** - System fonts with clear hierarchy
+- **Smooth Transitions** - 150ms duration for all interactive states
+
+### Color Palette
+```
+Primary Background: #FFFFFF (White)
+Secondary Background: #F9FAFB (Gray-50)
+Borders: #E5E7EB (Gray-200)
+Text Primary: #111827 (Gray-900)
+Text Secondary: #4B5563 (Gray-600)
+Accent: #F97316 (Orange-500)
+Accent Hover: #EA580C (Orange-600)
+```
+
+### Components
+- **Nodes** - White cards with subtle borders and refined shadows
+- **Modals** - Light theme with white backgrounds and gray borders
+- **Buttons** - Orange primary actions, gray secondary actions
+- **Icons** - Lucide React (size 18-24px, stroke 1.5-2)
+- **Hover States** - Gray-50 background with smooth transitions
+
+**Reference**: [Design System Documentation](docs/DESIGN_SYSTEM.md)
+
+---
+
 ## 🔧 Technology Stack
 
 **Frontend**:
@@ -86,6 +120,7 @@ nodem-clean/
 - Framer Motion (animations)
 - Konva (canvas rendering)
 - Tailwind CSS (styling)
+- Lucide React (icons)
 
 **Backend**:
 - Firebase Authentication
@@ -217,5 +252,5 @@ MIT License - See [LICENSE](LICENSE) for details
 **Built with** ❤️ **to replace PowerPoint with something better**
 
 **Status**: 🟢 Active Development
-**Version**: v1.3.0 (Relationship System)
-**Last Updated**: 2025-01-26
+**Version**: v1.4.0 (Linear-Inspired Minimal UI)
+**Last Updated**: 2025-01-27
