@@ -3,6 +3,7 @@
  * UI controls for zoom and viewport management
  */
 
+import { ZoomIn, ZoomOut, RotateCcw, Eye, EyeOff, Maximize2 } from 'lucide-react';
 import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { getNodesBounds } from '../../utils/layoutEngine';
@@ -74,66 +75,59 @@ export default function ZoomControls() {
       </div>
 
       {/* Zoom controls */}
-      <div className="bg-white rounded-lg shadow-lg p-2 flex flex-col gap-1">
+      <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-2 flex flex-col gap-1">
         <button
           onClick={handleZoomIn}
           disabled={zoom >= MAX_ZOOM}
-          className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-white transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-50 disabled:opacity-30 disabled:hover:bg-white transition-all duration-150 text-gray-700"
           title="Zoom In (25%)"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+          <ZoomIn size={20} strokeWidth={1.5} />
         </button>
 
         <button
           onClick={handleZoomOut}
           disabled={zoom <= MIN_ZOOM}
-          className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-white transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-50 disabled:opacity-30 disabled:hover:bg-white transition-all duration-150 text-gray-700"
           title="Zoom Out (25%)"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-          </svg>
+          <ZoomOut size={20} strokeWidth={1.5} />
         </button>
 
         <div className="h-px bg-gray-200 my-1" />
 
         <button
           onClick={handleReset}
-          className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-50 transition-all duration-150 text-gray-700"
           title="Reset View (100%)"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
+          <RotateCcw size={20} strokeWidth={1.5} />
         </button>
 
         <div className="h-px bg-gray-200 my-1" />
 
         <button
           onClick={handleToggleAutoFocus}
-          className={`w-10 h-10 flex items-center justify-center rounded transition-colors ${
+          className={`w-10 h-10 flex items-center justify-center rounded transition-all duration-150 ${
             autoFocusEnabled
-              ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
-              : 'hover:bg-gray-100'
+              ? 'bg-orange-50 text-orange-600 hover:bg-orange-100'
+              : 'text-gray-700 hover:bg-gray-50'
           }`}
           title={autoFocusEnabled ? 'Auto Focus: On' : 'Auto Focus: Off'}
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-          </svg>
+          {autoFocusEnabled ? (
+            <Eye size={20} strokeWidth={1.5} />
+          ) : (
+            <EyeOff size={20} strokeWidth={1.5} />
+          )}
         </button>
 
         <button
           onClick={handleFitToScreen}
-          className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-50 transition-all duration-150 text-gray-700"
           title="Fit to Screen"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-          </svg>
+          <Maximize2 size={20} strokeWidth={1.5} />
         </button>
       </div>
     </div>

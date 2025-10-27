@@ -6,6 +6,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
+import { Link2 } from 'lucide-react';
 import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { useUIStore } from '../../stores/uiStore';
@@ -519,22 +520,10 @@ export default function Canvas() {
       {rootNodeId && (
         <button
           onClick={() => setRelationshipSidebarOpen(true)}
-          className="fixed right-4 top-4 bg-gray-900 bg-opacity-90 hover:bg-opacity-100 text-white p-3 rounded-lg shadow-lg transition-all z-40 group"
+          className="fixed right-4 top-4 bg-gray-900 bg-opacity-90 hover:bg-opacity-100 text-white p-3 rounded-lg shadow-lg transition-all duration-150 z-40 group"
           aria-label="Manage relationships"
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-            />
-          </svg>
+          <Link2 size={20} strokeWidth={1.5} />
           <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-sm px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Relationships
           </span>

@@ -63,12 +63,12 @@
   - [x] 2.5 Replace header icons with Lucide React components
   - [x] 2.6 Test sidebar and header - verify all buttons work correctly
 
-- [ ] 3.0 Canvas & Controls Refinement
-  - [ ] 3.1 Update `Canvas.tsx` background to light gray (`bg-gray-50`)
-  - [ ] 3.2 Transform `ZoomControls.tsx` - white buttons with subtle borders
-  - [ ] 3.3 Replace zoom icons with Lucide React components (ZoomIn, ZoomOut, Maximize2)
-  - [ ] 3.4 Add subtle shadows and hover states to zoom controls
-  - [ ] 3.5 Test canvas and controls - verify zoom, pan, and fit-to-screen work
+- [x] 3.0 Canvas & Controls Refinement
+  - [x] 3.1 Update `Canvas.tsx` background to light gray (`bg-gray-50`)
+  - [x] 3.2 Transform `ZoomControls.tsx` - white buttons with subtle borders
+  - [x] 3.3 Replace zoom icons with Lucide React components (ZoomIn, ZoomOut, Maximize2)
+  - [x] 3.4 Add subtle shadows and hover states to zoom controls
+  - [x] 3.5 Test canvas and controls - verify zoom, pan, and fit-to-screen work
 
 - [ ] 4.0 Node Components Redesign (Konva)
   - [ ] 4.1 Update `NodeComponent.tsx` - white background with subtle border
