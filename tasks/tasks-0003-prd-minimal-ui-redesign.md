@@ -70,14 +70,14 @@
   - [x] 3.4 Add subtle shadows and hover states to zoom controls
   - [x] 3.5 Test canvas and controls - verify zoom, pan, and fit-to-screen work
 
-- [ ] 4.0 Node Components Redesign (Konva)
-  - [ ] 4.1 Update `NodeComponent.tsx` - white background with subtle border
-  - [ ] 4.2 Refine node typography (use gray-900 for titles, gray-600 for descriptions)
-  - [ ] 4.3 Improve node shadows (use subtle shadow system from design tokens)
-  - [ ] 4.4 Transform `NodeActionMenu.tsx` - light theme with better unicode symbols
-  - [ ] 4.5 Update `NodeInfoPanel.tsx` - white background, refined spacing
-  - [ ] 4.6 Adjust `RelationshipLines.tsx` - ensure parent-child lines are subtle
-  - [ ] 4.7 Test all node interactions - expand/collapse, action menu, info panel
+- [x] 4.0 Node Components Redesign (Konva)
+  - [x] 4.1 Update `NodeComponent.tsx` - white background with subtle border
+  - [x] 4.2 Refine node typography (use gray-900 for titles, gray-600 for descriptions)
+  - [x] 4.3 Improve node shadows (use subtle shadow system from design tokens)
+  - [x] 4.4 Transform `NodeActionMenu.tsx` - light theme with better unicode symbols
+  - [x] 4.5 Update `NodeInfoPanel.tsx` - white background, refined spacing
+  - [x] 4.6 Adjust `RelationshipLines.tsx` - ensure parent-child lines are subtle
+  - [x] 4.7 Test all node interactions - expand/collapse, action menu, info panel
 
 - [ ] 5.0 Modal & Overlay Transformation
   - [ ] 5.1 Transform `NodeEditModal.tsx` - white modal with refined header

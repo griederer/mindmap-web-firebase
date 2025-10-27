@@ -69,7 +69,7 @@ export default function NodeInfoPanel({ node, nodeWidth, nodeHeight, onImageClic
       {/* Connector line */}
       <Line
         points={[lineStartX, lineStartY, lineEndX, lineEndY]}
-        stroke="#FB923C"
+        stroke="#F97316"
         strokeWidth={2}
         dash={[5, 5]}
       />
@@ -81,12 +81,12 @@ export default function NodeInfoPanel({ node, nodeWidth, nodeHeight, onImageClic
         width={PANEL_WIDTH}
         height={panelHeight}
         fill="white"
-        stroke="#FB923C"
+        stroke="#F97316"
         strokeWidth={2}
         cornerRadius={8}
-        shadowColor="rgba(0, 0, 0, 0.3)"
-        shadowBlur={20}
-        shadowOffsetY={4}
+        shadowColor="rgba(0, 0, 0, 0.1)"
+        shadowBlur={15}
+        shadowOffsetY={3}
         shadowEnabled={true}
       />
 
@@ -97,10 +97,10 @@ export default function NodeInfoPanel({ node, nodeWidth, nodeHeight, onImageClic
           y={panelY + PANEL_PADDING}
           width={PANEL_WIDTH - PANEL_PADDING * 2}
           text={node.description}
-          fontSize={13}
+          fontSize={14}
           fontFamily="system-ui, -apple-system, sans-serif"
-          fill="#374151"
-          lineHeight={1.4}
+          fill="#4B5563"
+          lineHeight={1.5}
           wrap="word"
         />
       )}

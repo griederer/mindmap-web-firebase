@@ -140,10 +140,10 @@ export default function NodeComponent({ node }: NodeComponentProps) {
         height={NODE_HEIGHT}
         fill="white"
         cornerRadius={8}
-        shadowColor={isFocused ? 'rgba(251, 146, 60, 0.3)' : 'rgba(0, 0, 0, 0.1)'}
-        shadowBlur={isFocused ? 20 : 10}
-        shadowOffsetY={isFocused ? 4 : 2}
-        stroke={isSelected ? '#fb923c' : (isFocused ? '#fb923c' : '#e5e7eb')}
+        shadowColor={isFocused ? 'rgba(251, 146, 60, 0.2)' : 'rgba(0, 0, 0, 0.08)'}
+        shadowBlur={isFocused ? 15 : 8}
+        shadowOffsetY={isFocused ? 3 : 2}
+        stroke={isSelected ? '#F97316' : (isFocused ? '#F97316' : '#E5E7EB')}
         strokeWidth={isSelected || isFocused ? 2 : 1}
       />
       
@@ -156,7 +156,8 @@ export default function NodeComponent({ node }: NodeComponentProps) {
         text={node.title}
         fontSize={14}
         fontFamily="system-ui, -apple-system, sans-serif"
-        fill="#1f2937"
+        fontStyle="500"
+        fill="#111827"
         verticalAlign="middle"
         wrap="word"
         ellipsis={true}
@@ -173,8 +174,8 @@ export default function NodeComponent({ node }: NodeComponentProps) {
           {/* Button background */}
           <Circle
             radius={EXPAND_BUTTON_RADIUS}
-            fill={node.isExpanded ? '#fb923c' : '#f3f4f6'}
-            stroke={node.isExpanded ? '#ea580c' : '#d1d5db'}
+            fill={node.isExpanded ? '#F97316' : '#F3F4F6'}
+            stroke={node.isExpanded ? '#EA580C' : '#D1D5DB'}
             strokeWidth={1}
           />
 
@@ -187,7 +188,7 @@ export default function NodeComponent({ node }: NodeComponentProps) {
             text={node.isExpanded ? '−' : '+'}
             fontSize={12}
             fontFamily="system-ui"
-            fill={node.isExpanded ? 'white' : '#6b7280'}
+            fill={node.isExpanded ? 'white' : '#6B7280'}
             align="center"
             verticalAlign="middle"
           />
@@ -202,7 +203,7 @@ export default function NodeComponent({ node }: NodeComponentProps) {
           text={`L${node.level}`}
           fontSize={10}
           fontFamily="monospace"
-          fill="#9ca3af"
+          fill="#9CA3AF"
         />
       )}
     </Group>

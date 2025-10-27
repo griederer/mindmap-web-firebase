@@ -19,10 +19,11 @@ interface NodeActionMenuProps {
 
 const ICON_SIZE = 32;
 const ICON_SPACING = 6;
-const HORIZONTAL_OFFSET = 10; // Ajuste para centrar mejor
-const BUTTON_BG_COLOR = '#2b2b2b';
-const BUTTON_HOVER_COLOR = '#444444';
-const ICON_COLOR = '#ffffff';
+const HORIZONTAL_OFFSET = 10;
+const BUTTON_BG_COLOR = '#FFFFFF';
+const BUTTON_HOVER_COLOR = '#F3F4F6';
+const ICON_COLOR = '#374151';
+const BORDER_COLOR = '#E5E7EB';
 
 export default function NodeActionMenu({
   x,
@@ -61,6 +62,11 @@ export default function NodeActionMenu({
             <Circle
               radius={ICON_SIZE / 2}
               fill={BUTTON_BG_COLOR}
+              stroke={BORDER_COLOR}
+              strokeWidth={1}
+              shadowColor="rgba(0, 0, 0, 0.1)"
+              shadowBlur={4}
+              shadowOffsetY={2}
               onClick={button.onClick}
               onMouseEnter={(e) => {
                 const container = e.target.getStage()?.container();

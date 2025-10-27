@@ -107,10 +107,11 @@ export default function RelationshipLines() {
               stroke={relationship.color}
               strokeWidth={relationship.lineWidth}
               dash={dashPattern}
-              opacity={0.7}
+              opacity={0.6}
               listening={false}
               lineCap="round"
               lineJoin="round"
+              perfectDrawEnabled={false}
             />
           );
         });
