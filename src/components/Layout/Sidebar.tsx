@@ -168,78 +168,73 @@ export default function Sidebar() {
         style={{ overflow: 'hidden' }}
       >
         {/* Sidebar header */}
-        <div className="p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Projects</h2>
+        <div className="px-6 py-5 border-b border-gray-200/50">
+          <h2 className="text-sm font-semibold text-gray-900 tracking-tight">Projects</h2>
         </div>
 
         {/* Search bar */}
-        <div className="px-4 py-3 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-gray-200/50">
           <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" strokeWidth={1.5} />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" strokeWidth={1.5} />
             <input
               type="text"
               placeholder="Search projects..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-150"
+              className="w-full pl-9 pr-3 py-2 text-sm bg-gray-50/50 border border-transparent rounded-md hover:bg-gray-100/50 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-300 transition-all duration-150 placeholder:text-gray-400"
             />
           </div>
         </div>
 
         {/* New Project button */}
-        <div className="px-4 pt-3 pb-2">
+        <div className="px-6 py-4">
           <button
             onClick={handleNewProject}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-sm hover:shadow"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
-            <Plus size={18} strokeWidth={2} />
+            <Plus size={16} strokeWidth={2} />
             New Project
           </button>
         </div>
 
         {/* Project list */}
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          <div className="py-2">
-            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+        <div className="flex-1 overflow-y-auto px-6 pb-4">
+          <div className="py-3">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 px-0.5">
               Recent Projects
             </h3>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               {filteredProjects.map((project) => (
                 <div
                   key={project.id}
-                  className={`group relative p-3 rounded-lg transition-all duration-150 cursor-pointer ${
+                  className={`group relative px-3 py-2.5 rounded-md transition-all duration-150 cursor-pointer ${
                     project.isActive
-                      ? 'bg-orange-50 border border-orange-200'
+                      ? 'bg-indigo-50/50 border border-indigo-200/50'
                       : 'hover:bg-gray-50 border border-transparent'
                   }`}
                   onClick={handleLoadProject}
                 >
-                  {/* Active indicator */}
-                  {project.isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-orange-500 rounded-r"></div>
-                  )}
-
                   {/* Project info */}
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-2.5">
                     <div className="flex-shrink-0 mt-0.5">
                       <FileText
-                        size={16}
-                        className={project.isActive ? 'text-orange-600' : 'text-gray-400'}
+                        size={14}
+                        className={project.isActive ? 'text-indigo-600' : 'text-gray-400'}
                         strokeWidth={1.5}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className={`text-sm font-medium truncate ${
-                        project.isActive ? 'text-orange-900' : 'text-gray-900'
+                      <h4 className={`text-sm font-medium truncate leading-5 ${
+                        project.isActive ? 'text-gray-900' : 'text-gray-700'
                       }`}>
                         {project.name}
                       </h4>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                      <div className="flex items-center gap-1.5 mt-1 text-xs text-gray-500">
                         <span>{project.nodeCount} nodes</span>
-                        <span>•</span>
+                        <span className="text-gray-300">•</span>
                         <div className="flex items-center gap-1">
-                          <Clock size={11} strokeWidth={1.5} />
+                          <Clock size={10} strokeWidth={1.5} className="text-gray-400" />
                           <span>{project.lastModified}</span>
                         </div>
                       </div>
@@ -247,14 +242,14 @@ export default function Sidebar() {
                   </div>
 
                   {/* Quick actions (show on hover) */}
-                  <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                  <div className="absolute right-2 top-2.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                     <div className="flex gap-1">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleSaveProject();
                         }}
-                        className="p-1.5 bg-white border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+                        className="p-1 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded hover:bg-white hover:border-gray-300 transition-colors"
                         title="Save project"
                       >
                         <Save size={12} strokeWidth={1.5} className="text-gray-600" />
@@ -281,29 +276,29 @@ export default function Sidebar() {
         )}
 
         {/* Footer actions */}
-        <div className="p-4 border-t border-gray-200 space-y-2">
+        <div className="px-6 py-4 border-t border-gray-200/50 space-y-3">
           <button
             onClick={handleLoadProject}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-200/80 text-gray-700 text-sm rounded-md hover:bg-gray-50 hover:border-gray-300 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
-            <FolderOpen size={16} strokeWidth={1.5} />
+            <FolderOpen size={14} strokeWidth={1.5} />
             {isLoading ? 'Loading...' : 'Open from File'}
           </button>
-          <p className="text-xs text-gray-500 text-center">NODEM v1.0</p>
+          <p className="text-xs text-gray-400 text-center font-medium">NODEM v1.0</p>
         </div>
       </div>
 
       {/* Toggle button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 hover:shadow-lg transition-all duration-150"
+        className="absolute top-4 left-4 z-50 p-1.5 bg-white border border-gray-200/80 rounded-md shadow-sm hover:bg-gray-50 hover:border-gray-300 hover:shadow transition-all duration-150"
         title={isOpen ? 'Hide Sidebar' : 'Show Sidebar'}
       >
         {isOpen ? (
-          <ChevronLeft size={20} strokeWidth={1.5} className="text-gray-600" />
+          <ChevronLeft size={16} strokeWidth={1.5} className="text-gray-500" />
         ) : (
-          <ChevronRight size={20} strokeWidth={1.5} className="text-gray-600" />
+          <ChevronRight size={16} strokeWidth={1.5} className="text-gray-500" />
         )}
       </button>
     </>

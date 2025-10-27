@@ -17,16 +17,16 @@ export interface Relationship {
   updatedAt: number; // Timestamp
 }
 
-// Preset color palette for relationships
+// Preset color palette for relationships (Linear-inspired muted palette)
 export const RELATIONSHIP_COLORS = [
-  '#EF4444', // Red
-  '#F59E0B', // Amber
-  '#10B981', // Green
-  '#3B82F6', // Blue
-  '#8B5CF6', // Purple
-  '#EC4899', // Pink
-  '#14B8A6', // Teal
-  '#F97316', // Orange
+  '#94A3B8', // Slate Gray - Primary neutral
+  '#64748B', // Cool Gray - Secondary neutral
+  '#6366F1', // Muted Indigo - Professional blue
+  '#8B5CF6', // Soft Purple - Elegant accent
+  '#06B6D4', // Muted Cyan - Professional teal
+  '#10B981', // Muted Emerald - Success/growth
+  '#F59E0B', // Muted Amber - Warm accent
+  '#EF4444', // Muted Rose - Alert/critical
 ] as const;
 
 // Line type options for UI
