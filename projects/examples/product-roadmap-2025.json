@@ -1,0 +1,72 @@
+{
+  "projectId": "product-roadmap-2025",
+  "name": "Product Roadmap 2025",
+  "createdAt": "2025-01-25T09:00:00Z",
+  "updatedAt": "2025-01-26T14:20:00Z",
+  "rootNodeId": "node-root",
+  "nodes": [
+    {
+      "id": "node-root",
+      "title": "Product Roadmap 2025",
+      "description": "Strategic product development plan for 2025",
+      "image": null,
+      "children": ["node-q1", "node-q2", "node-q3", "node-q4"],
+      "level": 0,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "node-q1",
+      "title": "Q1: Foundation",
+      "description": "Core features and infrastructure improvements",
+      "image": null,
+      "children": ["node-ui-redesign", "node-performance"],
+      "level": 1,
+      "position": { "x": 400, "y": -200 }
+    },
+    {
+      "id": "node-ui-redesign",
+      "title": "UI Redesign",
+      "description": "Linear-inspired minimal interface with improved UX",
+      "image": null,
+      "children": [],
+      "level": 2,
+      "position": { "x": 700, "y": -300 }
+    },
+    {
+      "id": "node-performance",
+      "title": "Performance Optimization",
+      "description": "Reduce bundle size and improve load times",
+      "image": null,
+      "children": [],
+      "level": 2,
+      "position": { "x": 700, "y": -100 }
+    },
+    {
+      "id": "node-q2",
+      "title": "Q2: Collaboration",
+      "description": "Real-time collaboration features",
+      "image": null,
+      "children": [],
+      "level": 1,
+      "position": { "x": 400, "y": 0 }
+    },
+    {
+      "id": "node-q3",
+      "title": "Q3: AI Integration",
+      "description": "AI-powered content generation and insights",
+      "image": null,
+      "children": [],
+      "level": 1,
+      "position": { "x": 400, "y": 200 }
+    },
+    {
+      "id": "node-q4",
+      "title": "Q4: Mobile App",
+      "description": "Native iOS and Android applications",
+      "image": null,
+      "children": [],
+      "level": 1,
+      "position": { "x": 400, "y": 400 }
+    }
+  ]
+}

@@ -4,14 +4,33 @@
  */
 
 import { useState } from 'react';
-import { Plus, FolderOpen, Save, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, FolderOpen, Save, ChevronLeft, ChevronRight, Search, Clock, FileText } from 'lucide-react';
 import { useProjectStore } from '../../stores/projectStore';
 import { calculateLayout } from '../../utils/layoutEngine';
+
+// Mock data for projects - TODO: Replace with actual project fetching
+const MOCK_PROJECTS = [
+  {
+    id: 'segunda-guerra-mundial',
+    name: 'Segunda Guerra Mundial',
+    nodeCount: 13,
+    lastModified: '2 hours ago',
+    isActive: true,
+  },
+  {
+    id: 'product-roadmap-2025',
+    name: 'Product Roadmap 2025',
+    nodeCount: 8,
+    lastModified: '1 day ago',
+    isActive: false,
+  },
+];
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const { loadProject, currentProject, saveProject } = useProjectStore();
 
   const handleLoadProject = async () => {
@@ -135,6 +154,10 @@ export default function Sidebar() {
     loadProject(newProject);
   };
 
+  const filteredProjects = MOCK_PROJECTS.filter(project =>
+    project.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       {/* Sidebar container */}
@@ -149,39 +172,104 @@ export default function Sidebar() {
           <h2 className="text-lg font-semibold text-gray-900">Projects</h2>
         </div>
 
-        {/* Project actions */}
-        <div className="p-4 space-y-2 border-b border-gray-200">
+        {/* Search bar */}
+        <div className="px-4 py-3 border-b border-gray-200">
+          <div className="relative">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" strokeWidth={1.5} />
+            <input
+              type="text"
+              placeholder="Search projects..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-150"
+            />
+          </div>
+        </div>
+
+        {/* New Project button */}
+        <div className="px-4 pt-3 pb-2">
           <button
             onClick={handleNewProject}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-sm hover:shadow"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-sm hover:shadow"
           >
             <Plus size={18} strokeWidth={2} />
             New Project
           </button>
+        </div>
 
-          <button
-            onClick={handleLoadProject}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-          >
-            <FolderOpen size={18} strokeWidth={1.5} />
-            {isLoading ? 'Loading...' : 'Open Project'}
-          </button>
+        {/* Project list */}
+        <div className="flex-1 overflow-y-auto px-4 pb-4">
+          <div className="py-2">
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+              Recent Projects
+            </h3>
+            <div className="space-y-1.5">
+              {filteredProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className={`group relative p-3 rounded-lg transition-all duration-150 cursor-pointer ${
+                    project.isActive
+                      ? 'bg-orange-50 border border-orange-200'
+                      : 'hover:bg-gray-50 border border-transparent'
+                  }`}
+                  onClick={handleLoadProject}
+                >
+                  {/* Active indicator */}
+                  {project.isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-orange-500 rounded-r"></div>
+                  )}
 
-          <button
-            onClick={handleSaveProject}
-            disabled={isLoading || !currentProject}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-          >
-            <Save size={18} strokeWidth={1.5} />
-            {isLoading ? 'Saving...' : 'Save Project'}
-          </button>
+                  {/* Project info */}
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 mt-0.5">
+                      <FileText
+                        size={16}
+                        className={project.isActive ? 'text-orange-600' : 'text-gray-400'}
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className={`text-sm font-medium truncate ${
+                        project.isActive ? 'text-orange-900' : 'text-gray-900'
+                      }`}>
+                        {project.name}
+                      </h4>
+                      <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                        <span>{project.nodeCount} nodes</span>
+                        <span>•</span>
+                        <div className="flex items-center gap-1">
+                          <Clock size={11} strokeWidth={1.5} />
+                          <span>{project.lastModified}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quick actions (show on hover) */}
+                  <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                    <div className="flex gap-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSaveProject();
+                        }}
+                        className="p-1.5 bg-white border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+                        title="Save project"
+                      >
+                        <Save size={12} strokeWidth={1.5} className="text-gray-600" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Error display */}
         {error && (
-          <div className="mx-4 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="mx-4 mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-sm text-red-800">{error}</p>
             <button
               onClick={() => setError(null)}
@@ -192,24 +280,16 @@ export default function Sidebar() {
           </div>
         )}
 
-        {/* Current project info */}
-        {currentProject && (
-          <div className="p-4">
-            <div className="bg-gray-50 rounded-lg p-3">
-              <h3 className="text-sm font-medium text-gray-900 mb-1">Current Project</h3>
-              <p className="text-sm text-gray-600">{currentProject.metadata.title}</p>
-              <p className="text-xs text-gray-500 mt-1">
-                {Object.keys(currentProject.nodes).length} nodes
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Spacer */}
-        <div className="flex-1"></div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200">
+        {/* Footer actions */}
+        <div className="p-4 border-t border-gray-200 space-y-2">
+          <button
+            onClick={handleLoadProject}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+          >
+            <FolderOpen size={16} strokeWidth={1.5} />
+            {isLoading ? 'Loading...' : 'Open from File'}
+          </button>
           <p className="text-xs text-gray-500 text-center">NODEM v1.0</p>
         </div>
       </div>
