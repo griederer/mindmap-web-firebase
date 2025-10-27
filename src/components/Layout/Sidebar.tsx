@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react';
+import { Plus, FolderOpen, Save, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProjectStore } from '../../stores/projectStore';
 import { calculateLayout } from '../../utils/layoutEngine';
 
@@ -153,24 +154,27 @@ export default function Sidebar() {
           <button
             onClick={handleNewProject}
             disabled={isLoading}
-            className="w-full px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-sm hover:shadow"
           >
-            + New Project
+            <Plus size={18} strokeWidth={2} />
+            New Project
           </button>
 
           <button
             onClick={handleLoadProject}
             disabled={isLoading}
-            className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
+            <FolderOpen size={18} strokeWidth={1.5} />
             {isLoading ? 'Loading...' : 'Open Project'}
           </button>
 
           <button
             onClick={handleSaveProject}
             disabled={isLoading || !currentProject}
-            className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
+            <Save size={18} strokeWidth={1.5} />
             {isLoading ? 'Saving...' : 'Save Project'}
           </button>
         </div>
@@ -213,31 +217,14 @@ export default function Sidebar() {
       {/* Toggle button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 transition-colors"
+        className="absolute top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 hover:shadow-lg transition-all duration-150"
         title={isOpen ? 'Hide Sidebar' : 'Show Sidebar'}
       >
-        <svg
-          className="w-5 h-5 text-gray-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          {isOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-            />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 5l7 7-7 7M5 5l7 7-7 7"
-            />
-          )}
-        </svg>
+        {isOpen ? (
+          <ChevronLeft size={20} strokeWidth={1.5} className="text-gray-600" />
+        ) : (
+          <ChevronRight size={20} strokeWidth={1.5} className="text-gray-600" />
+        )}
       </button>
     </>
   );

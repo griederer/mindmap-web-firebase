@@ -48,20 +48,20 @@
 
 ## Tasks
 
-- [ ] 1.0 Design System Foundations
-  - [ ] 1.1 Verify Lucide React installation (`npm ls lucide-react`)
-  - [ ] 1.2 Update `tailwind.config.js` with refined color palette and shadow system
-  - [ ] 1.3 Update `src/index.css` with design tokens (typography, spacing, transitions)
-  - [ ] 1.4 Create `docs/DESIGN_SYSTEM.md` reference file with all design tokens
-  - [ ] 1.5 Test design system - verify Tailwind classes compile correctly
+- [x] 1.0 Design System Foundations
+  - [x] 1.1 Verify Lucide React installation (`npm ls lucide-react`)
+  - [x] 1.2 Update `tailwind.config.js` with refined color palette and shadow system
+  - [x] 1.3 Update `src/index.css` with design tokens (typography, spacing, transitions)
+  - [x] 1.4 Create `docs/DESIGN_SYSTEM.md` reference file with all design tokens
+  - [x] 1.5 Test design system - verify Tailwind classes compile correctly
 
-- [ ] 2.0 Core Layout Transformation (Sidebar + Header)
-  - [ ] 2.1 Transform `Sidebar.tsx` - replace gradient with minimal white background
-  - [ ] 2.2 Update sidebar buttons with Lucide icons (replace emojis)
-  - [ ] 2.3 Refine sidebar hover states and spacing (use `hover:bg-gray-50`)
-  - [ ] 2.4 Update top header in `App.tsx` - white background with subtle border
-  - [ ] 2.5 Replace header icons with Lucide React components
-  - [ ] 2.6 Test sidebar and header - verify all buttons work correctly
+- [x] 2.0 Core Layout Transformation (Sidebar + Header)
+  - [x] 2.1 Transform `Sidebar.tsx` - replace gradient with minimal white background
+  - [x] 2.2 Update sidebar buttons with Lucide icons (replace emojis)
+  - [x] 2.3 Refine sidebar hover states and spacing (use `hover:bg-gray-50`)
+  - [x] 2.4 Update top header in `App.tsx` - white background with subtle border
+  - [x] 2.5 Replace header icons with Lucide React components
+  - [x] 2.6 Test sidebar and header - verify all buttons work correctly
 
 - [ ] 3.0 Canvas & Controls Refinement
   - [ ] 3.1 Update `Canvas.tsx` background to light gray (`bg-gray-50`)

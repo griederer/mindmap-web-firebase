@@ -32,6 +32,21 @@ export default {
           900: '#7f1d1d',
         },
       },
+      boxShadow: {
+        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      },
+      borderRadius: {
+        'sm': '0.25rem',   // 4px
+        DEFAULT: '0.375rem', // 6px
+        'md': '0.5rem',    // 8px
+        'lg': '0.75rem',   // 12px
+        'xl': '1rem',      // 16px
+      },
       animation: {
         'expand': 'expand 0.6s ease-out',
         'collapse': 'collapse 0.4s ease-in',
@@ -55,6 +70,10 @@ export default {
           '0%': { opacity: '1' },
           '100%': { opacity: '0' },
         },
+      },
+      transitionDuration: {
+        '150': '150ms',
+        '200': '200ms',
       },
     },
   },
