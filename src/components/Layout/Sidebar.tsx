@@ -139,7 +139,7 @@ export default function Sidebar() {
       {/* Sidebar container */}
       <div
         className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ${
-          isOpen ? 'w-80' : 'w-0'
+          isOpen ? 'w-64' : 'w-0'
         }`}
         style={{ overflow: 'hidden' }}
       >

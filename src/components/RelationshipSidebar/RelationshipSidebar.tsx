@@ -44,7 +44,7 @@ export default function RelationshipSidebar({ isOpen, onClose }: RelationshipSid
     <>
       {/* Sidebar */}
       <div
-        className="fixed right-0 top-0 h-full w-80 bg-gray-900 bg-opacity-95 shadow-2xl z-50 flex flex-col"
+        className="fixed right-0 top-0 h-full w-72 bg-gray-900 bg-opacity-95 shadow-2xl z-50 flex flex-col"
         style={{
           animation: 'slideInRight 0.3s ease-out',
         }}
