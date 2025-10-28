@@ -1,0 +1,289 @@
+{
+  "projectId": "wwii-complete",
+  "metadata": {
+    "title": "Segunda Guerra Mundial - Completo",
+    "description": "WWII project with mindmap and timeline views",
+    "createdAt": 1640000000000,
+    "updatedAt": 1640000000000,
+    "version": "1.0.0"
+  },
+  "views": {
+    "mindmap": {
+      "enabled": true
+    },
+    "timeline": {
+      "enabled": true
+    }
+  },
+  "mindmap": {
+    "nodes": {
+      "root": {
+        "id": "root",
+        "title": "Segunda Guerra Mundial",
+        "description": "Conflicto global 1939-1945",
+        "children": ["europe", "pacific", "home-front"],
+        "level": 0,
+        "parentId": null,
+        "position": { "x": 100, "y": 300 },
+        "isExpanded": true,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "europe": {
+        "id": "europe",
+        "title": "Teatro Europeo",
+        "description": "Operaciones militares en Europa",
+        "children": ["invasion-poland", "battle-britain", "eastern-front", "d-day"],
+        "level": 1,
+        "parentId": "root",
+        "position": { "x": 400, "y": 200 },
+        "isExpanded": true,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "invasion-poland": {
+        "id": "invasion-poland",
+        "title": "Invasión de Polonia",
+        "description": "Septiembre 1939",
+        "children": [],
+        "level": 2,
+        "parentId": "europe",
+        "position": { "x": 700, "y": 100 },
+        "isExpanded": false,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "battle-britain": {
+        "id": "battle-britain",
+        "title": "Batalla de Inglaterra",
+        "description": "1940-1941",
+        "children": [],
+        "level": 2,
+        "parentId": "europe",
+        "position": { "x": 700, "y": 150 },
+        "isExpanded": false,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "eastern-front": {
+        "id": "eastern-front",
+        "title": "Frente Oriental",
+        "description": "Operación Barbarroja",
+        "children": [],
+        "level": 2,
+        "parentId": "europe",
+        "position": { "x": 700, "y": 200 },
+        "isExpanded": false,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "d-day": {
+        "id": "d-day",
+        "title": "Día D",
+        "description": "Desembarco de Normandía",
+        "children": [],
+        "level": 2,
+        "parentId": "europe",
+        "position": { "x": 700, "y": 250 },
+        "isExpanded": false,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "pacific": {
+        "id": "pacific",
+        "title": "Teatro del Pacífico",
+        "description": "Guerra contra Japón",
+        "children": ["pearl-harbor", "midway", "hiroshima"],
+        "level": 1,
+        "parentId": "root",
+        "position": { "x": 400, "y": 300 },
+        "isExpanded": true,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "pearl-harbor": {
+        "id": "pearl-harbor",
+        "title": "Pearl Harbor",
+        "description": "7 diciembre 1941",
+        "children": [],
+        "level": 2,
+        "parentId": "pacific",
+        "position": { "x": 700, "y": 350 },
+        "isExpanded": false,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "midway": {
+        "id": "midway",
+        "title": "Batalla de Midway",
+        "description": "Junio 1942",
+        "children": [],
+        "level": 2,
+        "parentId": "pacific",
+        "position": { "x": 700, "y": 400 },
+        "isExpanded": false,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "hiroshima": {
+        "id": "hiroshima",
+        "title": "Hiroshima y Nagasaki",
+        "description": "Agosto 1945",
+        "children": [],
+        "level": 2,
+        "parentId": "pacific",
+        "position": { "x": 700, "y": 450 },
+        "isExpanded": false,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      },
+      "home-front": {
+        "id": "home-front",
+        "title": "Frente Interno",
+        "description": "Economía de guerra y sociedad",
+        "children": [],
+        "level": 1,
+        "parentId": "root",
+        "position": { "x": 400, "y": 400 },
+        "isExpanded": false,
+        "isVisible": true,
+        "createdAt": 1640000000000,
+        "updatedAt": 1640000000000
+      }
+    },
+    "rootNodeId": "root"
+  },
+  "timeline": {
+    "config": {
+      "startDate": "1939-01-01",
+      "endDate": "1945-12-31",
+      "tracks": [
+        {
+          "id": "europe-track",
+          "name": "Europa",
+          "color": "#3B82F6"
+        },
+        {
+          "id": "pacific-track",
+          "name": "Pacífico",
+          "color": "#EF4444"
+        },
+        {
+          "id": "diplomatic-track",
+          "name": "Diplomacia",
+          "color": "#10B981"
+        }
+      ]
+    },
+    "events": [
+      {
+        "id": "evt-1",
+        "title": "Invasión de Polonia",
+        "description": "Alemania invade Polonia, iniciando la Segunda Guerra Mundial",
+        "date": "1939-09-01",
+        "track": "europe-track"
+      },
+      {
+        "id": "evt-2",
+        "title": "Batalla de Inglaterra",
+        "description": "La RAF defiende el Reino Unido de la Luftwaffe",
+        "date": "1940-07-10",
+        "track": "europe-track"
+      },
+      {
+        "id": "evt-3",
+        "title": "Pearl Harbor",
+        "description": "Japón ataca Pearl Harbor, EE.UU. entra en la guerra",
+        "date": "1941-12-07",
+        "track": "pacific-track"
+      },
+      {
+        "id": "evt-4",
+        "title": "Operación Barbarroja",
+        "description": "Alemania invade la Unión Soviética",
+        "date": "1941-06-22",
+        "track": "europe-track"
+      },
+      {
+        "id": "evt-5",
+        "title": "Batalla de Midway",
+        "description": "Victoria decisiva de EE.UU. en el Pacífico",
+        "date": "1942-06-04",
+        "track": "pacific-track"
+      },
+      {
+        "id": "evt-6",
+        "title": "Batalla de Stalingrado",
+        "description": "Punto de inflexión en el frente oriental",
+        "date": "1942-08-23",
+        "track": "europe-track"
+      },
+      {
+        "id": "evt-7",
+        "title": "Conferencia de Teherán",
+        "description": "Churchill, Roosevelt y Stalin se reúnen",
+        "date": "1943-11-28",
+        "track": "diplomatic-track"
+      },
+      {
+        "id": "evt-8",
+        "title": "Día D",
+        "description": "Desembarco aliado en Normandía",
+        "date": "1944-06-06",
+        "track": "europe-track"
+      },
+      {
+        "id": "evt-9",
+        "title": "Batalla de las Ardenas",
+        "description": "Última gran ofensiva alemana",
+        "date": "1944-12-16",
+        "track": "europe-track"
+      },
+      {
+        "id": "evt-10",
+        "title": "Conferencia de Yalta",
+        "description": "Planificación del mundo de posguerra",
+        "date": "1945-02-04",
+        "track": "diplomatic-track"
+      },
+      {
+        "id": "evt-11",
+        "title": "Victoria en Europa",
+        "description": "Alemania se rinde incondicionalmente",
+        "date": "1945-05-08",
+        "track": "europe-track"
+      },
+      {
+        "id": "evt-12",
+        "title": "Hiroshima",
+        "description": "Primera bomba atómica",
+        "date": "1945-08-06",
+        "track": "pacific-track"
+      },
+      {
+        "id": "evt-13",
+        "title": "Nagasaki",
+        "description": "Segunda bomba atómica",
+        "date": "1945-08-09",
+        "track": "pacific-track"
+      },
+      {
+        "id": "evt-14",
+        "title": "Rendición de Japón",
+        "description": "Fin de la Segunda Guerra Mundial",
+        "date": "1945-09-02",
+        "track": "pacific-track"
+      }
+    ]
+  }
+}

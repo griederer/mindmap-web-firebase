@@ -10,23 +10,32 @@ import { useViewportStore } from './stores/viewportStore';
 import { calculateLayout } from './utils/layoutEngine';
 
 function App() {
-  const { loadProject, currentProject } = useProjectStore();
+  const { loadProjectBundle, currentProject } = useProjectStore();
   const { currentView } = useUIStore();
   const { focusOnNodes } = useViewportStore();
 
-  // Load WWII project on mount
+  // Load WWII project with timeline on mount
   useEffect(() => {
-    fetch('/examples/wwii-project.json')
+    fetch('/examples/wwii-with-timeline.json')
       .then(res => res.json())
-      .then(project => {
-        // Calculate layout for nodes
-        const { nodes: layoutedNodes } = calculateLayout(project.nodes, project.rootNodeId);
+      .then(data => {
+        // Calculate layout for mindmap nodes
+        const { nodes: layoutedNodes } = calculateLayout(data.mindmap.nodes, data.mindmap.rootNodeId);
 
-        // Load project with calculated positions
-        loadProject({
-          ...project,
-          nodes: layoutedNodes,
-        });
+        // Create project bundle
+        const bundle = {
+          projectId: data.projectId,
+          metadata: data.metadata,
+          views: data.views,
+          mindmap: {
+            nodes: layoutedNodes,
+            rootNodeId: data.mindmap.rootNodeId,
+          },
+          timeline: data.timeline,
+        };
+
+        // Load project bundle
+        loadProjectBundle(bundle);
 
         // Auto-focus on all visible nodes after loading
         setTimeout(() => {
@@ -37,7 +46,7 @@ function App() {
         }, 100);
       })
       .catch(err => console.error('Failed to load WWII project:', err));
-  }, [loadProject, focusOnNodes]);
+  }, [loadProjectBundle, focusOnNodes]);
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
