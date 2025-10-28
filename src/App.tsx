@@ -1,17 +1,13 @@
 import { useEffect } from 'react';
 import Canvas from './components/Canvas/Canvas';
-import TimelineCanvas from './components/Timeline/TimelineCanvas';
 import Sidebar from './components/Layout/Sidebar';
-import ViewSwitcher from './components/Layout/ViewSwitcher';
 import NodeDetails from './components/Canvas/NodeDetails';
 import { useProjectStore } from './stores/projectStore';
-import { useUIStore } from './stores/uiStore';
 import { useViewportStore } from './stores/viewportStore';
 import { calculateLayout } from './utils/layoutEngine';
 
 function App() {
   const { loadProjectBundle, currentProject } = useProjectStore();
-  const { currentView } = useUIStore();
   const { focusOnNodes } = useViewportStore();
 
   // Load WWII project with timeline on mount
@@ -60,9 +56,6 @@ function App() {
         </div>
 
         <div className="flex items-center gap-6">
-          {/* View Switcher */}
-          <ViewSwitcher />
-
           <div className="flex items-center space-x-2 text-xs text-gray-500">
             <span className="font-mono">{window.location.hostname}</span>
           </div>
@@ -74,26 +67,9 @@ function App() {
         {/* Sidebar */}
         <Sidebar />
 
-        {/* Canvas - Render based on current view */}
+        {/* Canvas - Always show mindmap (timeline is now a node type) */}
         <main className="flex-1 overflow-hidden relative">
-          {currentView === 'mindmap' && <Canvas />}
-          {currentView === 'timeline' && <TimelineCanvas />}
-          {currentView === 'kanban' && (
-            <div className="w-full h-full flex items-center justify-center bg-gray-50">
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-2">Kanban View</p>
-                <p className="text-xs text-gray-400">Coming soon...</p>
-              </div>
-            </div>
-          )}
-          {currentView === 'matrix' && (
-            <div className="w-full h-full flex items-center justify-center bg-gray-50">
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-2">Matrix View</p>
-                <p className="text-xs text-gray-400">Coming soon...</p>
-              </div>
-            </div>
-          )}
+          <Canvas />
         </main>
       </div>
 

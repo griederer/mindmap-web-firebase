@@ -11,6 +11,8 @@ import { useProjectStore } from '../../stores/projectStore';
 import { useUIStore } from '../../stores/uiStore';
 import { Node } from '../../types/node';
 import NodeComponent from './NodeComponent';
+import TimelineComponent from './TimelineComponent';
+import TimelineEventInfoPanel from './TimelineEventInfoPanel';
 import Connector from './Connector';
 import ZoomControls from './ZoomControls';
 import NodeActionMenu from './NodeActionMenu';
@@ -20,6 +22,7 @@ import ImageViewer from './ImageViewer';
 import RelationshipSidebar from '../RelationshipSidebar/RelationshipSidebar';
 import RelationshipAssignMenu from './RelationshipAssignMenu';
 import RelationshipLines from './RelationshipLines';
+import TimelineRibbon from '../Timeline/TimelineRibbon';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -33,7 +36,7 @@ export default function Canvas() {
   const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, focusOnNodes, focusOnNodeWithPanel } = useViewportStore();
 
   // Project state
-  const { nodes, rootNodeId, addNode, deleteNode, updateNode } = useProjectStore();
+  const { nodes, rootNodeId, addNode, deleteNode, updateNode, currentBundle } = useProjectStore();
 
   // UI state
   const {
@@ -43,6 +46,9 @@ export default function Canvas() {
     focusedNodeId,
     toggleInfoPanel,
     setFocusMode,
+    selectedTimelineEvent,
+    selectTimelineEvent,
+    timelineRibbonOpen,
   } = useUIStore();
 
   // Edit modal state
@@ -318,9 +324,12 @@ export default function Canvas() {
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
       selectNode(null);
-      // Also close info panel when clicking on empty space
+      // Also close info panels when clicking on empty space
       if (infoPanelNodeId) {
         toggleInfoPanel(null);
+      }
+      if (selectedTimelineEvent) {
+        selectTimelineEvent(null);
       }
     }
   };
@@ -434,12 +443,115 @@ export default function Canvas() {
             <RelationshipLines />
 
             {/* Render all nodes (visibility handled by component) */}
-            {allNodes.map(node => (
-              <NodeComponent
-                key={node.id}
-                node={node}
-              />
-            ))}
+            {allNodes.map(node => {
+              // Skip year and event nodes (they're part of timeline component now)
+              if (node.nodeType === 'year' || node.nodeType === 'event') {
+                return null;
+              }
+
+              // Render timeline node as regular node
+              if (node.nodeType === 'timeline') {
+                return (
+                  <NodeComponent
+                    key={node.id}
+                    node={node}
+                  />
+                );
+              }
+
+              // Render default nodes
+              return (
+                <NodeComponent
+                  key={node.id}
+                  node={node}
+                />
+              );
+            })}
+
+            {/* Render expanded timeline components */}
+            {/* Render timeline when ribbon is open */}
+            {timelineRibbonOpen && currentBundle?.timeline && (() => {
+              const timelineEvents = currentBundle.timeline.events || [];
+              const timelineTracks = currentBundle.timeline.config?.tracks || [];
+
+              // Create a virtual timeline node for positioning
+              const virtualTimelineNode = {
+                id: 'virtual-timeline',
+                title: 'Timeline',
+                timelineConfig: {
+                  startYear: currentBundle.timeline.config?.startDate ? new Date(currentBundle.timeline.config.startDate).getFullYear() : 1939,
+                  endYear: currentBundle.timeline.config?.endDate ? new Date(currentBundle.timeline.config.endDate).getFullYear() : 1945,
+                  layout: 'horizontal-with-vertical-events' as const,
+                },
+              };
+
+              return (
+                <TimelineComponent
+                  key="timeline-ribbon"
+                  timelineNode={virtualTimelineNode as any}
+                  events={timelineEvents}
+                  tracks={timelineTracks}
+                  onEventClick={(eventId) => {
+                    const event = timelineEvents.find(e => e.id === eventId);
+                    if (event) {
+                      selectTimelineEvent(event);
+
+                      // Auto-focus camera on the clicked event
+                      const timeline = currentBundle.timeline;
+                      if (!timeline?.config) return;
+
+                      const startYear = timeline.config.startDate ? new Date(timeline.config.startDate).getFullYear() : 1939;
+
+                      // Constants from TimelineComponent
+                      const YEAR_SPACING = 280;
+                      const TRACK_HEIGHT = 100;
+                      const TRACK_SPACING = 20;
+                      const TIMELINE_Y_OFFSET = 80;
+
+                      // Calculate event X position (based on date)
+                      const eventDate = new Date(event.date);
+                      const eventYear = eventDate.getFullYear();
+                      const yearsSinceStart = eventYear - startYear;
+                      const startOfYear = new Date(eventYear, 0, 1);
+                      const dayOfYear = Math.floor((eventDate.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+                      const dayOffset = (dayOfYear / 365) * YEAR_SPACING;
+                      const eventX = (yearsSinceStart * YEAR_SPACING) + dayOffset;
+
+                      // Calculate event Y position (based on track)
+                      const trackIndex = timelineTracks.findIndex(t => t.id === event.track);
+                      const eventY = TIMELINE_Y_OFFSET + (trackIndex * (TRACK_HEIGHT + TRACK_SPACING)) + TRACK_HEIGHT / 2;
+
+                      // Timeline position on canvas
+                      const timelineX = 100;
+                      const timelineY = 800;
+
+                      // Absolute event position on canvas
+                      const absoluteEventX = timelineX + eventX;
+                      const absoluteEventY = timelineY + eventY;
+
+                      // Get viewport dimensions
+                      const viewportWidth = window.innerWidth;
+                      const viewportHeight = window.innerHeight;
+
+                      // Zoom closer on individual events
+                      const targetZoom = 1.5;
+
+                      // Calculate position to center event in viewport
+                      const targetX = (viewportWidth / 2) - (absoluteEventX * targetZoom);
+                      const targetY = (viewportHeight / 2) - (absoluteEventY * targetZoom);
+
+                      // Apply transformations
+                      setZoom(targetZoom);
+                      setPosition(targetX, targetY);
+                    }
+                  }}
+                  position={{
+                    x: 100,
+                    y: 800, // Position timeline below mindmap
+                  }}
+                />
+              );
+            })()}
 
             {/* Render action menu above selected node (only if visible) */}
             {selectedNode && selectedNode.isVisible && (
@@ -471,6 +583,55 @@ export default function Canvas() {
                 }}
               />
             )}
+
+            {/* Render timeline event info panel */}
+            {selectedTimelineEvent && timelineRibbonOpen && currentBundle?.timeline && (() => {
+              // Timeline constants (must match TimelineComponent.tsx)
+              const YEAR_SPACING = 280;
+              const TRACK_HEIGHT = 100;
+              const TRACK_SPACING = 20;
+              const TIMELINE_Y_OFFSET = 80;
+              const EVENT_CIRCLE_RADIUS = 10;
+              const TRACK_LABEL_WIDTH = 120;
+
+              // Get tracks from bundle
+              const timelineTracks = currentBundle.timeline.config?.tracks || [];
+              const track = timelineTracks.find(t => t.id === selectedTimelineEvent.track);
+              if (!track) return null;
+
+              // Calculate event X position (same as TimelineComponent)
+              const date = new Date(selectedTimelineEvent.date);
+              const eventYear = date.getFullYear();
+              const startYear = currentBundle.timeline.config?.startDate
+                ? new Date(currentBundle.timeline.config.startDate).getFullYear()
+                : 1939;
+              const yearsSinceStart = eventYear - startYear;
+
+              // Calculate day offset within the year
+              const startOfYear = new Date(eventYear, 0, 1);
+              const dayOfYear = Math.floor((date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+              const dayOffset = (dayOfYear / 365) * YEAR_SPACING;
+
+              // Timeline position matches Canvas.tsx timeline rendering (100, 800)
+              const timelineX = 100;
+              const timelineY = 800;
+
+              const eventX = timelineX + TRACK_LABEL_WIDTH + (yearsSinceStart * YEAR_SPACING) + dayOffset;
+
+              // Calculate event Y position (same as TimelineComponent)
+              const trackIndex = timelineTracks.findIndex(t => t.id === selectedTimelineEvent.track);
+              const eventY = timelineY + TIMELINE_Y_OFFSET + (trackIndex * (TRACK_HEIGHT + TRACK_SPACING)) + TRACK_HEIGHT / 2;
+
+              return (
+                <TimelineEventInfoPanel
+                  event={selectedTimelineEvent}
+                  eventPosition={{ x: eventX - EVENT_CIRCLE_RADIUS, y: eventY - EVENT_CIRCLE_RADIUS }}
+                  eventWidth={EVENT_CIRCLE_RADIUS * 2}
+                  eventHeight={EVENT_CIRCLE_RADIUS * 2}
+                  trackColor={track.color}
+                />
+              );
+            })()}
           </Layer>
         </Stage>
       )}
@@ -519,7 +680,7 @@ export default function Canvas() {
       {rootNodeId && (
         <button
           onClick={() => setRelationshipSidebarOpen(true)}
-          className="fixed right-4 top-4 bg-gray-900 bg-opacity-90 hover:bg-opacity-100 text-white p-3 rounded-lg shadow-lg transition-all z-40 group"
+          className="fixed right-6 top-6 w-12 h-12 bg-gray-900 bg-opacity-90 hover:bg-opacity-100 text-white rounded-full shadow-lg transition-all z-40 group flex items-center justify-center"
           aria-label="Manage relationships"
         >
           <svg
@@ -540,6 +701,9 @@ export default function Canvas() {
           </span>
         </button>
       )}
+
+      {/* Timeline ribbon button */}
+      <TimelineRibbon />
 
       {/* Relationship assignment submenu */}
       {relationshipAssignOpen && selectedNode && (

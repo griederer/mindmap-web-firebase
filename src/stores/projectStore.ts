@@ -40,6 +40,7 @@ interface ProjectState {
   updateProjectMetadata: (updates: Partial<Project['metadata']>) => void;
 }
 
+
 export const useProjectStore = create<ProjectState>((set, get) => ({
   // Initial state
   currentProject: null,

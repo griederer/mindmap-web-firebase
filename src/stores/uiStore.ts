@@ -5,7 +5,7 @@
 
 import { create } from 'zustand';
 import { NodeId } from '../types/node';
-import { ViewType } from '../types/project';
+import { ViewType, TimelineEvent } from '../types/project';
 
 interface UIState {
   // Node selection
@@ -23,11 +23,17 @@ interface UIState {
   // Inline info panel (shows on canvas)
   infoPanelNodeId: NodeId | null;
 
+  // Timeline event info panel
+  selectedTimelineEvent: TimelineEvent | null;
+
   // Fullscreen image
   fullscreenImageUrl: string | null;
 
   // Sidebar
   sidebarOpen: boolean;
+
+  // Timeline ribbon
+  timelineRibbonOpen: boolean;
 
   // Current view
   currentView: ViewType;
@@ -42,10 +48,13 @@ interface UIState {
   closeDetails: () => void; // Alias
   toggleDetailPanel: () => void;
   toggleInfoPanel: (nodeId: NodeId | null) => void;
+  selectTimelineEvent: (event: TimelineEvent | null) => void;
   openFullscreenImage: (imageUrl: string) => void;
   closeFullscreenImage: () => void;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
+  toggleTimelineRibbon: () => void;
+  setTimelineRibbonOpen: (open: boolean) => void;
   setView: (view: ViewType) => void;
 }
 
@@ -58,8 +67,10 @@ export const useUIStore = create<UIState>((set, get) => ({
   detailPanelNodeId: null,
   detailNodeId: null,
   infoPanelNodeId: null,
+  selectedTimelineEvent: null,
   fullscreenImageUrl: null,
   sidebarOpen: true,
+  timelineRibbonOpen: false,
   currentView: 'mindmap',
   
   // Select a node
@@ -147,10 +158,18 @@ export const useUIStore = create<UIState>((set, get) => ({
     if (infoPanelNodeId === nodeId) {
       set({ infoPanelNodeId: null });
     } else {
-      set({ infoPanelNodeId: nodeId });
+      set({ infoPanelNodeId: nodeId, selectedTimelineEvent: null });
     }
   },
-  
+
+  // Select timeline event (opens info panel for event)
+  selectTimelineEvent: (event: TimelineEvent | null) => {
+    set({
+      selectedTimelineEvent: event,
+      infoPanelNodeId: null, // Close node info panel
+    });
+  },
+
   // Open fullscreen image
   openFullscreenImage: (imageUrl: string) => {
     set({ fullscreenImageUrl: imageUrl });
@@ -170,6 +189,17 @@ export const useUIStore = create<UIState>((set, get) => ({
   // Set sidebar state
   setSidebarOpen: (open: boolean) => {
     set({ sidebarOpen: open });
+  },
+
+  // Toggle timeline ribbon
+  toggleTimelineRibbon: () => {
+    const { timelineRibbonOpen } = get();
+    set({ timelineRibbonOpen: !timelineRibbonOpen });
+  },
+
+  // Set timeline ribbon state
+  setTimelineRibbonOpen: (open: boolean) => {
+    set({ timelineRibbonOpen: open });
   },
 
   // Set current view
