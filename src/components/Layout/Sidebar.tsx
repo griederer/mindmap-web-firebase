@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown, Plus, FolderOpen, CircleDot } from 'lucide-react';
 import { useProjectStore } from '../../stores/projectStore';
 import { useSidebarStore } from '../../stores/sidebarStore';
+import { useViewportStore } from '../../stores/viewportStore';
 import { calculateLayout } from '../../utils/layoutEngine';
 import { loadModularProject, loadLegacyProject } from '../../utils/projectLoader';
 
@@ -18,6 +19,7 @@ export default function Sidebar() {
 
   const { loadProject, loadProjectBundle, currentProject } = useProjectStore();
   const { isCollapsed, toggleCollapse } = useSidebarStore();
+  const { focusOnNodes } = useViewportStore();
 
   // Keyboard shortcut: Cmd+B to toggle sidebar
   useEffect(() => {
@@ -51,6 +53,17 @@ export default function Sidebar() {
         }
 
         loadProjectBundle(bundle);
+
+        // Auto-focus on all visible nodes after loading
+        if (bundle.mindmap) {
+          setTimeout(() => {
+            const visibleNodeIds = Object.values(bundle.mindmap!.nodes)
+              .filter(node => node.isVisible)
+              .map(node => node.id);
+            focusOnNodes(visibleNodeIds, false);
+          }, 100);
+        }
+
         setIsLoading(false);
         return;
       } catch (folderErr: any) {
@@ -88,6 +101,17 @@ export default function Sidebar() {
       }
 
       loadProjectBundle(bundle);
+
+      // Auto-focus on all visible nodes after loading
+      if (bundle.mindmap) {
+        setTimeout(() => {
+          const visibleNodeIds = Object.values(bundle.mindmap!.nodes)
+            .filter(node => node.isVisible)
+            .map(node => node.id);
+          focusOnNodes(visibleNodeIds, false);
+        }, 100);
+      }
+
       setIsLoading(false);
     } catch (err: any) {
       if (err.name === 'AbortError') {
@@ -129,6 +153,11 @@ export default function Sidebar() {
     };
 
     loadProject(newProject);
+
+    // Auto-focus on root node after creating new project
+    setTimeout(() => {
+      focusOnNodes(['root'], false);
+    }, 100);
   };
 
   // Collapsed state (48px width)
