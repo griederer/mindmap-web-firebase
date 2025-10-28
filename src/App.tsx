@@ -6,11 +6,13 @@ import ViewSwitcher from './components/Layout/ViewSwitcher';
 import NodeDetails from './components/Canvas/NodeDetails';
 import { useProjectStore } from './stores/projectStore';
 import { useUIStore } from './stores/uiStore';
+import { useViewportStore } from './stores/viewportStore';
 import { calculateLayout } from './utils/layoutEngine';
 
 function App() {
   const { loadProject, currentProject } = useProjectStore();
   const { currentView } = useUIStore();
+  const { focusOnNodes } = useViewportStore();
 
   // Load WWII project on mount
   useEffect(() => {
@@ -25,9 +27,17 @@ function App() {
           ...project,
           nodes: layoutedNodes,
         });
+
+        // Auto-focus on all visible nodes after loading
+        setTimeout(() => {
+          const visibleNodeIds = Object.values(layoutedNodes)
+            .filter((node: any) => node.isVisible)
+            .map((node: any) => node.id);
+          focusOnNodes(visibleNodeIds, false);
+        }, 100);
       })
       .catch(err => console.error('Failed to load WWII project:', err));
-  }, [loadProject]);
+  }, [loadProject, focusOnNodes]);
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
