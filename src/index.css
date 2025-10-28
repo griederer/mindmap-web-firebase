@@ -6,12 +6,24 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Prevent browser zoom from affecting layout */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Ensure consistent sizing */
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
 }
 
 code {
