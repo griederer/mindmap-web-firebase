@@ -26,7 +26,6 @@ function App() {
         const bundle = {
           projectId: data.projectId,
           metadata: data.metadata,
-          views: data.views,
           mindmap: {
             nodes: layoutedNodes,
             rootNodeId: data.mindmap.rootNodeId,

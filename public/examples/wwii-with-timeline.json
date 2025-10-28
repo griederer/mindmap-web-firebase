@@ -5,14 +5,14 @@
     "description": "WWII project with mindmap and timeline views",
     "createdAt": 1640000000000,
     "updatedAt": 1640000000000,
-    "version": "1.0.0"
-  },
-  "views": {
-    "mindmap": {
-      "enabled": true
-    },
-    "timeline": {
-      "enabled": true
+    "version": "1.0.0",
+    "views": {
+      "mindmap": {
+        "enabled": true
+      },
+      "timeline": {
+        "enabled": true
+      }
     }
   },
   "mindmap": {
