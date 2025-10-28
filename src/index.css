@@ -12,6 +12,8 @@ html {
   -moz-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Set larger base font size for better readability */
+  font-size: 18px;
 }
 
 body {
