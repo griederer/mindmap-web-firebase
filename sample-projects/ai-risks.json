@@ -1,0 +1,218 @@
+{
+  "projectId": "ai-risks-2025",
+  "metadata": {
+    "title": "Riesgos de Inteligencia Artificial",
+    "description": "Análisis comprehensivo de los principales riesgos asociados con el desarrollo y despliegue de sistemas de inteligencia artificial",
+    "createdAt": 1730116800000,
+    "updatedAt": 1730116800000,
+    "version": "1.0.0"
+  },
+  "nodes": {
+    "root": {
+      "id": "root",
+      "title": "Riesgos de IA",
+      "description": "Los sistemas de inteligencia artificial presentan diversos riesgos que requieren atención y mitigación cuidadosa. Este mapa explora las principales categorías de riesgo.",
+      "children": ["technical-risks", "ethical-risks", "societal-risks"],
+      "level": 0,
+      "parentId": null,
+      "position": { "x": 100, "y": 300 },
+      "isExpanded": true,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "technical-risks": {
+      "id": "technical-risks",
+      "title": "Riesgos Técnicos",
+      "description": "Los riesgos técnicos incluyen fallas en el diseño, implementación y operación de sistemas de IA. Estos pueden llevar a comportamientos impredecibles o dañinos.",
+      "children": ["bias", "robustness", "security"],
+      "level": 1,
+      "parentId": "root",
+      "position": { "x": 400, "y": 150 },
+      "isExpanded": true,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "bias": {
+      "id": "bias",
+      "title": "Sesgo Algorítmico",
+      "description": "Los modelos de IA pueden heredar y amplificar sesgos presentes en los datos de entrenamiento, resultando en discriminación sistemática contra grupos específicos.\n\n**Ejemplos documentados:**\n- Sistemas de reconocimiento facial con mayor tasa de error en personas de piel oscura\n- Algoritmos de contratación que favorecen candidatos masculinos\n- Sistemas de justicia predictiva que discriminan por raza\n\n**Mitigación:**\n- Auditorías regulares de equidad\n- Datasets balanceados y representativos\n- Técnicas de debiasing durante entrenamiento",
+      "children": [],
+      "level": 2,
+      "parentId": "technical-risks",
+      "position": { "x": 700, "y": 50 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1535378620166-273708d44e4c?w=800",
+          "caption": "Representación visual de sesgo algorítmico",
+          "alt": "Abstract visualization of algorithmic bias"
+        }
+      ]
+    },
+    "robustness": {
+      "id": "robustness",
+      "title": "Falta de Robustez",
+      "description": "Los sistemas de IA pueden fallar de manera catastrófica ante inputs inesperados o adversariales, especialmente fuera de su distribución de entrenamiento.\n\n**Vulnerabilidades clave:**\n- Ataques adversariales que engañan al modelo\n- Degradación de rendimiento con datos fuera de distribución\n- Incapacidad de reconocer límites de competencia\n\n**Casos críticos:**\n- Vehículos autónomos confundidos por stickers en señales de tránsito\n- Sistemas médicos que fallan con variaciones anatómicas no vistas\n- Chatbots que generan respuestas peligrosas ante queries adversariales",
+      "children": [],
+      "level": 2,
+      "parentId": "technical-risks",
+      "position": { "x": 700, "y": 150 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "security": {
+      "id": "security",
+      "title": "Vulnerabilidades de Seguridad",
+      "description": "Los sistemas de IA presentan vectores de ataque únicos que pueden ser explotados para comprometer su integridad, confidencialidad o disponibilidad.\n\n**Tipos de ataque:**\n1. **Model Inversion**: Extraer datos de entrenamiento del modelo\n2. **Data Poisoning**: Contaminar datasets de entrenamiento\n3. **Model Stealing**: Copiar funcionalidad del modelo\n4. **Prompt Injection**: Manipular LLMs para bypass de restricciones\n\n**Sectores de alto riesgo:**\n- Sistemas financieros (detección de fraude)\n- Infraestructura crítica (grids eléctricos)\n- Defensa y seguridad nacional\n- Atención médica (diagnóstico automatizado)",
+      "children": [],
+      "level": 2,
+      "parentId": "technical-risks",
+      "position": { "x": 700, "y": 250 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800",
+          "caption": "Ciberseguridad y protección de sistemas de IA",
+          "alt": "Cybersecurity concept with lock and data"
+        }
+      ]
+    },
+    "ethical-risks": {
+      "id": "ethical-risks",
+      "title": "Riesgos Éticos",
+      "description": "Los sistemas de IA plantean dilemas éticos fundamentales sobre autonomía, responsabilidad, privacidad y el valor de la agencia humana.",
+      "children": ["privacy", "autonomy", "accountability"],
+      "level": 1,
+      "parentId": "root",
+      "position": { "x": 400, "y": 300 },
+      "isExpanded": true,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "privacy": {
+      "id": "privacy",
+      "title": "Erosión de Privacidad",
+      "description": "Los sistemas de IA modernos dependen de vastas cantidades de datos personales, creando riesgos sin precedentes para la privacidad individual y colectiva.\n\n**Mecanismos de violación:**\n- Inferencia de atributos sensibles no revelados\n- Re-identificación de datos supuestamente anonimizados\n- Vigilancia masiva facilitada por reconocimiento facial\n- Perfilado psicológico a partir de patrones de comportamiento\n\n**Marco regulatorio:**\n- GDPR (Unión Europea)\n- CCPA (California)\n- Propuestas de regulación específica para IA",
+      "children": [],
+      "level": 2,
+      "parentId": "ethical-risks",
+      "position": { "x": 700, "y": 350 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800",
+          "caption": "Privacidad de datos en la era de IA",
+          "alt": "Privacy and data protection concept"
+        }
+      ]
+    },
+    "autonomy": {
+      "id": "autonomy",
+      "title": "Pérdida de Autonomía Humana",
+      "description": "La delegación excesiva de decisiones a sistemas de IA puede erosionar la capacidad y autoridad humana para tomar decisiones significativas.\n\n**Áreas de preocupación:**\n- Sistemas de recomendación que estrechan perspectivas (filter bubbles)\n- Automatización de decisiones judiciales y administrativas\n- IA en sistemas de armas autónomas\n- Diagnósticos médicos sin supervisión adecuada\n\n**Principio de 'Human in the Loop':**\nMantener control humano significativo en decisiones críticas, especialmente aquellas que afectan derechos fundamentales.",
+      "children": [],
+      "level": 2,
+      "parentId": "ethical-risks",
+      "position": { "x": 700, "y": 450 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "accountability": {
+      "id": "accountability",
+      "title": "Crisis de Responsabilidad",
+      "description": "La complejidad y opacidad de los sistemas de IA modernos crea 'vacíos de responsabilidad' donde es difícil atribuir culpa por daños causados.\n\n**Desafíos legales:**\n- Sistemas autónomos que toman decisiones sin supervisión directa\n- Múltiples actores en la cadena de desarrollo y despliegue\n- Dificultad de explicar decisiones de modelos complejos\n\n**Propuestas de solución:**\n1. Registros de auditoría completos\n2. Requisitos de explicabilidad\n3. Seguros de responsabilidad para IA\n4. Marcos de certificación y estándares",
+      "children": [],
+      "level": 2,
+      "parentId": "ethical-risks",
+      "position": { "x": 700, "y": 550 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "societal-risks": {
+      "id": "societal-risks",
+      "title": "Riesgos Societales",
+      "description": "La adopción masiva de IA tiene el potencial de transformar estructuras sociales, económicas y políticas de maneras profundas y potencialmente desestabilizadoras.",
+      "children": ["employment", "inequality", "disinformation"],
+      "level": 1,
+      "parentId": "root",
+      "position": { "x": 400, "y": 450 },
+      "isExpanded": true,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "employment": {
+      "id": "employment",
+      "title": "Desplazamiento Laboral",
+      "description": "La automatización impulsada por IA amenaza con desplazar millones de trabajadores, especialmente en ocupaciones rutinarias y predecibles.\n\n**Sectores en riesgo:**\n- Transporte (conductores, operadores)\n- Manufactura (trabajadores de línea)\n- Servicios administrativos (data entry, procesamiento)\n- Algunos roles profesionales (paralegales, analistas junior)\n\n**Estimaciones:**\n- McKinsey: 400-800 millones de trabajos desplazados para 2030\n- OCDE: 14% de empleos en alto riesgo de automatización\n\n**Políticas propuestas:**\n- Renta básica universal\n- Programas masivos de reentrenamiento\n- Reducción de jornada laboral\n- Impuestos a la automatización",
+      "children": [],
+      "level": 2,
+      "parentId": "societal-risks",
+      "position": { "x": 700, "y": 650 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800",
+          "caption": "Automatización y el futuro del trabajo",
+          "alt": "Robotic arm representing automation"
+        }
+      ]
+    },
+    "inequality": {
+      "id": "inequality",
+      "title": "Amplificación de Desigualdad",
+      "description": "La IA puede exacerbar desigualdades existentes al concentrar poder económico y capacidades en manos de unos pocos actores dominantes.\n\n**Mecanismos de concentración:**\n- Efectos de red y ventajas del first-mover\n- Requisitos masivos de datos y recursos computacionales\n- Acceso desigual a tecnología de punta\n- Captura regulatoria por empresas dominantes\n\n**Dimensiones de desigualdad:**\n- Entre países (brecha tecnológica Norte-Sur)\n- Dentro de países (urbano vs rural, educados vs no educados)\n- Entre empresas (tech giants vs competidores)\n- Acceso a beneficios de IA (servicios de salud, educación)",
+      "children": [],
+      "level": 2,
+      "parentId": "societal-risks",
+      "position": { "x": 700, "y": 750 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "disinformation": {
+      "id": "disinformation",
+      "title": "Desinformación a Escala",
+      "description": "Las herramientas de IA generativa facilitan la creación y difusión de desinformación sofisticada a escala sin precedentes.\n\n**Tecnologías habilitadoras:**\n- Deepfakes de video y audio\n- Generación de texto sintético convincente\n- Bots sociales automatizados\n- Microtargeting de propaganda\n\n**Amenazas a la democracia:**\n1. Manipulación de elecciones\n2. Erosión de confianza en instituciones\n3. Polarización acelerada\n4. Imposibilidad de distinguir verdad de ficción\n\n**Contramedidas:**\n- Detección automatizada de contenido sintético\n- Watermarking de contenido generado por IA\n- Educación en alfabetización mediática\n- Regulación de uso de IA en campañas políticas",
+      "children": [],
+      "level": 2,
+      "parentId": "societal-risks",
+      "position": { "x": 700, "y": 850 },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800",
+          "caption": "Desinformación y manipulación digital",
+          "alt": "Fake news and misinformation concept"
+        }
+      ]
+    }
+  },
+  "rootNodeId": "root",
+  "actions": []
+}

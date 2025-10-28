@@ -58,7 +58,9 @@ export default function NodeDetails() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Description
               </label>
-              <p className="text-sm text-gray-600 whitespace-pre-wrap">{node.description}</p>
+              <div className="max-h-96 overflow-y-auto bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <p className="text-sm text-gray-600 whitespace-pre-wrap">{node.description}</p>
+              </div>
             </div>
           )}
 
