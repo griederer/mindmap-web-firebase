@@ -1,0 +1,17 @@
+{
+  "projectId": "ai-risks-2025",
+  "version": "1.0.0",
+  "metadata": {
+    "title": "Riesgos de Inteligencia Artificial",
+    "description": "Análisis comprehensivo de los principales riesgos asociados con el desarrollo y despliegue de sistemas de inteligencia artificial",
+    "createdAt": 1730116800000,
+    "updatedAt": 1730116800000
+  },
+  "views": {
+    "mindmap": {
+      "enabled": true,
+      "default": true,
+      "file": "mindmap.json"
+    }
+  }
+}

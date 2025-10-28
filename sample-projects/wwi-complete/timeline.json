@@ -1,0 +1,179 @@
+{
+  "config": {
+    "startDate": "1914-01-01",
+    "endDate": "1919-12-31",
+    "granularity": "month",
+    "tracks": [
+      {
+        "id": "political",
+        "name": "Eventos Políticos",
+        "color": "#3b82f6"
+      },
+      {
+        "id": "military",
+        "name": "Batallas y Campañas",
+        "color": "#ef4444"
+      },
+      {
+        "id": "social",
+        "name": "Cambios Sociales",
+        "color": "#10b981"
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "assassination",
+      "title": "Asesinato del Archiduque",
+      "description": "El archiduque Francisco Fernando de Austria es asesinado en Sarajevo por Gavrilo Princip, desencadenando el inicio de la Primera Guerra Mundial",
+      "date": "1914-06-28",
+      "track": "political",
+      "linkedNodeId": "assassination"
+    },
+    {
+      "id": "austria-declares-war",
+      "title": "Austria-Hungría Declara la Guerra",
+      "description": "Austria-Hungría declara la guerra a Serbia, iniciando formalmente la Primera Guerra Mundial",
+      "date": "1914-07-28",
+      "track": "political"
+    },
+    {
+      "id": "germany-invades-belgium",
+      "title": "Alemania Invade Bélgica",
+      "description": "Alemania invade Bélgica, violando su neutralidad y provocando la entrada de Gran Bretaña en la guerra",
+      "date": "1914-08-04",
+      "track": "military"
+    },
+    {
+      "id": "first-marne",
+      "title": "Primera Batalla del Marne",
+      "description": "Victoria aliada que detuvo el avance alemán hacia París y estableció el frente occidental",
+      "date": "1914-09-06",
+      "endDate": "1914-09-12",
+      "track": "military"
+    },
+    {
+      "id": "trench-warfare-begins",
+      "title": "Inicio de Guerra de Trincheras",
+      "description": "Comienza el estancamiento de la guerra de trincheras en el frente occidental",
+      "date": "1914-11-01",
+      "track": "military"
+    },
+    {
+      "id": "gallipoli",
+      "title": "Campaña de Gallípoli",
+      "description": "Fallida campaña aliada para capturar Constantinopla y abrir una ruta hacia Rusia",
+      "date": "1915-04-25",
+      "endDate": "1916-01-09",
+      "track": "military"
+    },
+    {
+      "id": "lusitania-sinking",
+      "title": "Hundimiento del Lusitania",
+      "description": "Alemania hunde el transatlántico británico Lusitania, matando a 128 estadounidenses",
+      "date": "1915-05-07",
+      "track": "political"
+    },
+    {
+      "id": "second-ypres",
+      "title": "Segunda Batalla de Ypres",
+      "description": "Primer uso a gran escala de gas venenoso por Alemania en el frente occidental",
+      "date": "1915-04-22",
+      "endDate": "1915-05-25",
+      "track": "military"
+    },
+    {
+      "id": "verdun",
+      "title": "Batalla de Verdún",
+      "description": "La batalla más larga y sangrienta de la guerra. Cerca de 700,000 bajas en total entre franceses y alemanes",
+      "date": "1916-02-21",
+      "endDate": "1916-12-18",
+      "track": "military",
+      "linkedNodeId": "verdun"
+    },
+    {
+      "id": "somme",
+      "title": "Batalla del Somme",
+      "description": "Ofensiva británica con el primer día más mortífero en la historia militar británica (60,000 bajas)",
+      "date": "1916-07-01",
+      "endDate": "1916-11-18",
+      "track": "military",
+      "linkedNodeId": "somme"
+    },
+    {
+      "id": "unrestricted-submarine",
+      "title": "Guerra Submarina Sin Restricciones",
+      "description": "Alemania anuncia guerra submarina sin restricciones, atacando todos los barcos en zona de guerra",
+      "date": "1917-02-01",
+      "track": "military"
+    },
+    {
+      "id": "russian-revolution",
+      "title": "Revolución Rusa",
+      "description": "La Revolución de Octubre lleva a los bolcheviques al poder, eventualmente retirando a Rusia de la guerra",
+      "date": "1917-11-07",
+      "track": "political"
+    },
+    {
+      "id": "usa-enters",
+      "title": "Estados Unidos Entra en la Guerra",
+      "description": "Estados Unidos declara la guerra a Alemania, alterando decisivamente el equilibrio de poder",
+      "date": "1917-04-06",
+      "track": "political"
+    },
+    {
+      "id": "passchendaele",
+      "title": "Batalla de Passchendaele",
+      "description": "Ofensiva británica en condiciones de lodo extremo, ganando solo 8 km al costo de 325,000 bajas",
+      "date": "1917-07-31",
+      "endDate": "1917-11-10",
+      "track": "military",
+      "linkedNodeId": "passchendaele"
+    },
+    {
+      "id": "german-spring-offensive",
+      "title": "Ofensiva de Primavera Alemana",
+      "description": "Último intento alemán de victoria antes de la llegada masiva de tropas estadounidenses",
+      "date": "1918-03-21",
+      "endDate": "1918-07-18",
+      "track": "military"
+    },
+    {
+      "id": "hundred-days",
+      "title": "Ofensiva de los Cien Días",
+      "description": "Serie de victorias aliadas que llevaron al colapso del frente alemán",
+      "date": "1918-08-08",
+      "endDate": "1918-11-11",
+      "track": "military"
+    },
+    {
+      "id": "armistice",
+      "title": "Armisticio",
+      "description": "Alemania firma el armisticio, terminando efectivamente la Primera Guerra Mundial",
+      "date": "1918-11-11",
+      "track": "political"
+    },
+    {
+      "id": "treaty-versailles",
+      "title": "Tratado de Versalles",
+      "description": "Se firma el tratado de paz que impone duras condiciones a Alemania y redibuja el mapa de Europa",
+      "date": "1919-06-28",
+      "track": "political",
+      "linkedNodeId": "treaty-versailles"
+    },
+    {
+      "id": "league-nations",
+      "title": "Creación de la Liga de Naciones",
+      "description": "Se establece la Liga de Naciones con el objetivo de mantener la paz mundial",
+      "date": "1920-01-10",
+      "track": "political"
+    },
+    {
+      "id": "womens-suffrage",
+      "title": "Sufragio Femenino en EE.UU.",
+      "description": "Las mujeres obtienen el derecho al voto en Estados Unidos, en parte debido a sus contribuciones durante la guerra",
+      "date": "1920-08-18",
+      "track": "social"
+    }
+  ]
+}

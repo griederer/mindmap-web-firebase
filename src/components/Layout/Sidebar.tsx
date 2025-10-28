@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight, ChevronDown, Plus, FolderOpen, CircleDot } f
 import { useProjectStore } from '../../stores/projectStore';
 import { useSidebarStore } from '../../stores/sidebarStore';
 import { calculateLayout } from '../../utils/layoutEngine';
+import { loadModularProject, loadLegacyProject } from '../../utils/projectLoader';
 
 export default function Sidebar() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +16,7 @@ export default function Sidebar() {
   const [isActionsExpanded, setIsActionsExpanded] = useState(true);
   const [isProjectsExpanded, setIsProjectsExpanded] = useState(true);
 
-  const { loadProject, currentProject } = useProjectStore();
+  const { loadProject, loadProjectBundle, currentProject } = useProjectStore();
   const { isCollapsed, toggleCollapse } = useSidebarStore();
 
   // Keyboard shortcut: Cmd+B to toggle sidebar
@@ -36,6 +37,31 @@ export default function Sidebar() {
       setIsLoading(true);
       setError(null);
 
+      // Try to load modular project (folder)
+      try {
+        const bundle = await loadModularProject();
+
+        // Apply layout to mindmap nodes if present
+        if (bundle.mindmap) {
+          const { nodes: layoutedNodes } = calculateLayout(
+            bundle.mindmap.nodes,
+            bundle.mindmap.rootNodeId
+          );
+          bundle.mindmap.nodes = layoutedNodes;
+        }
+
+        loadProjectBundle(bundle);
+        setIsLoading(false);
+        return;
+      } catch (folderErr: any) {
+        // If folder loading fails, fall back to single file
+        if (folderErr.message.includes('showDirectoryPicker')) {
+          // Browser doesn't support directory picker, use file picker
+          console.log('Directory picker not supported, falling back to file picker');
+        }
+      }
+
+      // Fall back to legacy single-file loading
       const [fileHandle] = await (window as any).showOpenFilePicker({
         types: [
           {
@@ -50,20 +76,18 @@ export default function Sidebar() {
       });
 
       const file = await fileHandle.getFile();
-      const contents = await file.text();
-      const project = JSON.parse(contents);
+      const bundle = await loadLegacyProject(file);
 
-      if (!project.projectId || !project.nodes || !project.rootNodeId) {
-        throw new Error('Invalid project file: missing required fields');
+      // Apply layout
+      if (bundle.mindmap) {
+        const { nodes: layoutedNodes } = calculateLayout(
+          bundle.mindmap.nodes,
+          bundle.mindmap.rootNodeId
+        );
+        bundle.mindmap.nodes = layoutedNodes;
       }
 
-      const { nodes: layoutedNodes } = calculateLayout(project.nodes, project.rootNodeId);
-
-      loadProject({
-        ...project,
-        nodes: layoutedNodes,
-      });
-
+      loadProjectBundle(bundle);
       setIsLoading(false);
     } catch (err: any) {
       if (err.name === 'AbortError') {

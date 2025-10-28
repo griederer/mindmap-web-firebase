@@ -1,0 +1,21 @@
+{
+  "projectId": "wwi-complete",
+  "version": "1.0.0",
+  "metadata": {
+    "title": "Primera Guerra Mundial 1914-1918",
+    "description": "Análisis completo de la Primera Guerra Mundial con vista cronológica de eventos clave",
+    "createdAt": 1730116800000,
+    "updatedAt": 1730116800000
+  },
+  "views": {
+    "mindmap": {
+      "enabled": true,
+      "default": true,
+      "file": "mindmap.json"
+    },
+    "timeline": {
+      "enabled": true,
+      "file": "timeline.json"
+    }
+  }
+}

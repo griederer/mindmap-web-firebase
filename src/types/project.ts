@@ -44,3 +44,160 @@ export interface Project {
 }
 
 export type ProjectId = string;
+
+// ============================================================================
+// MODULAR PROJECT SYSTEM (v1.5+)
+// ============================================================================
+
+/**
+ * View configuration for modular projects
+ */
+export interface ViewConfig {
+  enabled: boolean;
+  default?: boolean;
+  file: string;
+  config?: Record<string, any>;
+}
+
+/**
+ * Modular project metadata with view configuration
+ */
+export interface ModularProjectMetadata extends ProjectMetadata {
+  views?: {
+    [viewType: string]: ViewConfig;
+  };
+}
+
+/**
+ * Timeline data structure
+ */
+export interface TimelineData {
+  config: TimelineConfig;
+  events: TimelineEvent[];
+}
+
+export interface TimelineConfig {
+  startDate: string;
+  endDate: string;
+  granularity: 'year' | 'month' | 'day';
+  tracks: TimelineTrack[];
+}
+
+export interface TimelineTrack {
+  id: string;
+  name: string;
+  color: string;
+}
+
+export interface TimelineEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  endDate?: string;
+  track: string;
+  linkedNodeId?: string;
+  images?: Array<{
+    url: string;
+    caption: string;
+  }>;
+}
+
+/**
+ * Kanban data structure (placeholder for future)
+ */
+export interface KanbanData {
+  config: {
+    columns: Array<{
+      id: string;
+      name: string;
+      color: string;
+    }>;
+  };
+  cards: Array<{
+    id: string;
+    title: string;
+    description: string;
+    column: string;
+    linkedNodeId?: string;
+  }>;
+}
+
+/**
+ * Matrix data structure (placeholder for future)
+ */
+export interface MatrixData {
+  config: {
+    rows: Array<{ id: string; name: string }>;
+    columns: Array<{ id: string; name: string; type: string }>;
+  };
+  cells: Array<{
+    rowId: string;
+    columnId: string;
+    value: any;
+    linkedNodeId?: string;
+  }>;
+}
+
+/**
+ * Complete project bundle with all views
+ */
+export interface ProjectBundle {
+  metadata: ModularProjectMetadata;
+  projectId: string;
+  mindmap?: {
+    rootNodeId: string;
+    nodes: Record<string, Node>;
+  };
+  timeline?: TimelineData;
+  kanban?: KanbanData;
+  matrix?: MatrixData;
+  // Legacy fields for backward compatibility
+  actions?: Action[];
+  relationships?: Relationship[];
+}
+
+/**
+ * View type identifier
+ */
+export type ViewType = 'mindmap' | 'timeline' | 'kanban' | 'matrix';
+
+/**
+ * View metadata
+ */
+export interface ViewInfo {
+  id: ViewType;
+  name: string;
+  icon: string;
+  description: string;
+}
+
+/**
+ * Available view definitions
+ */
+export const AVAILABLE_VIEWS: Record<ViewType, ViewInfo> = {
+  mindmap: {
+    id: 'mindmap',
+    name: 'Mindmap',
+    icon: '🗺️',
+    description: 'Visual de mapa mental con nodos y conexiones',
+  },
+  timeline: {
+    id: 'timeline',
+    name: 'Timeline',
+    icon: '📅',
+    description: 'Línea de tiempo cronológica de eventos',
+  },
+  kanban: {
+    id: 'kanban',
+    name: 'Kanban',
+    icon: '📋',
+    description: 'Tablero kanban para gestión de tareas',
+  },
+  matrix: {
+    id: 'matrix',
+    name: 'Matrix',
+    icon: '📊',
+    description: 'Vista de matriz para análisis comparativo',
+  },
+};

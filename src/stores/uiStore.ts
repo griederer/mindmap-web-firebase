@@ -5,6 +5,7 @@
 
 import { create } from 'zustand';
 import { NodeId } from '../types/node';
+import { ViewType } from '../types/project';
 
 interface UIState {
   // Node selection
@@ -28,6 +29,9 @@ interface UIState {
   // Sidebar
   sidebarOpen: boolean;
 
+  // Current view
+  currentView: ViewType;
+
   // Operations
   selectNode: (nodeId: NodeId | null) => void;
   setFocusMode: (nodeId: NodeId | null) => void;
@@ -42,6 +46,7 @@ interface UIState {
   closeFullscreenImage: () => void;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
+  setView: (view: ViewType) => void;
 }
 
 export const useUIStore = create<UIState>((set, get) => ({
@@ -55,6 +60,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   infoPanelNodeId: null,
   fullscreenImageUrl: null,
   sidebarOpen: true,
+  currentView: 'mindmap',
   
   // Select a node
   selectNode: (nodeId: NodeId | null) => {
@@ -164,5 +170,10 @@ export const useUIStore = create<UIState>((set, get) => ({
   // Set sidebar state
   setSidebarOpen: (open: boolean) => {
     set({ sidebarOpen: open });
+  },
+
+  // Set current view
+  setView: (view: ViewType) => {
+    set({ currentView: view });
   },
 }));

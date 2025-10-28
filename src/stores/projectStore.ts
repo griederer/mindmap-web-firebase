@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { Project, ProjectId } from '../types/project';
+import { Project, ProjectId, ProjectBundle } from '../types/project';
 import { Node, NodeId } from '../types/node';
 import { Action } from '../types/action';
 import { calculateLayout } from '../utils/layoutEngine';
@@ -16,6 +16,9 @@ interface ProjectState {
   currentProject: Project | null;
   currentProjectId: ProjectId | null;
 
+  // Modular project bundle (v1.5+)
+  currentBundle: ProjectBundle | null;
+
   // Node operations
   nodes: Record<NodeId, Node>;
   rootNodeId: NodeId | null;
@@ -25,6 +28,7 @@ interface ProjectState {
 
   // Operations
   loadProject: (project: Project) => void;
+  loadProjectBundle: (bundle: ProjectBundle) => void;
   saveProject: () => Project | null;
   clearProject: () => void;
   updateNode: (nodeId: NodeId, updates: Partial<Node>) => void;
@@ -40,6 +44,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   // Initial state
   currentProject: null,
   currentProjectId: null,
+  currentBundle: null,
   nodes: {},
   rootNodeId: null,
   recordedActions: [],
@@ -57,6 +62,43 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     // Load relationships into relationshipStore
     const { setRelationships } = useRelationshipStore.getState();
     setRelationships(project.relationships || []);
+  },
+
+  // Load a modular project bundle
+  loadProjectBundle: (bundle: ProjectBundle) => {
+    // Convert bundle to legacy Project format for compatibility
+    const project: Project = {
+      projectId: bundle.projectId,
+      metadata: bundle.metadata,
+      nodes: bundle.mindmap?.nodes || {},
+      rootNodeId: bundle.mindmap?.rootNodeId || '',
+      actions: bundle.actions || [],
+      relationships: bundle.relationships || [],
+    };
+
+    set({
+      currentProject: project,
+      currentProjectId: bundle.projectId,
+      currentBundle: bundle,
+      nodes: bundle.mindmap?.nodes || {},
+      rootNodeId: bundle.mindmap?.rootNodeId || null,
+      recordedActions: bundle.actions || [],
+    });
+
+    // Load relationships
+    const { setRelationships } = useRelationshipStore.getState();
+    setRelationships(bundle.relationships || []);
+
+    // Set default view
+    const { setView } = useUIStore.getState();
+    if (bundle.metadata.views) {
+      for (const [viewType, viewConfig] of Object.entries(bundle.metadata.views)) {
+        if (viewConfig.default && viewConfig.enabled) {
+          setView(viewType as any);
+          break;
+        }
+      }
+    }
   },
 
   // Save current project (returns current state as Project)

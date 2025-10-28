@@ -1,0 +1,285 @@
+{
+  "rootNodeId": "root",
+  "nodes": {
+    "root": {
+      "id": "root",
+      "title": "Primera Guerra Mundial",
+      "description": "La Primera Guerra Mundial (1914-1918) fue un conflicto global que involucró a las principales potencias mundiales, divididas en dos alianzas: los Aliados y las Potencias Centrales. Resultó en más de 17 millones de muertes y transformó radicalmente el mapa político de Europa y Oriente Medio.",
+      "children": [
+        "causes",
+        "major-battles",
+        "consequences"
+      ],
+      "level": 0,
+      "parentId": null,
+      "position": {
+        "x": 100,
+        "y": 300
+      },
+      "isExpanded": true,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1585399000684-d2f72660f092?w=800",
+          "caption": "Soldados en las trincheras durante la Primera Guerra Mundial",
+          "alt": "WWI trench warfare"
+        }
+      ]
+    },
+    "causes": {
+      "id": "causes",
+      "title": "Causas de la Guerra",
+      "description": "La Primera Guerra Mundial fue el resultado de una compleja red de tensiones políticas, rivalidades imperiales, alianzas militares y nacionalismos exacerbados que caracterizaron Europa a principios del siglo XX.",
+      "children": [
+        "alliances",
+        "imperialism",
+        "assassination"
+      ],
+      "level": 1,
+      "parentId": "root",
+      "position": {
+        "x": 400,
+        "y": 100
+      },
+      "isExpanded": true,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "alliances": {
+      "id": "alliances",
+      "title": "Sistema de Alianzas",
+      "description": "Europa se dividió en dos bloques militares rivales que transformaron un conflicto regional en una guerra global.\n\n**Triple Alianza (Potencias Centrales):**\n- Alemania\n- Austria-Hungría\n- Italia (inicialmente, luego cambió de bando)\n- Imperio Otomano (se unió en 1914)\n- Bulgaria (se unió en 1915)\n\n**Triple Entente (Aliados):**\n- Francia\n- Rusia\n- Reino Unido\n- Italia (desde 1915)\n- Rumania (desde 1916)\n- Estados Unidos (desde 1917)\n\n**Mecanismo de escalada:**\nEl sistema de alianzas funcionó como un efecto dominó: cuando Austria-Hungría declaró la guerra a Serbia, Rusia movilizó tropas para defender a Serbia, lo que activó el tratado de alianza entre Alemania y Austria-Hungría, llevando a Alemania a declarar la guerra a Rusia y Francia.",
+      "children": [],
+      "level": 2,
+      "parentId": "causes",
+      "position": {
+        "x": 700,
+        "y": 0
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "imperialism": {
+      "id": "imperialism",
+      "title": "Rivalidad Imperial",
+      "description": "La competencia por colonias y recursos globales creó tensiones insostenibles entre las grandes potencias europeas.\n\n**Puntos de fricción:**\n\n1. **África:** Alemania llegó tarde a la colonización y resentía el dominio británico y francés\n2. **Balcanes:** El \"polvorín de Europa\" donde Austria-Hungría, Rusia y el Imperio Otomano competían por influencia\n3. **Oriente Medio:** Intereses petroleros y control de rutas comerciales\n4. **Supremacía naval:** Alemania desafió el dominio marítimo británico\n\n**Carrera armamentista:**\nEntre 1900 y 1914, las potencias europeas duplicaron sus presupuestos militares. Alemania expandió dramáticamente su marina, mientras Reino Unido respondió con el programa de acorazados Dreadnought.\n\n**Planes de guerra:**\n- Plan Schlieffen (Alemania): invasión rápida de Francia a través de Bélgica\n- Plan XVII (Francia): ofensiva directa en Alsacia-Lorena\n- Plan de movilización ruso: lenta pero masiva concentración de tropas",
+      "children": [],
+      "level": 2,
+      "parentId": "causes",
+      "position": {
+        "x": 700,
+        "y": 100
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",
+          "caption": "El mundo en vísperas de la guerra - rivalidad global",
+          "alt": "World map representing global tensions"
+        }
+      ]
+    },
+    "assassination": {
+      "id": "assassination",
+      "title": "Asesinato del Archiduque",
+      "description": "El 28 de junio de 1914, el asesinato del Archiduque Franz Ferdinand de Austria en Sarajevo fue la chispa que encendió el barril de pólvora europeo.\n\n**Los hechos:**\n- Lugar: Sarajevo, Bosnia (entonces parte de Austria-Hungría)\n- Víctima: Archiduque Franz Ferdinand, heredero al trono austro-húngaro\n- Asesino: Gavrilo Princip, nacionalista serbio de 19 años\n- Organización: Mano Negra (grupo terrorista serbio)\n- Apoyo: Inteligencia militar serbia\n\n**La crisis de julio (1914):**\n\n**23 julio:** Austria-Hungría envía ultimátum humillante a Serbia\n**25 julio:** Serbia acepta casi todas las demandas, excepto una\n**28 julio:** Austria-Hungría declara la guerra a Serbia\n**29 julio:** Rusia comienza movilización parcial\n**30 julio:** Rusia ordena movilización general\n**1 agosto:** Alemania declara guerra a Rusia\n**3 agosto:** Alemania declara guerra a Francia\n**4 agosto:** Alemania invade Bélgica neutral; Reino Unido declara guerra a Alemania\n\n**¿Por qué fue tan grave?**\nLo que podría haber sido un conflicto regional se convirtió en guerra mundial debido a:\n- Alianzas automáticas rígidas\n- Planes de movilización irreversibles\n- Orgullo nacional y miedo a parecer débil\n- Creencia generalizada en una \"guerra corta y gloriosa\"",
+      "children": [],
+      "level": 2,
+      "parentId": "causes",
+      "position": {
+        "x": 700,
+        "y": 200
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1577495508326-19e1b3cf65a0?w=800",
+          "caption": "Sarajevo, 1914 - El lugar que cambió la historia",
+          "alt": "Historical Sarajevo street"
+        }
+      ]
+    },
+    "major-battles": {
+      "id": "major-battles",
+      "title": "Batallas Principales",
+      "description": "La guerra se caracterizó por batallas de desgaste masivo, con millones de soldados enfrentándose en frentes estáticos durante años.",
+      "children": [
+        "verdun",
+        "somme",
+        "passchendaele"
+      ],
+      "level": 1,
+      "parentId": "root",
+      "position": {
+        "x": 400,
+        "y": 300
+      },
+      "isExpanded": true,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "verdun": {
+      "id": "verdun",
+      "title": "Batalla de Verdún",
+      "description": "La batalla más larga y sangrienta de la Primera Guerra Mundial, símbolo de la futilidad y horror de la guerra de trincheras.\n\n**Datos clave:**\n- Fechas: 21 febrero - 18 diciembre 1916\n- Lugar: Verdún, noreste de Francia\n- Duración: 303 días\n- Bajas totales: ~700,000 (360,000 franceses, 340,000 alemanes)\n- Resultado: Victoria pírrica francesa - recuperaron casi todo el territorio perdido\n\n**Estrategia alemana (Operación Gericht):**\nEl General Erich von Falkenhayn planeó \"desangrar Francia hasta la muerte\" atacando un objetivo que Francia defendería a cualquier costo. Verdún era:\n- Símbolo nacional francés\n- Fortaleza histórica\n- Punto estratégico del frente\n\n**Fases de la batalla:**\n\n1. **Ofensiva inicial alemana (feb-mar):** Bombardeo devastador, avance de 5km\n2. **Estancamiento (mar-jul):** Contraataques franceses, guerra de desgaste\n3. **Contraofensiva francesa (ago-dic):** Recuperación lenta del terreno\n\n**Innovaciones y horrores:**\n- Uso masivo de artillería: 10 millones de proyectiles disparados\n- Primeros lanzallamas modernos\n- Gas venenoso en ambos bandos\n- Sistema de rotación francés: 70% del ejército pasó por Verdún\n- \"Voie Sacrée\": única carretera de suministro francesa\n\n**Legado:**\n\"No pasarán\" (They shall not pass) - lema de la resistencia francesa que se convirtió en símbolo de determinación en conflictos posteriores.",
+      "children": [],
+      "level": 2,
+      "parentId": "major-battles",
+      "position": {
+        "x": 700,
+        "y": 300
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=800",
+          "caption": "Campo de batalla de Verdún - paisaje devastado",
+          "alt": "Devastated WWI battlefield"
+        }
+      ]
+    },
+    "somme": {
+      "id": "somme",
+      "title": "Batalla del Somme",
+      "description": "Una de las batallas más costosas en vidas humanas de la historia, el Somme simboliza la brutalidad industrial de la guerra moderna.\n\n**Datos clave:**\n- Fechas: 1 julio - 18 noviembre 1916\n- Lugar: Valle del río Somme, norte de Francia\n- Bajas primer día: 57,470 británicas (19,240 muertos) - el día más sangriento en la historia militar británica\n- Bajas totales: ~1 millón (420,000 británicas, 200,000 francesas, 500,000 alemanas)\n- Avance máximo: 10 km\n- Resultado: Victoria pírrica de los Aliados\n\n**Objetivos aliados:**\n- Aliviar presión sobre Verdún\n- Desgastar reservas alemanas\n- Romper líneas alemanas y avanzar hacia el interior\n\n**1 de julio de 1916 - El peor día:**\n\nA las 7:30 AM, tras bombardeo de 7 días con 1.7 millones de proyectiles, 120,000 soldados británicos salieron de sus trincheras. Creían que la artillería había destruido las defensas alemanas.\n\n**Lo que salió mal:**\n- Alambre de púas alemán mayormente intacto\n- Refugios subterráneos alemanes sobrevivieron\n- Soldados británicos caminaron en formación lenta (sobrecargados con 30kg de equipo)\n- Ametralladoras alemanas los masacraron\n- 60% de bajas en los primeros minutos\n\n**Evolución táctica:**\nA pesar del horror inicial, el Somme fue laboratorio de innovación:\n- Primera uso del tanque (15 septiembre 1916)\n- Mejora de tácticas de artillería (creeping barrage)\n- Cooperación infantería-artillería\n- Guerra aérea: 782 aviones participaron\n\n**Impacto cultural:**\nEl Somme marcó profundamente a una generación:\n- Fin del optimismo victoriano\n- Literatura de guerra (Siegfried Sassoon, Wilfred Owen)\n- Trauma colectivo británico\n- Cuestionamiento de liderazgo militar",
+      "children": [],
+      "level": 2,
+      "parentId": "major-battles",
+      "position": {
+        "x": 700,
+        "y": 400
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1595429138842-09c45e8e5f33?w=800",
+          "caption": "Trincheras del Somme - guerra de desgaste",
+          "alt": "WWI trenches and mud"
+        }
+      ]
+    },
+    "passchendaele": {
+      "id": "passchendaele",
+      "title": "Tercera Batalla de Ypres (Passchendaele)",
+      "description": "Batalla librada en condiciones apocalípticas de lodo y lluvia, símbolo definitivo del sufrimiento en las trincheras.\n\n**Datos clave:**\n- Fechas: 31 julio - 10 noviembre 1917\n- Lugar: Saliente de Ypres, Bélgica\n- Bajas totales: ~475,000 (325,000 británicas/commonwealth, 200,000 alemanas)\n- Avance: 8 km en 3 meses\n- Resultado: Victoria pírrica británica\n\n**El contexto:**\n- Objetivo: capturar crestas cerca de Ypres para amenazar bases de submarinos alemanes\n- Comandante: General Douglas Haig (criticado por continuar ofensiva inútil)\n- Timing desafortunado: peor verano lluvioso en 30 años\n\n**Condiciones infernales:**\n\nLa lluvia constante + bombardeo masivo = paisaje lunar de lodo.\n\n**Cifras del horror:**\n- 4.5 millones de proyectiles disparados destruyeron sistema de drenaje\n- Cráteres se llenaron de agua contaminada\n- Soldados y caballos se ahogaban en lodo\n- Heridos que caían fuera de duckboards se hundían y morían\n- Lodo retrasaba evacuación médica: muchos morían esperando ayuda\n\n**Fases clave:**\n\n1. **Batalla de Pilckem Ridge** (31 jul): Inicio prometedor, 2km de avance\n2. **Langemarck** (16-18 ago): Ataques francotiradores en lodo\n3. **Menin Road** (20-25 sep): Tácticas mejoradas, avances modestos\n4. **Polygon Wood** (26 sep - 3 oct): Victoria australiana\n5. **Broodseinde** (4 oct): Mejor día para británicos\n6. **Passchendaele** (26 oct - 10 nov): Canadienses toman pueblo en ruinas\n\n**Innovaciones:**\n- Gas mostaza usado por primera vez por alemanes\n- Perfeccionamiento de \"box barrage\" (bombardeo en caja)\n- Uso masivo de ametralladoras para defensa en profundidad\n\n**Controversia histórica:**\nHistoriadores debaten si Haig debió cancelar la ofensiva:\n- **Pro:** Mantuvo presión sobre Alemania durante crisis rusa\n- **Contra:** Pérdidas humanas desproporcionadas al objetivo limitado alcanzado\n\n**Legado cultural:**\nPasschendaele se convirtió en sinónimo de futilidad militar:\n- \"Lions led by donkeys\" (crítica a generales británicos)\n- Poesía de guerra de Siegfried Sassoon\n- Cuestionamiento de patriotismo ciego",
+      "children": [],
+      "level": 2,
+      "parentId": "major-battles",
+      "position": {
+        "x": 700,
+        "y": 500
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "consequences": {
+      "id": "consequences",
+      "title": "Consecuencias de la Guerra",
+      "description": "La Primera Guerra Mundial transformó radicalmente el mundo, destruyendo imperios centenarios, redibujando fronteras y sembrando las semillas de futuros conflictos.",
+      "children": [
+        "versailles",
+        "empires-fall",
+        "social-changes"
+      ],
+      "level": 1,
+      "parentId": "root",
+      "position": {
+        "x": 400,
+        "y": 500
+      },
+      "isExpanded": true,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000
+    },
+    "versailles": {
+      "id": "versailles",
+      "title": "Tratado de Versalles",
+      "description": "El tratado de paz que oficialmente terminó la guerra con Alemania, pero cuyas duras condiciones sentaron las bases para la Segunda Guerra Mundial.\n\n**Firmado:** 28 de junio de 1919 (exactamente 5 años después del asesinato de Franz Ferdinand)\n**Lugar:** Salón de los Espejos, Palacio de Versalles\n**Delegación alemana:** Forzada a firmar bajo protesta\n\n**Los \"Cuatro Grandes\":**\n1. **Georges Clemenceau (Francia):** Quería venganza y seguridad permanente contra Alemania\n2. **Woodrow Wilson (EE.UU.):** Idealista, propuso los \"14 Puntos\" para paz justa\n3. **David Lloyd George (Reino Unido):** Posición intermedia, preocupado por balance de poder\n4. **Vittorio Orlando (Italia):** Frustrado por no obtener territorios prometidos\n\n**Términos clave impuestos a Alemania:**\n\n**Territoriales:**\n- Alsacia-Lorena devuelta a Francia\n- Territorios al este cedidos a Polonia (corredor polaco)\n- Todas las colonias confiscadas\n- Región del Saar bajo control de Liga de Naciones por 15 años\n- Renania desmilitarizada permanentemente\n- Pérdida del 13% de territorio europeo y 10% de población\n\n**Militares:**\n- Ejército limitado a 100,000 hombres\n- No tanques, aviación militar o submarinos\n- Marina reducida a 6 acorazados pequeños\n- Estado mayor disuelto\n- Servicio militar conscripto prohibido\n\n**Económicas (Artículo 231 - \"Cláusula de culpabilidad de guerra\"):**\n- Alemania forzada a aceptar responsabilidad total por la guerra\n- Reparaciones iniciales: 132 mil millones de marcos oro (~$442 mil millones actuales)\n- Carbón, madera, ganado, maquinaria entregados como pago en especie\n- Economía alemana devastada: hiperinflación en 1923\n\n**Creación de la Liga de Naciones:**\n- Primera organización internacional para mantenimiento de paz\n- Ironía: EE.UU. nunca se unió (Senado rechazó tratado)\n- Estructura débil: sin poder de enforcement\n- Falló en prevenir Segunda Guerra Mundial\n\n**¿Por qué fue tan punitivo?**\n- Francia buscaba venganza por 1871 y devastación de guerra\n- Presión pública: \"Hang the Kaiser\", \"Make Germany Pay\"\n- Deseo de debilitar permanentemente a Alemania\n- Compensación por daños de guerra masivos\n\n**Consecuencias no deseadas:**\n\n1. **Humillación alemana:** Sentimiento de \"Dolchstoßlegende\" (puñalada por la espalda)\n2. **Inestabilidad económica:** Reparaciones imposibles de pagar\n3. **Ascenso del nazismo:** Hitler explotó resentimiento popular\n4. **Efecto dominó:** Tratados similares con Austria, Hungría, Bulgaria, Turquía\n5. **Rediseño caótico:** Nuevas fronteras ignoraron realidades étnicas\n\n**Críticas contemporáneas:**\n- John Maynard Keynes (economista británico): \"Las Consecuencias Económicas de la Paz\" (1919) predijo desastre\n- Llamó al tratado \"paz cartaginesa\" (destrucción total del enemigo)\n- Advirtió que reparaciones causarían colapso económico europeo\n\n**El veredicto de la historia:**\nLa mayoría de historiadores concuerdan: Versalles fue suficientemente duro para humillar a Alemania, pero no suficientemente fuerte para prevenir su rearmamiento. Fue, en palabras de Mariscal Foch, \"no una paz, sino un armisticio por veinte años.\"",
+      "children": [],
+      "level": 2,
+      "parentId": "consequences",
+      "position": {
+        "x": 700,
+        "y": 600
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1564419320461-6870880221ad?w=800",
+          "caption": "Palacio de Versalles - donde se firmó la paz que preparó la siguiente guerra",
+          "alt": "Palace of Versailles Hall of Mirrors"
+        }
+      ]
+    },
+    "empires-fall": {
+      "id": "empires-fall",
+      "title": "Caída de los Imperios",
+      "description": "La guerra destruyó cuatro grandes imperios que habían dominado Europa por siglos, redibujando completamente el mapa político del continente.\n\n**Los cuatro imperios derrotados:**\n\n**1. Imperio Alemán (Segundo Reich)**\n- Abdicación del Kaiser Wilhelm II (9 noviembre 1918)\n- Proclamación de República de Weimar\n- Revolución espartaquista (socialista) suprimida\n- Pérdida de todas las colonias\n- Fragmentación económica y política\n\n**2. Imperio Austro-Húngaro**\n- Disolución completa (octubre-noviembre 1918)\n- Estados sucesores creados:\n  * Austria (república pequeña de habla alemana)\n  * Hungría (perdió 2/3 de su territorio)\n  * Checoslovaquia (nuevo estado)\n  * Yugoslavia (\"Reino de Serbios, Croatas y Eslovenos\")\n  * Polonia (recuperó independencia tras 123 años)\n  * Territorios a Rumania, Italia\n\n**3. Imperio Ruso (Dinastía Romanov)**\n- Revolución de Febrero 1917: Zar Nicholas II abdica\n- Revolución de Octubre 1917: Bolcheviques toman poder\n- Guerra Civil Rusa (1918-1922): Rojos vs Blancos\n- Ejecución de la familia imperial (julio 1918)\n- Tratado de Brest-Litovsk: Rusia pierde territorio masivo\n- Formación de URSS (1922)\n- Estados bálticos independientes: Estonia, Letonia, Lituania\n- Finlandia independiente\n- Polonia renace\n\n**4. Imperio Otomano**\n- Colapso total del \"hombre enfermo de Europa\"\n- Tratado de Sèvres (1920): desmembramiento\n- Guerra de Independencia Turca (1919-1923)\n- Abolición del Sultanato (1922) y Califato (1924)\n- Nacimiento de República de Turquía bajo Atatürk\n- Mandatos de Liga de Naciones:\n  * Siria y Líbano a Francia\n  * Iraq, Palestina, Transjordania a Reino Unido\n- Acuerdos Sykes-Picot: división arbitraria de Oriente Medio\n- Declaración Balfour: promesa de \"hogar nacional judío\" en Palestina\n\n**Nuevos estados creados o restaurados:**\n- Polonia\n- Checoslovaquia\n- Yugoslavia\n- Finlandia\n- Estonia, Letonia, Lituania\n- Austria (reducida)\n- Hungría (reducida)\n\n**Consecuencias del rediseño:**\n- Nuevas fronteras ignoraron realidades étnicas y lingüísticas\n- Minorías atrapadas en estados hostiles\n- Irredentismo y tensiones territoriales\n- Semillas de conflictos futuros (Segunda Guerra Mundial, Balcanes años 90)\n- Inestabilidad en Oriente Medio que persiste hasta hoy\n\n**Estadísticas del cambio:**\n- 4 dinastías milenarias eliminadas\n- 7 nuevos estados europeos\n- 12 millones de refugiados y desplazados\n- Fronteras europeas completamente redibujadas\n- Fin del orden internacional del siglo XIX",
+      "children": [],
+      "level": 2,
+      "parentId": "consequences",
+      "position": {
+        "x": 700,
+        "y": 700
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1526666361175-e7a7a4d92e7b?w=800",
+          "caption": "El mapa de Europa fue completamente redibujado",
+          "alt": "Historical European map"
+        }
+      ]
+    },
+    "social-changes": {
+      "id": "social-changes",
+      "title": "Cambios Sociales",
+      "description": "La guerra transformó profundamente sociedades, acelerando cambios sociales y culturales que definirían el siglo XX.\n\n**1. Emancipación de la Mujer**\n\n**Durante la guerra:**\n- Mujeres ocuparon roles tradicionalmente masculinos\n- Fábricas de municiones: 80% fuerza laboral femenina en algunos casos\n- Conductoras de ambulancia, enfermeras en frente\n- Trabajo agrícola: alimentando naciones\n- \"Munitionettes\": trabajadoras en industria armamentística\n\n**Después de la guerra:**\n- Sufragio femenino expandido:\n  * Reino Unido: mujeres >30 años (1918), luego igualdad (1928)\n  * Alemania: sufragio completo (1918)\n  * EE.UU.: 19ª Enmienda (1920)\n  * Muchos otros países siguieron\n- Acceso a educación superior ampliado\n- Cambios en moda: pelo corto, faldas más cortas, abandono de corsés\n- Mayor independencia económica y social\n\n**2. Desilusión y Modernismo**\n\n**La \"Generación Perdida\":**\n- Término acuñado por Gertrude Stein, popularizado por Hemingway\n- Escritores que vivieron la guerra: Hemingway, Fitzgerald, Remarque, Owen\n\n**Literatura de guerra:**\n- \"Sin novedad en el frente\" (Erich Maria Remarque, 1929)\n- \"Adiós a las armas\" (Ernest Hemingway, 1929)\n- Poesía de Wilfred Owen, Siegfried Sassoon\n- Fin del romanticismo de guerra: realismo brutal\n\n**Movimientos artísticos:**\n- Dadaísmo: rechazo del racionalismo que llevó a la guerra\n- Surrealismo: exploración del trauma y subconsciente\n- Expresionismo alemán: Otto Dix pintó horrores de guerra\n- Modernismo literario: fragmentación, alienación (T.S. Eliot, Joyce)\n\n**3. Trauma Colectivo y PTSD**\n\n**\"Shell Shock\" (Neurosis de guerra):**\n- Inicialmente considerado cobardía\n- Reconocimiento gradual como condición médica\n- Síntomas: temblores, pesadillas, mutismo, parálisis\n- Miles de veteranos en instituciones mentales\n- Impacto en familias y comunidades\n\n**Monumentos y memoria:**\n- Tumba del Soldado Desconocido (múltiples países)\n- Día del Armisticio (11 noviembre): día de remembranza\n- \"In Flanders Fields\" (poema de John McCrae): amapola como símbolo\n- Memoriales de guerra en cada pueblo británico y francés\n\n**4. Cambios Económicos**\n\n**Deuda de guerra:**\n- Europa endeudada con EE.UU.\n- Desplazamiento de poder económico hacia América\n- Libra esterlina pierde predominancia ante dólar\n\n**Inflación y crisis:**\n- Hiperinflación alemana (1923): billetes usados como papel tapiz\n- Preparación del terreno para Gran Depresión (1929)\n- Desempleo masivo de veteranos\n\n**Industrialización acelerada:**\n- Producción en masa perfeccionada\n- Tecnologías de guerra aplicadas a paz: aviación, químicos, comunicaciones\n\n**5. Reorganización de Clases Sociales**\n\n**Decadencia aristocrática:**\n- Nobleza europea perdió hijos en guerra (oficiales en frente)\n- Impuestos de guerra destruyeron fortunas\n- Desaparición de estilo de vida eduardiano\n- Serie \"Downton Abbey\" captura esta transición\n\n**Ascenso de clase media:**\n- Nuevas oportunidades para técnicos y profesionales\n- Meritocracia sobre nacimiento\n\n**Radicalización política:**\n- Auge de movimientos de izquierda: socialismo, comunismo\n- Reacción de derecha: fascismo en Italia (1922), Alemania (1933)\n- Polarización extrema: centro político se debilitó\n\n**6. Revolución Tecnológica**\n\n**Innovaciones militares aplicadas:**\n- Aviación: de curiosidad a industria\n- Química: fertilizantes, plásticos (de gases venenosos)\n- Medicina: cirugía plástica (reconstrucción facial)\n- Transfusiones de sangre estandarizadas\n- Prótesis avanzadas\n\n**Cambio de mentalidad:**\n- Fin del optimismo victoriano\n- Cuestionamiento de autoridad y tradición\n- Relativismo moral\n- Cinismo hacia patriotismo y gloria militar\n\n**Legado duradero:**\nLa Primera Guerra Mundial no solo mató a 17 millones de personas, sino que mató una forma de vida. El mundo de 1919 era irreconocible comparado con 1914. La guerra aceleró cambios sociales que habrían tardado décadas en condiciones normales, y creó las condiciones para los conflictos ideológicos del resto del siglo XX.",
+      "children": [],
+      "level": 2,
+      "parentId": "consequences",
+      "position": {
+        "x": 700,
+        "y": 800
+      },
+      "isExpanded": false,
+      "isVisible": true,
+      "createdAt": 1730116800000,
+      "updatedAt": 1730116800000,
+      "images": [
+        {
+          "url": "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800",
+          "caption": "La guerra transformó sociedades y culturas para siempre",
+          "alt": "Vintage photograph representing social change"
+        }
+      ]
+    }
+  }
+}
