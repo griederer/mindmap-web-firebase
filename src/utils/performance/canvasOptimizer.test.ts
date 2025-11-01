@@ -30,11 +30,11 @@ describe('canvasOptimizer', () => {
 
       // Create test nodes at various positions
       nodes = [
-        { id: 'node1', x: 100, y: 100, title: 'Node 1', description: '' },
-        { id: 'node2', x: 3000, y: 100, title: 'Node 2', description: '' }, // Outside viewport (right)
-        { id: 'node3', x: 500, y: 500, title: 'Node 3', description: '' },
-        { id: 'node4', x: 100, y: 2000, title: 'Node 4', description: '' }, // Outside viewport (bottom)
-        { id: 'node5', x: -1000, y: 100, title: 'Node 5', description: '' }, // Outside viewport (left)
+        { id: 'node1', position: { x: 100, y: 100 }, title: 'Node 1', description: '', children: [], level: 0, parentId: null, isExpanded: true, isVisible: true, createdAt: Date.now(), updatedAt: Date.now() },
+        { id: 'node2', position: { x: 3000, y: 100 }, title: 'Node 2', description: '', children: [], level: 0, parentId: null, isExpanded: true, isVisible: true, createdAt: Date.now(), updatedAt: Date.now() }, // Outside viewport (right)
+        { id: 'node3', position: { x: 500, y: 500 }, title: 'Node 3', description: '', children: [], level: 0, parentId: null, isExpanded: true, isVisible: true, createdAt: Date.now(), updatedAt: Date.now() },
+        { id: 'node4', position: { x: 100, y: 2000 }, title: 'Node 4', description: '', children: [], level: 0, parentId: null, isExpanded: true, isVisible: true, createdAt: Date.now(), updatedAt: Date.now() }, // Outside viewport (bottom)
+        { id: 'node5', position: { x: -1000, y: 100 }, title: 'Node 5', description: '', children: [], level: 0, parentId: null, isExpanded: true, isVisible: true, createdAt: Date.now(), updatedAt: Date.now() }, // Outside viewport (left)
       ];
     });
 
@@ -90,8 +90,8 @@ describe('canvasOptimizer', () => {
     it('should return empty array when no nodes in viewport', () => {
       // Move all nodes far outside viewport
       const farNodes: Node[] = [
-        { id: 'far1', x: 10000, y: 10000, title: 'Far 1', description: '' },
-        { id: 'far2', x: -10000, y: -10000, title: 'Far 2', description: '' },
+        { id: 'far1', position: { x: 10000, y: 10000 }, title: 'Far 1', description: '', children: [], level: 0, parentId: null, isExpanded: true, isVisible: true, createdAt: Date.now(), updatedAt: Date.now() },
+        { id: 'far2', position: { x: -10000, y: -10000 }, title: 'Far 2', description: '', children: [], level: 0, parentId: null, isExpanded: true, isVisible: true, createdAt: Date.now(), updatedAt: Date.now() },
       ];
 
       const visibleNodes = setupViewportCulling(mockStage, farNodes);

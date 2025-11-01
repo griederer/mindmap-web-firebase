@@ -10,7 +10,7 @@ import { Node } from '../../types/node';
  * Enable batch drawing on a Konva layer
  * Replaces immediate draw() calls with batched updates for better performance
  */
-export function enableBatchDrawing(layer: Konva.Layer): void {
+export function enableBatchDrawing(_layer: Konva.Layer): void {
   // Konva automatically batches draw calls when using batchDraw()
   // This is a no-op function but serves as documentation
   // In practice, replace layer.draw() with layer.batchDraw() in code
@@ -44,7 +44,7 @@ export function setupViewportCulling(
 
   // Filter nodes that are within visible bounds
   return nodes.filter(node => {
-    const { x, y } = node;
+    const { x, y } = node.position;
     return x >= minX && x <= maxX && y >= minY && y <= maxY;
   });
 }
@@ -81,7 +81,7 @@ export function clearNodeCache(nodeShape: Konva.Group): void {
  */
 export function disableShadowsDuringAnimation(layer: Konva.Layer): void {
   // Store original shadow settings
-  const shapes = layer.find('Shape'); // Get all shapes
+  const shapes = layer.find('Shape') as Konva.Shape[]; // Get all shapes
 
   shapes.forEach(shape => {
     // Store original shadow settings as metadata
@@ -117,7 +117,7 @@ export function disableShadowsDuringAnimation(layer: Konva.Layer): void {
  */
 export function enableShadowsAfterAnimation(layer: Konva.Layer): void {
   // Restore shadow settings
-  const shapes = layer.find('Shape');
+  const shapes = layer.find('Shape') as Konva.Shape[];
 
   shapes.forEach(shape => {
     const originalShadow = shape.getAttr('_originalShadow');

@@ -3,7 +3,7 @@
  * Main canvas container for rendering mind map with zoom and pan
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
 import { useViewportStore } from '../../stores/viewportStore';
@@ -24,6 +24,7 @@ import RelationshipSidebar from '../RelationshipSidebar/RelationshipSidebar';
 import RelationshipAssignMenu from './RelationshipAssignMenu';
 import RelationshipLines from './RelationshipLines';
 import TimelineRibbon from '../Timeline/TimelineRibbon';
+import { setupViewportCulling } from '../../utils/performance/canvasOptimizer';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -382,7 +383,18 @@ export default function Canvas() {
   // Get all nodes (including invisible ones for fade-out animation)
   const allNodes = Object.values(nodes);
 
+  // Apply viewport culling for performance (only render visible nodes)
+  const visibleNodes = useMemo(() => {
+    if (!stageRef.current || allNodes.length === 0) {
+      return allNodes;
+    }
+
+    // Use viewport culling to filter visible nodes
+    return setupViewportCulling(stageRef.current, allNodes);
+  }, [allNodes, x, y, zoom, width, height]);
+
   // Get all connectors (between parent and child nodes where both exist)
+  // Use allNodes (not visibleNodes) to render all connectors for visual coherence
   const connectors: Array<{ from: string; to: string }> = [];
   allNodes.forEach(node => {
     if (node.parentId && nodes[node.parentId]) {
@@ -487,8 +499,8 @@ export default function Canvas() {
             {/* Render relationship lines (above connectors, behind nodes) */}
             <RelationshipLines />
 
-            {/* Render all nodes (visibility handled by component) */}
-            {allNodes.map(node => {
+            {/* Render visible nodes only (viewport culling applied) */}
+            {visibleNodes.map(node => {
               // Skip year and event nodes (they're part of timeline component now)
               if (node.nodeType === 'year' || node.nodeType === 'event') {
                 return null;

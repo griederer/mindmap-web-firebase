@@ -3,7 +3,7 @@
  * Timeline view with pan/zoom/focus capabilities matching mindmap
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { Stage, Layer, Rect, Text, Line, Circle } from 'react-konva';
 import Konva from 'konva';
 import { useViewportStore } from '../../stores/viewportStore';
@@ -226,9 +226,38 @@ export default function TimelineCanvas() {
     });
   };
 
-  // Render events
+  // Apply viewport culling for events (only render visible ones)
+  const visibleEvents = useMemo(() => {
+    if (!stageRef.current || events.length === 0) {
+      return events;
+    }
+
+    const stage = stageRef.current;
+    const stageWidth = stage.width();
+    const stageHeight = stage.height();
+    const scale = stage.scaleX();
+    const position = stage.position();
+
+    // Calculate visible bounds in world coordinates (with 500px buffer)
+    const buffer = 500;
+    const minX = -position.x / scale - buffer;
+    const maxX = (-position.x + stageWidth) / scale + buffer;
+    const minY = -position.y / scale - buffer;
+    const maxY = (-position.y + stageHeight) / scale + buffer;
+
+    // Filter events that are within visible bounds
+    return events.filter(event => {
+      const eventX = dateToX(event.date);
+      const trackIdx = getTrackIndex(event.track);
+      const eventY = TIMELINE_HEIGHT + trackIdx * (TRACK_HEIGHT + TRACK_SPACING) + TRACK_HEIGHT / 2;
+
+      return eventX >= minX && eventX <= maxX && eventY >= minY && eventY <= maxY;
+    });
+  }, [events, x, y, zoom, width, height, timeline]);
+
+  // Render visible events only (viewport culling applied)
   const renderEvents = () => {
-    return events.map((event) => {
+    return visibleEvents.map((event) => {
       const eventX = dateToX(event.date);
       const trackIdx = getTrackIndex(event.track);
       const eventY = TIMELINE_HEIGHT + trackIdx * (TRACK_HEIGHT + TRACK_SPACING) + TRACK_HEIGHT / 2;
