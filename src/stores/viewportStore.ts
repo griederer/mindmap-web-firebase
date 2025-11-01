@@ -28,6 +28,9 @@ interface ViewportState {
   // Auto Focus mode
   autoFocusEnabled: boolean;
 
+  // Animation state (for keyboard navigation)
+  animationInProgress: boolean;
+
   // Operations
   setPosition: (x: number, y: number) => void;
   pan: (deltaX: number, deltaY: number) => void;
@@ -68,6 +71,7 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
   width: typeof window !== 'undefined' ? window.innerWidth : 1920,
   height: typeof window !== 'undefined' ? window.innerHeight : 1080,
   autoFocusEnabled: loadAutoFocusSetting(),
+  animationInProgress: false,
   
   // Set absolute position
   setPosition: (x: number, y: number) => {

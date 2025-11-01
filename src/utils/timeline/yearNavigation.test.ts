@@ -147,8 +147,7 @@ describe('calculateOptimalZoomForYear', () => {
     date,
     title: 'Test Event',
     description: 'Test description',
-    category: 'Tecnología',
-    color: '#3B82F6',
+    track: 'default',
   });
 
   it('should return default zoom when no events in year', () => {
