@@ -163,8 +163,12 @@ export default function Canvas() {
     // CRITICAL: Update ref AFTER calling focusOnNodes
     // This ensures the viewport state change happens before we update our tracking
     // Small delay allows the animation system to process the state change
-    setTimeout(() => {
+    if (autoFocusTimeoutRef.current !== null) {
+      clearTimeout(autoFocusTimeoutRef.current);
+    }
+    autoFocusTimeoutRef.current = window.setTimeout(() => {
       previousVisibleNodesRef.current = currentVisibleIds;
+      autoFocusTimeoutRef.current = null;
     }, 100);
   }, [nodes, autoFocusEnabled, focusOnNodes]);
 
@@ -201,6 +205,7 @@ export default function Canvas() {
   const previousValuesRef = useRef({ x, y, zoom });
   const animationTimeoutRef = useRef<number | null>(null);
   const initialPositionSetRef = useRef(false);
+  const autoFocusTimeoutRef = useRef<number | null>(null);
 
   // Set initial position once
   useEffect(() => {
@@ -321,6 +326,36 @@ export default function Canvas() {
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
   }, [setViewportSize]);
+
+  // Cleanup on unmount - cancel animations and clear timeouts
+  useEffect(() => {
+    return () => {
+      // Clear animation timeout
+      if (animationTimeoutRef.current !== null) {
+        clearTimeout(animationTimeoutRef.current);
+        animationTimeoutRef.current = null;
+      }
+
+      // Clear auto-focus timeout
+      if (autoFocusTimeoutRef.current !== null) {
+        clearTimeout(autoFocusTimeoutRef.current);
+        autoFocusTimeoutRef.current = null;
+      }
+
+      // Cancel any running Konva animations
+      const stage = stageRef.current;
+      if (stage) {
+        stage.stopDrag();
+        // Cancel all tweens on the stage
+        const tweens = stage.find('Tween');
+        tweens.forEach((tween: any) => {
+          if (tween.destroy) {
+            tween.destroy();
+          }
+        });
+      }
+    };
+  }, []);
 
   // Handle mouse wheel zoom
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {

@@ -12,6 +12,7 @@ import {
   calculateBoundingBoxWithPanel,
   AUTO_FOCUS_CONSTANTS,
 } from '../utils/autoFocusUtils';
+import { AnimationQueue } from '../utils/performance/animationThrottle';
 
 interface ViewportState {
   // Camera position
@@ -28,8 +29,9 @@ interface ViewportState {
   // Auto Focus mode
   autoFocusEnabled: boolean;
 
-  // Animation state (for keyboard navigation)
+  // Animation management
   animationInProgress: boolean;
+  animationQueue: AnimationQueue;
 
   // Operations
   setPosition: (x: number, y: number) => void;
@@ -46,6 +48,10 @@ interface ViewportState {
   setAutoFocus: (enabled: boolean) => void;
   focusOnNodes: (nodeIds: string[], animate?: boolean) => void;
   focusOnNodeWithPanel: (nodeId: string, panelWidth: number, panelHeight: number, animate?: boolean) => void;
+
+  // Animation helpers
+  setAnimationInProgress: (inProgress: boolean) => void;
+  cancelCurrentAnimation: () => void;
 }
 
 const DEFAULT_ZOOM = 1;
@@ -72,6 +78,7 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
   height: typeof window !== 'undefined' ? window.innerHeight : 1080,
   autoFocusEnabled: loadAutoFocusSetting(),
   animationInProgress: false,
+  animationQueue: new AnimationQueue(),
   
   // Set absolute position
   setPosition: (x: number, y: number) => {
@@ -214,5 +221,17 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
       y: camera.y,
       zoom: optimalZoom,
     }));
+  },
+
+  // Set animation in progress state
+  setAnimationInProgress: (inProgress: boolean) => {
+    set({ animationInProgress: inProgress });
+  },
+
+  // Cancel current animation
+  cancelCurrentAnimation: () => {
+    const { animationQueue } = get();
+    animationQueue.cancel();
+    set({ animationInProgress: false });
   },
 }));

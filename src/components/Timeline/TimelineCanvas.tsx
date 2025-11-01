@@ -61,6 +61,23 @@ export default function TimelineCanvas() {
     return () => window.removeEventListener('resize', updateSize);
   }, [setViewportSize]);
 
+  // Cleanup on unmount - cancel animations
+  useEffect(() => {
+    return () => {
+      const stage = stageRef.current;
+      if (stage) {
+        stage.stopDrag();
+        // Cancel all tweens on the stage
+        const tweens = stage.find('Tween');
+        tweens.forEach((tween: any) => {
+          if (tween.destroy) {
+            tween.destroy();
+          }
+        });
+      }
+    };
+  }, []);
+
   // Convert date string to x position
   const dateToX = (dateStr: string): number => {
     if (!timeline?.config) return 0;
