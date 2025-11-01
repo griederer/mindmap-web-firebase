@@ -49,9 +49,16 @@ describe('useKeyboardNavigation', () => {
     },
     timeline: {
       config: {
-        startYear: 2012,
-        endYear: 2026,
-        tracks: ['default'],
+        startDate: '2012-01-01',
+        endDate: '2026-12-31',
+        granularity: 'year' as const,
+        tracks: [
+          {
+            id: 'default',
+            name: 'Default Track',
+            color: '#3B82F6',
+          },
+        ],
       },
       events: [
         createMockEvent('2012-01-01'),

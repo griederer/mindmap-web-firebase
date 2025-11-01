@@ -10,6 +10,7 @@ import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { TimelineEvent } from '../../types/project';
 import ZoomControls from '../Canvas/ZoomControls';
+import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -35,6 +36,14 @@ export default function TimelineCanvas() {
   const timeline = currentBundle?.timeline;
   const tracks = timeline?.config?.tracks || [];
   const events = timeline?.events || [];
+
+  // Keyboard navigation for timeline (arrow keys)
+  useKeyboardNavigation({
+    enabled: true,
+    stageRef,
+    animationDuration: 400,
+    yearSpacing: EVENT_SPACING,
+  });
 
   // Update viewport size when container resizes
   useEffect(() => {
