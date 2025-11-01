@@ -4,9 +4,11 @@
  * Events appear as colored circles positioned on tracks at their date
  */
 
+import { useMemo } from 'react';
 import { Group, Rect, Text, Circle, Line } from 'react-konva';
 import { Node } from '../../types/node';
 import { TimelineEvent, TimelineConfig } from '../../types/project';
+import { calculateLabelPositions } from '../../utils/timeline/collisionDetection';
 
 interface TimelineComponentProps {
   timelineNode: Node;
@@ -74,84 +76,34 @@ export default function TimelineComponent({
   };
 
   /**
-   * Calculate label positions with collision detection
+   * Calculate label positions with collision detection (cached with useMemo)
    */
-  const calculateLabelPositions = () => {
-    // Sort events by track and then by date
-    const sortedEvents = [...events].sort((a, b) => {
-      const trackA = tracks.findIndex(t => t.id === a.track);
-      const trackB = tracks.findIndex(t => t.id === b.track);
-      if (trackA !== trackB) return trackA - trackB;
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
+  const labelPositions = useMemo(() => {
+    // Calculate positions using collision detection utility
+    const positions = calculateLabelPositions(events, tracks, getEventX, getEventY, {
+      labelHeight: 20,
+      charWidth: 7,
+      adjustmentStep: 25,
+      connectorThreshold: 5,
+      maxAttempts: 10,
     });
 
-    const labelPositions = new Map<string, { x: number; y: number }>();
-    const MIN_LABEL_SPACING = 15; // Minimum vertical spacing between labels
-    const LABEL_HEIGHT = 16; // Approximate height of label text
+    // Convert to final positions with track label offset
+    const finalPositions = new Map<string, { x: number; y: number; needsConnector: boolean }>();
 
-    // Group events by track
-    const eventsByTrack = tracks.map(track =>
-      sortedEvents.filter(e => e.track === track.id)
-    );
-
-    eventsByTrack.forEach((trackEvents) => {
-      const usedPositions: Array<{ x: number; y: number; width: number }> = [];
-
-      trackEvents.forEach(event => {
-        const eventX = TRACK_LABEL_WIDTH + getEventX(event.date);
-        const baseEventY = getEventY(event.track);
-        let labelY = baseEventY - 8;
-
-        // Estimate label width (approximate: 7px per character)
-        const estimatedWidth = event.title.length * 7;
-        const labelX = eventX + EVENT_LABEL_OFFSET_X;
-
-        // Check for collisions with existing labels
-        let attempts = 0;
-        const MAX_ATTEMPTS = 10;
-
-        while (attempts < MAX_ATTEMPTS) {
-          let hasCollision = false;
-
-          for (const used of usedPositions) {
-            // Check horizontal overlap
-            const horizontalOverlap =
-              labelX < used.x + used.width + 5 &&
-              labelX + estimatedWidth + 5 > used.x;
-
-            // Check vertical overlap
-            const verticalOverlap =
-              Math.abs(labelY - used.y) < LABEL_HEIGHT + MIN_LABEL_SPACING;
-
-            if (horizontalOverlap && verticalOverlap) {
-              hasCollision = true;
-              break;
-            }
-          }
-
-          if (!hasCollision) {
-            break;
-          }
-
-          // Adjust position: alternate above and below
-          if (attempts % 2 === 0) {
-            labelY = baseEventY - 8 - ((attempts / 2 + 1) * (LABEL_HEIGHT + MIN_LABEL_SPACING));
-          } else {
-            labelY = baseEventY - 8 + ((attempts / 2 + 1) * (LABEL_HEIGHT + MIN_LABEL_SPACING));
-          }
-
-          attempts++;
-        }
-
-        usedPositions.push({ x: labelX, y: labelY, width: estimatedWidth });
-        labelPositions.set(event.id, { x: labelX, y: labelY });
-      });
+    positions.forEach((pos, eventId) => {
+      const event = events.find(e => e.id === eventId);
+      if (event) {
+        finalPositions.set(eventId, {
+          x: TRACK_LABEL_WIDTH + pos.x + EVENT_LABEL_OFFSET_X,
+          y: pos.y - 8, // Slight vertical offset for better alignment
+          needsConnector: pos.needsConnector,
+        });
+      }
     });
 
-    return labelPositions;
-  };
-
-  const labelPositions = calculateLabelPositions();
+    return finalPositions;
+  }, [events, tracks, startYear, endYear]);
 
   return (
     <Group x={position.x} y={position.y}>
@@ -299,7 +251,23 @@ export default function TimelineComponent({
               }}
             />
 
-            {/* Event title label - using auto-layout position */}
+            {/* Connector line (if label was adjusted) */}
+            {labelPos && labelPos.needsConnector && (
+              <Line
+                points={[
+                  eventX + EVENT_LABEL_OFFSET_X,
+                  eventY,
+                  labelPos.x - 5,
+                  labelPos.y + 8,
+                ]}
+                stroke={track.color}
+                strokeWidth={1}
+                opacity={0.5}
+                dash={[3, 3]}
+              />
+            )}
+
+            {/* Event title label - using collision-free position */}
             {labelPos && (
               <Text
                 x={labelPos.x}
