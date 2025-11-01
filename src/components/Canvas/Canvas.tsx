@@ -9,6 +9,7 @@ import Konva from 'konva';
 import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { useUIStore } from '../../stores/uiStore';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 import { Node } from '../../types/node';
 import NodeComponent from './NodeComponent';
 import TimelineComponent from './TimelineComponent';
@@ -49,6 +50,10 @@ export default function Canvas() {
     selectedTimelineEvent,
     selectTimelineEvent,
     timelineRibbonOpen,
+    closeTopPanel,
+    fullscreenImageUrl,
+    detailPanelOpen,
+    sidebarOpen,
   } = useUIStore();
 
   // Edit modal state
@@ -65,6 +70,46 @@ export default function Canvas() {
 
   // Relationship assignment submenu state
   const [relationshipAssignOpen, setRelationshipAssignOpen] = useState(false);
+
+  // ESC key handler - closes topmost open panel/modal
+  useEscapeKey({
+    onEscape: () => {
+      // Local modals first (handled in Canvas)
+      if (editModalOpen) {
+        setEditModalOpen(false);
+        setNodeToEdit(null);
+        return;
+      }
+
+      if (imageViewerOpen) {
+        setImageViewerOpen(false);
+        return;
+      }
+
+      if (relationshipAssignOpen) {
+        setRelationshipAssignOpen(false);
+        return;
+      }
+
+      if (relationshipSidebarOpen) {
+        setRelationshipSidebarOpen(false);
+        return;
+      }
+
+      // Then close UI Store managed panels
+      closeTopPanel();
+    },
+    enabled:
+      editModalOpen ||
+      imageViewerOpen ||
+      relationshipAssignOpen ||
+      relationshipSidebarOpen ||
+      !!fullscreenImageUrl ||
+      !!infoPanelNodeId ||
+      !!selectedTimelineEvent ||
+      detailPanelOpen ||
+      sidebarOpen,
+  });
 
   // Close edit modal if node becomes invisible
   useEffect(() => {

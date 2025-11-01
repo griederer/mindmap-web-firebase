@@ -56,6 +56,7 @@ interface UIState {
   toggleTimelineRibbon: () => void;
   setTimelineRibbonOpen: (open: boolean) => void;
   setView: (view: ViewType) => void;
+  closeTopPanel: () => boolean; // Returns true if something was closed
 }
 
 export const useUIStore = create<UIState>((set, get) => ({
@@ -205,5 +206,54 @@ export const useUIStore = create<UIState>((set, get) => ({
   // Set current view
   setView: (view: ViewType) => {
     set({ currentView: view });
+  },
+
+  // Close the topmost open panel/modal in priority order
+  closeTopPanel: () => {
+    const {
+      fullscreenImageUrl,
+      infoPanelNodeId,
+      selectedTimelineEvent,
+      detailPanelOpen,
+      sidebarOpen,
+    } = get();
+
+    // Priority order (highest to lowest):
+    // 1. Fullscreen image
+    if (fullscreenImageUrl) {
+      set({ fullscreenImageUrl: null });
+      return true;
+    }
+
+    // 2. Inline info panel
+    if (infoPanelNodeId) {
+      set({ infoPanelNodeId: null });
+      return true;
+    }
+
+    // 3. Timeline event panel
+    if (selectedTimelineEvent) {
+      set({ selectedTimelineEvent: null });
+      return true;
+    }
+
+    // 4. Detail panel
+    if (detailPanelOpen) {
+      set({
+        detailPanelOpen: false,
+        detailPanelNodeId: null,
+        detailNodeId: null,
+      });
+      return true;
+    }
+
+    // 5. Sidebar
+    if (sidebarOpen) {
+      set({ sidebarOpen: false });
+      return true;
+    }
+
+    // Nothing was open
+    return false;
   },
 }));
