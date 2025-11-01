@@ -201,3 +201,44 @@ export const AVAILABLE_VIEWS: Record<ViewType, ViewInfo> = {
     description: 'Vista de matriz para análisis comparativo',
   },
 };
+
+// ============================================================================
+// ANIMATION & PERFORMANCE TYPES
+// ============================================================================
+
+/**
+ * Animation configuration for Konva tweens
+ */
+export interface Animation {
+  id: string;
+  target: {
+    x?: number;
+    y?: number;
+    scaleX?: number;
+    scaleY?: number;
+  };
+  duration: number;
+  easing?: (t: number) => number;
+  onFinish?: () => void;
+  priority?: number; // Higher priority animations cancel lower priority ones
+}
+
+/**
+ * Animation queue state
+ */
+export interface AnimationQueue {
+  current: Animation | null;
+  pending: Animation[];
+}
+
+/**
+ * Performance metrics for monitoring
+ */
+export interface PerformanceMetrics {
+  fps: number;
+  avgFrameTime: number;
+  minFrameTime: number;
+  maxFrameTime: number;
+  frameCount: number;
+  lastUpdateTime: number;
+}
