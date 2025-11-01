@@ -10,9 +10,9 @@ function App() {
   const { loadProjectBundle, currentProject } = useProjectStore();
   const { focusOnNodes } = useViewportStore();
 
-  // Load WWII project with timeline on mount
+  // Load IA Responsable project on mount
   useEffect(() => {
-    fetch('/examples/wwii-with-timeline.json')
+    fetch('/examples/ia-responsable.json')
       .then(res => res.json())
       .then(data => {
         // Calculate layout for mindmap nodes
@@ -40,7 +40,7 @@ function App() {
           focusOnNodes(visibleNodeIds, false);
         }, 100);
       })
-      .catch(err => console.error('Failed to load WWII project:', err));
+      .catch(err => console.error('Failed to load IA Responsable project:', err));
   }, [loadProjectBundle, focusOnNodes]);
 
   return (

@@ -10,6 +10,7 @@ import { Action } from '../types/action';
 import { calculateLayout } from '../utils/layoutEngine';
 import { useUIStore } from './uiStore';
 import { useRelationshipStore } from './relationshipStore';
+import { useViewportStore } from './viewportStore';
 
 interface ProjectState {
   // Current project
@@ -272,6 +273,19 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const { nodes: layoutedNodes } = calculateLayout(updatedNodes, rootNodeId);
 
     set({ nodes: layoutedNodes });
+
+    // Auto-focus on all visible nodes after expansion to ensure they're all in view
+    if (newExpanded) {
+      const { focusOnNodes } = useViewportStore.getState();
+      const visibleNodeIds = Object.values(layoutedNodes)
+        .filter((n: Node) => n.isVisible)
+        .map((n: Node) => n.id);
+
+      // Use timeout to ensure layout is applied before focusing
+      setTimeout(() => {
+        focusOnNodes(visibleNodeIds, true); // Animate the focus
+      }, 50);
+    }
   },
   
   // Record an action
