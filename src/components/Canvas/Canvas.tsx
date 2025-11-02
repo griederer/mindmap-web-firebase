@@ -24,6 +24,7 @@ import RelationshipSidebar from '../RelationshipSidebar/RelationshipSidebar';
 import RelationshipAssignMenu from './RelationshipAssignMenu';
 import RelationshipLines from './RelationshipLines';
 import TimelineRibbon from '../Timeline/TimelineRibbon';
+import AnimationIndicator from '../UI/AnimationIndicator';
 import { setupViewportCulling } from '../../utils/performance/canvasOptimizer';
 
 const MIN_ZOOM = 0.25;
@@ -35,7 +36,7 @@ export default function Canvas() {
   const stageRef = useRef<Konva.Stage>(null);
 
   // Viewport state
-  const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, focusOnNodes, focusOnNodeWithPanel } = useViewportStore();
+  const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, focusOnNodes, focusOnNodeWithPanel, setAnimationInProgress } = useViewportStore();
 
   // Project state
   const { nodes, rootNodeId, addNode, deleteNode, updateNode, currentBundle } = useProjectStore();
@@ -290,6 +291,7 @@ export default function Canvas() {
 
         // Smooth animation for Auto Focus
         // Note: Konva's .to() automatically stops previous animations on same properties
+        setAnimationInProgress(true);
         stage.to({
           x,
           y,
@@ -300,6 +302,7 @@ export default function Canvas() {
           onFinish: () => {
             console.log('[Animation] Animation completed');
             previousValuesRef.current = { x, y, zoom };
+            setAnimationInProgress(false);
           }
         });
       }, 50); // Wait 50ms for all state updates to batch together
@@ -809,6 +812,9 @@ export default function Canvas() {
           onClose={() => setRelationshipAssignOpen(false)}
         />
       )}
+
+      {/* Animation progress indicator */}
+      <AnimationIndicator />
     </div>
   );
 }
