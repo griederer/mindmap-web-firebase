@@ -4,6 +4,7 @@
  */
 
 import { create } from 'zustand';
+import Konva from 'konva';
 import { useProjectStore } from './projectStore';
 import {
   calculateBoundingBox,
@@ -13,6 +14,10 @@ import {
   AUTO_FOCUS_CONSTANTS,
 } from '../utils/autoFocusUtils';
 import { AnimationQueue } from '../utils/performance/animationThrottle';
+import {
+  disableShadowsDuringAnimation,
+  enableShadowsAfterAnimation,
+} from '../utils/performance/canvasOptimizer';
 
 interface ViewportState {
   // Camera position
@@ -32,6 +37,8 @@ interface ViewportState {
   // Animation management
   animationInProgress: boolean;
   animationQueue: AnimationQueue;
+  stageRef: Konva.Stage | null;
+  layerRef: Konva.Layer | null;
 
   // Operations
   setPosition: (x: number, y: number) => void;
@@ -52,6 +59,7 @@ interface ViewportState {
   // Animation helpers
   setAnimationInProgress: (inProgress: boolean) => void;
   cancelCurrentAnimation: () => void;
+  setStageRef: (stage: Konva.Stage | null, layer: Konva.Layer | null) => void;
 }
 
 const DEFAULT_ZOOM = 1;
@@ -79,6 +87,8 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
   autoFocusEnabled: loadAutoFocusSetting(),
   animationInProgress: false,
   animationQueue: new AnimationQueue(),
+  stageRef: null,
+  layerRef: null,
   
   // Set absolute position
   setPosition: (x: number, y: number) => {
@@ -152,9 +162,9 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
   },
 
   // Focus camera on a set of nodes with dynamic zoom
-  focusOnNodes: (nodeIds: string[], _animate: boolean = true) => {
-    console.log('[ViewportStore] focusOnNodes called:', { nodeIds, animate: _animate });
-    const { width, height } = get();
+  focusOnNodes: (nodeIds: string[], animate: boolean = true) => {
+    console.log('[ViewportStore] focusOnNodes called:', { nodeIds, animate });
+    const { width, height, stageRef, layerRef, animationQueue } = get();
     const nodes = useProjectStore.getState().nodes;
 
     // Calculate bounding box for specified nodes
@@ -172,14 +182,54 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
 
     console.log('[ViewportStore] Calculated target:', { x: camera.x, y: camera.y, zoom: optimalZoom });
 
-    // CRITICAL: Update ALL properties in a single set() call
-    // Use function form to ensure React batches the update as one transaction
-    set((state) => ({
-      ...state,
-      x: camera.x,
-      y: camera.y,
-      zoom: optimalZoom,
-    }));
+    // If animation disabled or stage not ready, update instantly
+    if (!animate || !stageRef) {
+      set((state) => ({
+        ...state,
+        x: camera.x,
+        y: camera.y,
+        zoom: optimalZoom,
+      }));
+      return;
+    }
+
+    // Smooth animated transition
+    set({ animationInProgress: true });
+
+    // Disable shadows for performance during animation
+    if (layerRef) {
+      disableShadowsDuringAnimation(layerRef);
+    }
+
+    // Animate stage with smooth easing
+    animationQueue.add({
+      stage: stageRef,
+      target: {
+        x: camera.x,
+        y: camera.y,
+        scaleX: optimalZoom,
+        scaleY: optimalZoom,
+      },
+      duration: 0.5,
+      easing: Konva.Easings.EaseInOut,
+      priority: 10,
+    }).then(() => {
+      // Re-enable shadows after animation completes
+      if (layerRef) {
+        enableShadowsAfterAnimation(layerRef);
+      }
+
+      // Update Zustand state to match final animated position
+      set({
+        x: camera.x,
+        y: camera.y,
+        zoom: optimalZoom,
+        animationInProgress: false,
+      });
+    }).catch((err) => {
+      console.warn('[ViewportStore] Animation cancelled:', err);
+      set({ animationInProgress: false });
+    });
   },
 
   // Focus camera on a node with its info panel visible
@@ -187,15 +237,15 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
     nodeId: string,
     panelWidth: number,
     panelHeight: number,
-    _animate: boolean = true
+    animate: boolean = true
   ) => {
     console.log('[ViewportStore] focusOnNodeWithPanel called:', {
       nodeId,
       panelWidth,
       panelHeight,
-      animate: _animate
+      animate
     });
-    const { width, height } = get();
+    const { width, height, stageRef, layerRef, animationQueue } = get();
     const nodes = useProjectStore.getState().nodes;
 
     // Calculate bounding box including panel
@@ -213,14 +263,54 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
 
     console.log('[ViewportStore] Calculated target:', { x: camera.x, y: camera.y, zoom: optimalZoom });
 
-    // CRITICAL: Update ALL properties in a single set() call
-    // Use function form to ensure React batches the update as one transaction
-    set((state) => ({
-      ...state,
-      x: camera.x,
-      y: camera.y,
-      zoom: optimalZoom,
-    }));
+    // If animation disabled or stage not ready, update instantly
+    if (!animate || !stageRef) {
+      set((state) => ({
+        ...state,
+        x: camera.x,
+        y: camera.y,
+        zoom: optimalZoom,
+      }));
+      return;
+    }
+
+    // Smooth animated transition
+    set({ animationInProgress: true });
+
+    // Disable shadows for performance during animation
+    if (layerRef) {
+      disableShadowsDuringAnimation(layerRef);
+    }
+
+    // Animate stage with smooth easing
+    animationQueue.add({
+      stage: stageRef,
+      target: {
+        x: camera.x,
+        y: camera.y,
+        scaleX: optimalZoom,
+        scaleY: optimalZoom,
+      },
+      duration: 0.5,
+      easing: Konva.Easings.EaseInOut,
+      priority: 10,
+    }).then(() => {
+      // Re-enable shadows after animation completes
+      if (layerRef) {
+        enableShadowsAfterAnimation(layerRef);
+      }
+
+      // Update Zustand state to match final animated position
+      set({
+        x: camera.x,
+        y: camera.y,
+        zoom: optimalZoom,
+        animationInProgress: false,
+      });
+    }).catch((err) => {
+      console.warn('[ViewportStore] Animation cancelled:', err);
+      set({ animationInProgress: false });
+    });
   },
 
   // Set animation in progress state
@@ -233,5 +323,10 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
     const { animationQueue } = get();
     animationQueue.cancel();
     set({ animationInProgress: false });
+  },
+
+  // Set stage and layer references for animations
+  setStageRef: (stage: Konva.Stage | null, layer: Konva.Layer | null) => {
+    set({ stageRef: stage, layerRef: layer });
   },
 }));

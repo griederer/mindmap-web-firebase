@@ -36,9 +36,10 @@ const ZOOM_SPEED = 0.1;
 export default function Canvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
+  const layerRef = useRef<Konva.Layer>(null);
 
   // Viewport state
-  const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, animationInProgress, focusOnNodes, focusOnNodeWithPanel, setAnimationInProgress } = useViewportStore();
+  const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, animationInProgress, focusOnNodes, focusOnNodeWithPanel, setAnimationInProgress, setStageRef } = useViewportStore();
 
   // Project state
   const { nodes, rootNodeId, addNode, deleteNode, updateNode, currentBundle } = useProjectStore();
@@ -132,6 +133,16 @@ export default function Canvas() {
       setNodeToEdit(null);
     }
   }, [nodeToEdit, nodes]);
+
+  // Register stage and layer references with viewport store for smooth animations
+  useEffect(() => {
+    if (stageRef.current && layerRef.current) {
+      setStageRef(stageRef.current, layerRef.current);
+    }
+    return () => {
+      setStageRef(null, null);
+    };
+  }, [setStageRef]);
 
   // Track previous visible nodes to detect changes
   const previousVisibleNodesRef = useRef<Set<string>>(new Set());
@@ -549,7 +560,7 @@ export default function Canvas() {
           onDragEnd={handleDragEnd}
           onClick={handleStageClick}
         >
-          <Layer>
+          <Layer ref={layerRef}>
             {/* Render connectors first (behind nodes) */}
             {connectors.map(({ from, to }) => (
               <Connector
