@@ -211,25 +211,30 @@ export const useUIStore = create<UIState>((set, get) => ({
     if (previousView === 'timeline' && view === 'mindmap') {
       console.log('[UIStore] Switching from timeline to mindmap - triggering auto-focus');
 
+      // Set view first
+      set({ currentView: view });
+
       // Import stores dynamically to avoid circular dependencies
       import('./viewportStore').then(({ useViewportStore }) => {
         import('./projectStore').then(({ useProjectStore }) => {
           const { focusOnNodes } = useViewportStore.getState();
           const { nodes } = useProjectStore.getState();
 
-          // Find root node (node without parent)
-          const rootNode = Object.values(nodes).find(node => !node.parent);
+          // Find root node (node without parentId)
+          const rootNode = Object.values(nodes).find(node => node.parentId === null);
 
           if (rootNode) {
             console.log(`[UIStore] Auto-focusing on root node: ${rootNode.title}`);
             // Focus on root node with animation
             focusOnNodes([rootNode.id], true);
+          } else {
+            console.warn('[UIStore] No root node found for auto-focus');
           }
         });
       });
+    } else {
+      set({ currentView: view });
     }
-
-    set({ currentView: view });
   },
 
   // Close the topmost open panel/modal in priority order
