@@ -4,13 +4,14 @@
  */
 
 import { useEffect, useRef, useMemo } from 'react';
-import { Stage, Layer, Rect, Text, Line, Circle } from 'react-konva';
+import { Stage, Layer, Rect, Text, Line, Circle, Group } from 'react-konva';
 import Konva from 'konva';
 import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { TimelineEvent } from '../../types/project';
 import ZoomControls from '../Canvas/ZoomControls';
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
+import { calculateLabelPositions } from '../../utils/timeline/collisionDetection';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -272,6 +273,40 @@ export default function TimelineCanvas() {
     });
   }, [events, x, y, zoom, width, height, timeline]);
 
+  // Calculate label positions with collision detection (for visible events only)
+  const labelPositions = useMemo(() => {
+    if (!tracks || visibleEvents.length === 0) {
+      return new Map();
+    }
+
+    // Helper functions for collision detection
+    const getEventXForCollision = (eventDate: string): number => {
+      return dateToX(eventDate);
+    };
+
+    const getEventYForCollision = (trackId: string): number => {
+      const trackIdx = getTrackIndex(trackId);
+      return TIMELINE_HEIGHT + trackIdx * (TRACK_HEIGHT + TRACK_SPACING) + TRACK_HEIGHT / 2;
+    };
+
+    // Calculate collision-free positions
+    const positions = calculateLabelPositions(
+      visibleEvents,
+      tracks,
+      getEventXForCollision,
+      getEventYForCollision,
+      {
+        labelHeight: 20,
+        charWidth: 7,
+        adjustmentStep: 25,
+        connectorThreshold: 5,
+        maxAttempts: 10,
+      }
+    );
+
+    return positions;
+  }, [visibleEvents, tracks, dateToX, getTrackIndex]);
+
   // Render visible events only (viewport culling applied)
   const renderEvents = () => {
     return visibleEvents.map((event) => {
@@ -282,30 +317,75 @@ export default function TimelineCanvas() {
       const track = tracks.find(t => t.id === event.track);
       const color = track?.color || '#3B82F6';
 
+      // Get collision-free label position
+      const labelPos = labelPositions.get(event.id);
+      const labelX = labelPos ? labelPos.x + 15 : eventX + 15;
+      const labelY = labelPos ? labelPos.y - 8 : eventY - 8;
+      const needsConnector = labelPos ? labelPos.needsConnector : false;
+
       return (
-        <Circle
-          key={event.id}
-          x={eventX}
-          y={eventY}
-          radius={EVENT_RADIUS}
-          fill={color}
-          stroke="#FFFFFF"
-          strokeWidth={2}
-          shadowColor="#000000"
-          shadowBlur={4}
-          shadowOpacity={0.2}
-          shadowOffsetY={2}
-          onDblClick={() => handleEventDoubleClick(event)}
-          onTap={() => handleEventDoubleClick(event)}
-          onMouseEnter={(e) => {
-            const stage = e.target.getStage();
-            if (stage) stage.container().style.cursor = 'pointer';
-          }}
-          onMouseLeave={(e) => {
-            const stage = e.target.getStage();
-            if (stage) stage.container().style.cursor = 'default';
-          }}
-        />
+        <Group key={event.id}>
+          {/* Event circle */}
+          <Circle
+            x={eventX}
+            y={eventY}
+            radius={EVENT_RADIUS}
+            fill={color}
+            stroke="#FFFFFF"
+            strokeWidth={2}
+            shadowColor="#000000"
+            shadowBlur={4}
+            shadowOpacity={0.2}
+            shadowOffsetY={2}
+            onDblClick={() => handleEventDoubleClick(event)}
+            onTap={() => handleEventDoubleClick(event)}
+            onMouseEnter={(e) => {
+              const stage = e.target.getStage();
+              if (stage) stage.container().style.cursor = 'pointer';
+            }}
+            onMouseLeave={(e) => {
+              const stage = e.target.getStage();
+              if (stage) stage.container().style.cursor = 'default';
+            }}
+          />
+
+          {/* Connector line (if label was adjusted) */}
+          {needsConnector && (
+            <Line
+              points={[
+                eventX + 15,
+                eventY,
+                labelX - 5,
+                labelY + 8,
+              ]}
+              stroke={color}
+              strokeWidth={1}
+              opacity={0.5}
+              dash={[3, 3]}
+            />
+          )}
+
+          {/* Event label with collision-free position */}
+          <Text
+            x={labelX}
+            y={labelY}
+            text={event.title}
+            fontSize={13}
+            fontFamily="Inter"
+            fontStyle="500"
+            fill="#1F2937"
+            onDblClick={() => handleEventDoubleClick(event)}
+            onTap={() => handleEventDoubleClick(event)}
+            onMouseEnter={(e) => {
+              const stage = e.target.getStage();
+              if (stage) stage.container().style.cursor = 'pointer';
+            }}
+            onMouseLeave={(e) => {
+              const stage = e.target.getStage();
+              if (stage) stage.container().style.cursor = 'default';
+            }}
+          />
+        </Group>
       );
     });
   };

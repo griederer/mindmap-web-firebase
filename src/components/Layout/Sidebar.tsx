@@ -4,12 +4,14 @@
  */
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ChevronDown, Plus, FolderOpen, CircleDot } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Plus, FolderOpen, CircleDot, ArrowLeft, ArrowRight, Calendar } from 'lucide-react';
 import { useProjectStore } from '../../stores/projectStore';
 import { useSidebarStore } from '../../stores/sidebarStore';
 import { useViewportStore } from '../../stores/viewportStore';
+import { useUIStore } from '../../stores/uiStore';
 import { calculateLayout } from '../../utils/layoutEngine';
 import { loadModularProject, loadLegacyProject } from '../../utils/projectLoader';
+import { findNextYear, findPreviousYear } from '../../utils/timeline/yearNavigation';
 
 export default function Sidebar() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,9 +19,10 @@ export default function Sidebar() {
   const [isActionsExpanded, setIsActionsExpanded] = useState(true);
   const [isProjectsExpanded, setIsProjectsExpanded] = useState(true);
 
-  const { loadProject, loadProjectBundle, currentProject } = useProjectStore();
+  const { loadProject, loadProjectBundle, currentProject, currentBundle } = useProjectStore();
   const { isCollapsed, toggleCollapse } = useSidebarStore();
-  const { focusOnNodes } = useViewportStore();
+  const { focusOnNodes, setPosition, x, zoom } = useViewportStore();
+  const { currentView } = useUIStore();
 
   // Keyboard shortcut: Cmd+B to toggle sidebar
   useEffect(() => {
@@ -160,6 +163,54 @@ export default function Sidebar() {
     }, 100);
   };
 
+  // Year navigation handlers (for timeline view)
+  const handleNavigateYear = (direction: 'forward' | 'backward') => {
+    if (!currentBundle?.timeline) return;
+
+    const timeline = currentBundle.timeline;
+    const events = timeline.events || [];
+    if (events.length === 0) return;
+
+    // Constants matching TimelineCanvas
+    const YEAR_SPACING = 150;
+    const TIMELINE_HEIGHT = 120;
+    const TRACK_HEIGHT = 80;
+
+    // Calculate year positions from events
+    const yearSet = new Set<number>();
+    events.forEach(event => {
+      const year = new Date(event.date).getFullYear();
+      yearSet.add(year);
+    });
+    const years = Array.from(yearSet).sort((a, b) => a - b);
+
+    const startDate = new Date(timeline.config?.startDate || years[0].toString());
+    const yearPositions = new Map<number, number>();
+    years.forEach(year => {
+      const yearsSinceStart = year - startDate.getFullYear();
+      yearPositions.set(year, yearsSinceStart * YEAR_SPACING);
+    });
+
+    // Find current year from viewport position
+    const centerX = -x / zoom + (window.innerWidth / 2 / zoom);
+    const currentYearIndex = Math.round(centerX / YEAR_SPACING) + startDate.getFullYear();
+
+    // Find next/previous year
+    const targetYear = direction === 'forward'
+      ? findNextYear(currentYearIndex, yearPositions)
+      : findPreviousYear(currentYearIndex, yearPositions);
+
+    // Calculate optimal camera position for the year
+    const targetX = yearPositions.get(targetYear) || 0;
+    const targetCameraX = (window.innerWidth / 2) - (targetX * zoom);
+    const targetCameraY = (window.innerHeight / 2) - ((TIMELINE_HEIGHT + TRACK_HEIGHT) * zoom);
+
+    // Apply position immediately (Konva animation handled by TimelineCanvas)
+    setPosition(targetCameraX, targetCameraY);
+
+    console.log(`[Timeline Navigation] Navigating to year ${targetYear}`);
+  };
+
   // Collapsed state (48px width)
   if (isCollapsed) {
     return (
@@ -285,6 +336,44 @@ export default function Sidebar() {
             </div>
           )}
         </div>
+
+        {/* Timeline Navigation section - Only visible in timeline view */}
+        {currentView === 'timeline' && currentBundle?.timeline && (
+          <div className="px-3 pt-2 pb-6 border-t border-gray-100">
+            <div className="flex items-center gap-2 px-1 py-1.5 mb-3">
+              <Calendar className="w-4 h-4 text-blue-600" strokeWidth={2} />
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Timeline
+              </span>
+            </div>
+
+            <div className="space-y-1">
+              <button
+                onClick={() => handleNavigateYear('backward')}
+                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-blue-50 transition-colors text-left"
+              >
+                <ArrowLeft className="w-4 h-4 text-gray-600" strokeWidth={2} />
+                <span className="text-sm text-gray-700">Previous Year</span>
+              </button>
+
+              <button
+                onClick={() => handleNavigateYear('forward')}
+                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-blue-50 transition-colors text-left"
+              >
+                <ArrowRight className="w-4 h-4 text-gray-600" strokeWidth={2} />
+                <span className="text-sm text-gray-700">Next Year</span>
+              </button>
+            </div>
+
+            <div className="mt-3 px-2 py-1.5 bg-blue-50 rounded-md">
+              <p className="text-xs text-gray-600">
+                Use <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">←</kbd>{' '}
+                <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">→</kbd>{' '}
+                keys to navigate
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* My Projects section - Collapsible */}
         <div className="px-3 pt-2 pb-6 flex-1 overflow-hidden flex flex-col">
