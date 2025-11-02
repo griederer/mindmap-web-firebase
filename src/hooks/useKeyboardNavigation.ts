@@ -126,6 +126,7 @@ export function useKeyboardNavigation(
 
       // Use AnimationQueue for smooth, conflict-free transitions
       if (animationQueue) {
+        console.log('[useKeyboardNavigation] Using AnimationQueue for smooth animation');
         animationQueue.add({
           stage: stage,
           target: {
@@ -149,6 +150,7 @@ export function useKeyboardNavigation(
         });
       } else {
         // Fallback to direct Tween if no AnimationQueue provided
+        console.warn('[useKeyboardNavigation] No AnimationQueue provided, using fallback Tween (slower)');
         useViewportStore.setState({ animationInProgress: true });
 
         const tween = new Konva.Tween({

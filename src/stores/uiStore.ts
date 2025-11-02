@@ -203,8 +203,32 @@ export const useUIStore = create<UIState>((set, get) => ({
     set({ timelineRibbonOpen: open });
   },
 
-  // Set current view
+  // Set current view - auto-focus to main node when exiting timeline
   setView: (view: ViewType) => {
+    const previousView = get().currentView;
+
+    // If switching from timeline to mindmap, auto-focus on main node
+    if (previousView === 'timeline' && view === 'mindmap') {
+      console.log('[UIStore] Switching from timeline to mindmap - triggering auto-focus');
+
+      // Import stores dynamically to avoid circular dependencies
+      import('./viewportStore').then(({ useViewportStore }) => {
+        import('./projectStore').then(({ useProjectStore }) => {
+          const { focusOnNodes } = useViewportStore.getState();
+          const { nodes } = useProjectStore.getState();
+
+          // Find root node (node without parent)
+          const rootNode = Object.values(nodes).find(node => !node.parent);
+
+          if (rootNode) {
+            console.log(`[UIStore] Auto-focusing on root node: ${rootNode.title}`);
+            // Focus on root node with animation
+            focusOnNodes([rootNode.id], true);
+          }
+        });
+      });
+    }
+
     set({ currentView: view });
   },
 
