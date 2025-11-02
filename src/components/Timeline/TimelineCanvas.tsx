@@ -42,7 +42,7 @@ export default function TimelineCanvas() {
   useKeyboardNavigation({
     enabled: true,
     stageRef,
-    animationDuration: 400,
+    animationDuration: 300,
     yearSpacing: EVENT_SPACING,
   });
 
@@ -148,7 +148,7 @@ export default function TimelineCanvas() {
     stage.to({
       x: newX,
       y: newY,
-      duration: 0.5,
+      duration: 0.3,
       easing: Konva.Easings.EaseOut,
       onFinish: () => {
         setPosition(newX, newY);
