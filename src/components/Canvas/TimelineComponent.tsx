@@ -81,11 +81,11 @@ export default function TimelineComponent({
   const labelPositions = useMemo(() => {
     // Calculate positions using collision detection utility
     const positions = calculateLabelPositions(events, tracks, getEventX, getEventY, {
-      labelHeight: 20,
-      charWidth: 7,
-      adjustmentStep: 25,
+      labelHeight: 30, // Much larger for guaranteed vertical space
+      charWidth: 10, // Wider character estimation
+      adjustmentStep: 80, // Very large spacing - guaranteed separation
       connectorThreshold: 5,
-      maxAttempts: 10,
+      maxAttempts: 50, // Many attempts to find space
     });
 
     // Convert to final positions with track label offset

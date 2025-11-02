@@ -37,16 +37,17 @@ export default function NodeComponent({ node }: NodeComponentProps) {
 
   // Animate node appearance on mount with smooth fade
   useEffect(() => {
-    if (groupRef.current) {
+    if (groupRef.current && node.isVisible) {
+      const targetOpacity = isBlurred ? 0.3 : 1;
       groupRef.current.to({
-        opacity: 1,
+        opacity: targetOpacity,
         scaleX: 1,
         scaleY: 1,
         duration: 1.2,
         easing: Konva.Easings.EaseOut,
       });
     }
-  }, []);
+  }, [node.isVisible, isBlurred]);
 
   // Animate position changes with smooth easing
   useEffect(() => {
@@ -113,7 +114,7 @@ export default function NodeComponent({ node }: NodeComponentProps) {
       ref={groupRef}
       x={node.position.x}
       y={node.position.y}
-      opacity={isBlurred ? 0.3 : 0}
+      opacity={node.isVisible ? (isBlurred ? 0.3 : 1) : 0}
       scaleX={0.95}
       scaleY={0.95}
       onClick={handleClick}
@@ -192,18 +193,6 @@ export default function NodeComponent({ node }: NodeComponentProps) {
             verticalAlign="middle"
           />
         </Group>
-      )}
-
-      {/* Level indicator (visual debugging) */}
-      {node.level > 0 && (
-        <Text
-          x={NODE_PADDING}
-          y={NODE_HEIGHT - 18}
-          text={`L${node.level}`}
-          fontSize={10}
-          fontFamily="monospace"
-          fill="#9ca3af"
-        />
       )}
     </Group>
   );

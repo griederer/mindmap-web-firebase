@@ -11,7 +11,7 @@ import { useViewportStore } from '../../stores/viewportStore';
 import { useUIStore } from '../../stores/uiStore';
 import { calculateLayout } from '../../utils/layoutEngine';
 import { loadModularProject, loadLegacyProject } from '../../utils/projectLoader';
-import { findNextYear, findPreviousYear } from '../../utils/timeline/yearNavigation';
+import { findNextYear, findPreviousYear, calculateOptimalZoomForYear } from '../../utils/timeline/yearNavigation';
 
 export default function Sidebar() {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,7 @@ export default function Sidebar() {
 
   const { loadProject, loadProjectBundle, currentProject, currentBundle } = useProjectStore();
   const { isCollapsed, toggleCollapse } = useSidebarStore();
-  const { focusOnNodes, setPosition, x, zoom } = useViewportStore();
+  const { focusOnNodes, setPosition, setZoom, x, y, zoom } = useViewportStore();
   const { currentView } = useUIStore();
 
   // Keyboard shortcut: Cmd+B to toggle sidebar
@@ -171,10 +171,16 @@ export default function Sidebar() {
     const events = timeline.events || [];
     if (events.length === 0) return;
 
-    // Constants matching TimelineCanvas
-    const YEAR_SPACING = 150;
-    const TIMELINE_HEIGHT = 120;
-    const TRACK_HEIGHT = 80;
+    // Constants matching TimelineComponent.tsx
+    const YEAR_SPACING = 280;
+    const TRACK_HEIGHT = 100;
+    const TRACK_SPACING = 20;
+    const TIMELINE_Y_OFFSET = 80;
+    const TRACK_LABEL_WIDTH = 120;
+
+    // Timeline position in Canvas (from Canvas.tsx line 656-658)
+    const TIMELINE_X = 100;
+    const TIMELINE_Y = 800;
 
     // Calculate year positions from events
     const yearSet = new Set<number>();
@@ -191,24 +197,77 @@ export default function Sidebar() {
       yearPositions.set(year, yearsSinceStart * YEAR_SPACING);
     });
 
-    // Find current year from viewport position
-    const centerX = -x / zoom + (window.innerWidth / 2 / zoom);
-    const currentYearIndex = Math.round(centerX / YEAR_SPACING) + startDate.getFullYear();
+    // Check if camera is CENTERED on the timeline (not just visible)
+    // Calculate center Y of viewport in canvas coordinates
+    const centerY = -y / zoom + (window.innerHeight / 2 / zoom);
 
-    // Find next/previous year
-    const targetYear = direction === 'forward'
-      ? findNextYear(currentYearIndex, yearPositions)
-      : findPreviousYear(currentYearIndex, yearPositions);
+    // Timeline center is at Y=800 + ~200px height = ~900
+    const timelineCenterY = TIMELINE_Y + TIMELINE_Y_OFFSET + (TRACK_HEIGHT / 2);
+
+    // Check if viewport center is close to timeline center (within 100px)
+    const distanceToTimeline = Math.abs(centerY - timelineCenterY);
+    const isViewingTimeline = distanceToTimeline < 100;
+
+    console.log(`[Timeline Navigation] Center Y: ${centerY.toFixed(0)}, timeline center: ${timelineCenterY.toFixed(0)}, distance: ${distanceToTimeline.toFixed(0)}, viewing=${isViewingTimeline}`);
+
+    let targetYear: number;
+
+    if (isViewingTimeline) {
+      // Camera is on timeline - find closest year and navigate from there
+      const centerX = -x / zoom + (window.innerWidth / 2 / zoom);
+      const relativeX = centerX - TIMELINE_X - TRACK_LABEL_WIDTH;
+
+      let closestYear = years[0];
+      let minDistance = Infinity;
+
+      years.forEach(year => {
+        const yearPos = yearPositions.get(year) || 0;
+        const distance = Math.abs(relativeX - yearPos);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestYear = year;
+        }
+      });
+
+      targetYear = direction === 'forward'
+        ? findNextYear(closestYear, yearPositions)
+        : findPreviousYear(closestYear, yearPositions);
+
+      console.log(`[Timeline Navigation] On timeline. Closest year: ${closestYear}, navigating ${direction} to: ${targetYear}`);
+    } else {
+      // Camera is NOT on timeline - ALWAYS go to first year
+      targetYear = years[0];
+      console.log(`[Timeline Navigation] NOT on timeline (centerY=${centerY.toFixed(0)}). Going to FIRST year: ${targetYear}`);
+    }
+
+    // Calculate optimal zoom for this year
+    const rawZoom = calculateOptimalZoomForYear(
+      targetYear,
+      events,
+      window.innerWidth,
+      YEAR_SPACING
+    );
+
+    // Cap zoom to reasonable level for embedded timeline (max 0.8x for better overview)
+    const optimalZoom = Math.min(rawZoom, 0.8);
 
     // Calculate optimal camera position for the year
+    // Timeline events are at: TIMELINE_X + TRACK_LABEL_WIDTH + yearPosition
     const targetX = yearPositions.get(targetYear) || 0;
-    const targetCameraX = (window.innerWidth / 2) - (targetX * zoom);
-    const targetCameraY = (window.innerHeight / 2) - ((TIMELINE_HEIGHT + TRACK_HEIGHT) * zoom);
+    const timelineEventX = TIMELINE_X + TRACK_LABEL_WIDTH + targetX;
 
-    // Apply position immediately (Konva animation handled by TimelineCanvas)
+    // Center the event horizontally in viewport
+    const targetCameraX = (window.innerWidth / 2) - (timelineEventX * optimalZoom);
+
+    // Timeline events are vertically at: TIMELINE_Y + TIMELINE_Y_OFFSET + middle of first track
+    const timelineEventY = TIMELINE_Y + TIMELINE_Y_OFFSET + (TRACK_HEIGHT / 2);
+    const targetCameraY = (window.innerHeight / 2) - (timelineEventY * optimalZoom);
+
+    // Apply position and zoom
+    setZoom(optimalZoom);
     setPosition(targetCameraX, targetCameraY);
 
-    console.log(`[Timeline Navigation] Navigating to year ${targetYear}`);
+    console.log(`[Timeline Navigation] Navigating to year ${targetYear} with zoom ${optimalZoom.toFixed(2)}`);
   };
 
   // Collapsed state (48px width)
@@ -336,44 +395,6 @@ export default function Sidebar() {
             </div>
           )}
         </div>
-
-        {/* Timeline Navigation section - Only visible in timeline view */}
-        {currentView === 'timeline' && currentBundle?.timeline && (
-          <div className="px-3 pt-2 pb-6 border-t border-gray-100">
-            <div className="flex items-center gap-2 px-1 py-1.5 mb-3">
-              <Calendar className="w-4 h-4 text-blue-600" strokeWidth={2} />
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                Timeline
-              </span>
-            </div>
-
-            <div className="space-y-1">
-              <button
-                onClick={() => handleNavigateYear('backward')}
-                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-blue-50 transition-colors text-left"
-              >
-                <ArrowLeft className="w-4 h-4 text-gray-600" strokeWidth={2} />
-                <span className="text-sm text-gray-700">Previous Year</span>
-              </button>
-
-              <button
-                onClick={() => handleNavigateYear('forward')}
-                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-blue-50 transition-colors text-left"
-              >
-                <ArrowRight className="w-4 h-4 text-gray-600" strokeWidth={2} />
-                <span className="text-sm text-gray-700">Next Year</span>
-              </button>
-            </div>
-
-            <div className="mt-3 px-2 py-1.5 bg-blue-50 rounded-md">
-              <p className="text-xs text-gray-600">
-                Use <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">←</kbd>{' '}
-                <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">→</kbd>{' '}
-                keys to navigate
-              </p>
-            </div>
-          </div>
-        )}
 
         {/* My Projects section - Collapsible */}
         <div className="px-3 pt-2 pb-6 flex-1 overflow-hidden flex flex-col">

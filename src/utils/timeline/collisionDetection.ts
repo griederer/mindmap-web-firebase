@@ -82,14 +82,12 @@ export function hasCollision(box1: BoundingBox, box2: BoundingBox): boolean {
 /**
  * Calculate non-overlapping positions for timeline event labels
  *
- * Algorithm:
+ * Simple Deterministic Algorithm:
  * 1. Group events by track
  * 2. Sort events chronologically within each track
- * 3. For each event, calculate bounding box
- * 4. Check for collisions with previously placed labels
- * 5. If collision detected, adjust Y position (alternating up/down)
- * 6. Mark needsConnector if label moved >5px from base
- * 7. Maximum 10 adjustment attempts per label
+ * 3. Alternate label positions: baseline, up, down, up more, down more, etc.
+ * 4. No collision detection - guaranteed separation by design
+ * 5. Mark needsConnector if label moved from baseline
  *
  * @param events - Timeline events to position
  * @param tracks - Track definitions (not used in current implementation but kept for API consistency)
@@ -107,7 +105,6 @@ export function calculateLabelPositions(
 ): Map<string, LabelPosition> {
   const cfg = { ...DEFAULT_CONFIG, ...config };
   const positions = new Map<string, LabelPosition>();
-  const placedBoxes: BoundingBox[] = [];
 
   // Handle empty events
   if (events.length === 0) {
@@ -122,75 +119,46 @@ export function calculateLabelPositions(
     eventsByTrack.set(event.track, trackEvents);
   }
 
-  // Sort events chronologically within each track
+  // Process each track
   for (const [trackId, trackEvents] of eventsByTrack.entries()) {
+    // Sort events chronologically within track
     trackEvents.sort((a, b) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();
       return dateA - dateB;
     });
 
-    // Process each event
-    for (const event of trackEvents) {
+    // Apply simple alternating pattern
+    for (let i = 0; i < trackEvents.length; i++) {
+      const event = trackEvents[i];
       const baseX = getEventX(event.date);
       const baseY = getEventY(trackId);
 
-      // Calculate label dimensions
-      const labelWidth = event.title.length * cfg.charWidth;
-      const labelHeight = cfg.labelHeight;
-
-      // Try to place label without collision
       let finalY = baseY;
       let needsConnector = false;
-      let placed = false;
 
-      // Attempt to place at base position first
-      let candidateBox: BoundingBox = {
-        x: baseX,
-        y: baseY,
-        width: labelWidth,
-        height: labelHeight,
-      };
-
-      // Check for collision at base position
-      if (!placedBoxes.some(box => hasCollision(candidateBox, box))) {
-        placed = true;
+      // Deterministic alternating pattern
+      if (i === 0) {
+        // First event: baseline position
+        finalY = baseY;
+        needsConnector = false;
+      } else if (i % 2 === 1) {
+        // Odd index: move UP
+        const level = Math.ceil(i / 2);
+        finalY = baseY - (level * cfg.adjustmentStep);
+        needsConnector = true;
       } else {
-        // Try alternating up/down adjustments
-        for (let attempt = 1; attempt <= cfg.maxAttempts && !placed; attempt++) {
-          const direction = attempt % 2 === 0 ? 1 : -1; // Alternate: up (-1), down (+1)
-          const offset = Math.ceil(attempt / 2) * cfg.adjustmentStep;
-          const adjustedY = baseY + direction * offset;
-
-          candidateBox = {
-            x: baseX,
-            y: adjustedY,
-            width: labelWidth,
-            height: labelHeight,
-          };
-
-          // Check if this position is collision-free
-          if (!placedBoxes.some(box => hasCollision(candidateBox, box))) {
-            finalY = adjustedY;
-            needsConnector = Math.abs(adjustedY - baseY) > cfg.connectorThreshold;
-            placed = true;
-          }
-        }
+        // Even index: move DOWN
+        const level = i / 2;
+        finalY = baseY + (level * cfg.adjustmentStep);
+        needsConnector = true;
       }
 
-      // Store position (use base position if no collision-free spot found)
+      // Store position
       positions.set(event.id, {
         x: baseX,
         y: finalY,
         needsConnector,
-      });
-
-      // Add to placed boxes for future collision checks
-      placedBoxes.push({
-        x: baseX,
-        y: finalY,
-        width: labelWidth,
-        height: labelHeight,
       });
     }
   }

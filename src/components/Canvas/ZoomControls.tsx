@@ -3,16 +3,18 @@
  * UI controls for zoom and viewport management
  */
 
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { getNodesBounds } from '../../utils/layoutEngine';
+import { findNextYear, findPreviousYear, calculateOptimalZoomForYear } from '../../utils/timeline/yearNavigation';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
 
 export default function ZoomControls() {
-  const { zoom, width, height, setZoom, setPosition, autoFocusEnabled, setAutoFocus } = useViewportStore();
-  const { nodes } = useProjectStore();
+  const { zoom, width, height, setZoom, setPosition, autoFocusEnabled, setAutoFocus, x, y } = useViewportStore();
+  const { nodes, currentBundle } = useProjectStore();
 
   const handleZoomIn = () => {
     const newZoom = Math.min(MAX_ZOOM, zoom + 0.25);
@@ -62,7 +64,91 @@ export default function ZoomControls() {
     setAutoFocus(!autoFocusEnabled);
   };
 
+  const handleNavigateYear = (direction: 'forward' | 'backward') => {
+    if (!currentBundle?.timeline) return;
+
+    const timeline = currentBundle.timeline;
+    const events = timeline.events || [];
+    if (events.length === 0) return;
+
+    // Constants matching TimelineComponent.tsx
+    const YEAR_SPACING = 280;
+    const TRACK_HEIGHT = 100;
+    const TIMELINE_Y_OFFSET = 80;
+    const TRACK_LABEL_WIDTH = 120;
+    const TIMELINE_X = 100;
+    const TIMELINE_Y = 800;
+
+    // Calculate year positions from events
+    const yearSet = new Set<number>();
+    events.forEach(event => {
+      const year = new Date(event.date).getFullYear();
+      yearSet.add(year);
+    });
+    const years = Array.from(yearSet).sort((a, b) => a - b);
+
+    const startDate = new Date(timeline.config?.startDate || years[0].toString());
+    const yearPositions = new Map<number, number>();
+    years.forEach(year => {
+      const yearsSinceStart = year - startDate.getFullYear();
+      yearPositions.set(year, yearsSinceStart * YEAR_SPACING);
+    });
+
+    // Check if camera is CENTERED on the timeline
+    const centerY = -y / zoom + (window.innerHeight / 2 / zoom);
+    const timelineCenterY = TIMELINE_Y + TIMELINE_Y_OFFSET + (TRACK_HEIGHT / 2);
+    const distanceToTimeline = Math.abs(centerY - timelineCenterY);
+    const isViewingTimeline = distanceToTimeline < 100;
+
+    let targetYear: number;
+
+    if (isViewingTimeline) {
+      // Find closest year and navigate from there
+      const centerX = -x / zoom + (window.innerWidth / 2 / zoom);
+      const relativeX = centerX - TIMELINE_X - TRACK_LABEL_WIDTH;
+
+      let closestYear = years[0];
+      let minDistance = Infinity;
+
+      years.forEach(year => {
+        const yearPos = yearPositions.get(year) || 0;
+        const distance = Math.abs(relativeX - yearPos);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestYear = year;
+        }
+      });
+
+      targetYear = direction === 'forward'
+        ? findNextYear(closestYear, yearPositions)
+        : findPreviousYear(closestYear, yearPositions);
+    } else {
+      // Not on timeline - go to first year
+      targetYear = years[0];
+    }
+
+    // Calculate optimal zoom and position
+    const rawZoom = calculateOptimalZoomForYear(
+      targetYear,
+      events,
+      window.innerWidth,
+      YEAR_SPACING
+    );
+    const optimalZoom = Math.min(rawZoom, 0.8);
+
+    const targetX = yearPositions.get(targetYear) || 0;
+    const timelineEventX = TIMELINE_X + TRACK_LABEL_WIDTH + targetX;
+    const targetCameraX = (window.innerWidth / 2) - (timelineEventX * optimalZoom);
+
+    const timelineEventY = TIMELINE_Y + TIMELINE_Y_OFFSET + (TRACK_HEIGHT / 2);
+    const targetCameraY = (window.innerHeight / 2) - (timelineEventY * optimalZoom);
+
+    setZoom(optimalZoom);
+    setPosition(targetCameraX, targetCameraY);
+  };
+
   const zoomPercentage = Math.round(zoom * 100);
+  const hasTimeline = currentBundle?.timeline && (currentBundle.timeline.events?.length || 0) > 0;
 
   return (
     <div className="absolute bottom-6 right-6 flex flex-col gap-2">
@@ -75,6 +161,29 @@ export default function ZoomControls() {
 
       {/* Zoom controls */}
       <div className="bg-white rounded-lg shadow-lg p-2 flex flex-col gap-1">
+        {/* Timeline year navigation - only show if timeline data exists */}
+        {hasTimeline && (
+          <>
+            <button
+              onClick={() => handleNavigateYear('backward')}
+              className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
+              title="Previous Year (←)"
+            >
+              <ChevronLeft className="w-5 h-5" strokeWidth={2} />
+            </button>
+
+            <button
+              onClick={() => handleNavigateYear('forward')}
+              className="w-10 h-10 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
+              title="Next Year (→)"
+            >
+              <ChevronRight className="w-5 h-5" strokeWidth={2} />
+            </button>
+
+            <div className="h-px bg-gray-200 my-1" />
+          </>
+        )}
+
         <button
           onClick={handleZoomIn}
           disabled={zoom >= MAX_ZOOM}

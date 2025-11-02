@@ -10,6 +10,8 @@ import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
+import { useMindmapKeyboardNavigation } from '../../hooks/useMindmapKeyboardNavigation';
+import { useTimelineKeyboardNavigation } from '../../hooks/useTimelineKeyboardNavigation';
 import { Node } from '../../types/node';
 import NodeComponent from './NodeComponent';
 import TimelineComponent from './TimelineComponent';
@@ -36,7 +38,7 @@ export default function Canvas() {
   const stageRef = useRef<Konva.Stage>(null);
 
   // Viewport state
-  const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, focusOnNodes, focusOnNodeWithPanel, setAnimationInProgress } = useViewportStore();
+  const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, animationInProgress, focusOnNodes, focusOnNodeWithPanel, setAnimationInProgress } = useViewportStore();
 
   // Project state
   const { nodes, rootNodeId, addNode, deleteNode, updateNode, currentBundle } = useProjectStore();
@@ -113,6 +115,16 @@ export default function Canvas() {
       sidebarOpen,
   });
 
+  // Mindmap keyboard navigation - expand/collapse nodes with arrow keys
+  useMindmapKeyboardNavigation({
+    enabled: true, // Always enabled in mindmap view (Canvas component)
+  });
+
+  // Timeline keyboard navigation - year navigation with arrow keys when viewing timeline
+  useTimelineKeyboardNavigation({
+    enabled: true, // Always enabled, checks internally if viewing timeline
+  });
+
   // Close edit modal if node becomes invisible
   useEffect(() => {
     if (nodeToEdit && !nodes[nodeToEdit.id]?.isVisible) {
@@ -127,6 +139,19 @@ export default function Canvas() {
   // Auto Focus: Watch for node expansion/collapse
   useEffect(() => {
     if (!autoFocusEnabled) return;
+
+    // CRITICAL: Skip auto-focus during animations to prevent infinite loops
+    if (animationInProgress) {
+      console.log('[Auto Focus] Skipping - animation in progress');
+      return;
+    }
+
+    // CRITICAL: Skip auto-focus when relationship menu is open
+    // Prevents unwanted camera movement and node expansion during relationship assignment
+    if (relationshipAssignOpen) {
+      console.log('[Auto Focus] Skipping - relationship menu is open');
+      return;
+    }
 
     // Get current visible node IDs
     const currentVisibleIds = new Set(
@@ -171,7 +196,7 @@ export default function Canvas() {
       previousVisibleNodesRef.current = currentVisibleIds;
       autoFocusTimeoutRef.current = null;
     }, 100);
-  }, [nodes, autoFocusEnabled, focusOnNodes]);
+  }, [nodes, autoFocusEnabled, animationInProgress, focusOnNodes, relationshipAssignOpen]);
 
   // Auto Focus: Watch for info panel display and focus on node + panel
   useEffect(() => {
@@ -741,7 +766,7 @@ export default function Canvas() {
         </div>
       )}
 
-      {/* Zoom controls */}
+      {/* Zoom controls (includes timeline year navigation when available) */}
       {rootNodeId && <ZoomControls />}
 
       {/* Edit modal */}
