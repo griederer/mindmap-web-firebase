@@ -15,6 +15,11 @@ import {
   calculateOptimalZoomForYear,
 } from '../utils/timeline/yearNavigation';
 import Konva from 'konva';
+import { AnimationQueue } from '../utils/performance/animationThrottle';
+import {
+  disableShadowsDuringAnimation,
+  enableShadowsAfterAnimation,
+} from '../utils/performance/canvasOptimizer';
 
 interface UseKeyboardNavigationOptions {
   /** Whether keyboard navigation is enabled */
@@ -25,6 +30,10 @@ interface UseKeyboardNavigationOptions {
   easing?: (t: number) => number;
   /** Reference to the Konva stage for animations */
   stageRef?: React.RefObject<Konva.Stage>;
+  /** Reference to the Konva layer for shadow management */
+  layerRef?: React.RefObject<Konva.Layer>;
+  /** Animation queue for smooth, conflict-free transitions */
+  animationQueue?: AnimationQueue;
   /** Spacing between years in pixels (default: 150) */
   yearSpacing?: number;
 }
@@ -61,6 +70,8 @@ export function useKeyboardNavigation(
     animationDuration = 400,
     // easing option is reserved for future use
     stageRef,
+    layerRef,
+    animationQueue,
     yearSpacing = 150,
   } = options;
 
@@ -69,7 +80,7 @@ export function useKeyboardNavigation(
   const { currentBundle } = useProjectStore();
 
   /**
-   * Navigate to a specific year with smooth animation
+   * Navigate to a specific year with smooth GPU-accelerated animation
    */
   const navigateToYear = useCallback(
     (targetYear: number) => {
@@ -78,6 +89,7 @@ export function useKeyboardNavigation(
       }
 
       const stage = stageRef.current;
+      const layer = layerRef?.current;
       const viewport = stage.size();
       if (!viewport) return;
 
@@ -107,38 +119,69 @@ export function useKeyboardNavigation(
       const targetX_pos = viewport.width / 2 - targetX * optimalZoom;
       const targetY_pos = y; // Keep same Y position
 
-      // Mark animation as in progress
-      useViewportStore.setState({ animationInProgress: true });
+      // Disable shadows for performance boost during animation
+      if (layer) {
+        disableShadowsDuringAnimation(layer);
+      }
 
-      // Animate to target position and zoom
-      const tween = new Konva.Tween({
-        node: stage,
-        duration: animationDuration / 1000, // Convert to seconds
-        x: targetX_pos,
-        y: targetY_pos,
-        scaleX: optimalZoom,
-        scaleY: optimalZoom,
-        easing: Konva.Easings.EaseOut,
-        onUpdate: () => {
-          const newX = stage.x();
-          const newY = stage.y();
-          const newScale = stage.scaleX();
+      // Use AnimationQueue for smooth, conflict-free transitions
+      if (animationQueue) {
+        animationQueue.add({
+          stage: stage,
+          target: {
+            x: targetX_pos,
+            y: targetY_pos,
+            scaleX: optimalZoom,
+            scaleY: optimalZoom,
+          },
+          duration: animationDuration / 1000, // Convert to seconds
+          easing: Konva.Easings.EaseInOut,
+          priority: 10,
+        }).then(() => {
+          // Re-enable shadows after animation
+          if (layer) {
+            enableShadowsAfterAnimation(layer);
+          }
+          setPosition(targetX_pos, targetY_pos);
+          setZoom(optimalZoom);
+        }).catch((err) => {
+          console.warn('[useKeyboardNavigation] Animation cancelled:', err);
+        });
+      } else {
+        // Fallback to direct Tween if no AnimationQueue provided
+        useViewportStore.setState({ animationInProgress: true });
 
-          // Update Zustand store in real-time
-          setPosition(newX, newY);
-          setZoom(newScale);
-        },
-        onFinish: () => {
-          // Mark animation as complete
-          useViewportStore.setState({ animationInProgress: false });
-        },
-      });
+        const tween = new Konva.Tween({
+          node: stage,
+          duration: animationDuration / 1000,
+          x: targetX_pos,
+          y: targetY_pos,
+          scaleX: optimalZoom,
+          scaleY: optimalZoom,
+          easing: Konva.Easings.EaseInOut,
+          onUpdate: () => {
+            const newX = stage.x();
+            const newY = stage.y();
+            const newScale = stage.scaleX();
+            setPosition(newX, newY);
+            setZoom(newScale);
+          },
+          onFinish: () => {
+            if (layer) {
+              enableShadowsAfterAnimation(layer);
+            }
+            useViewportStore.setState({ animationInProgress: false });
+          },
+        });
 
-      tween.play();
+        tween.play();
+      }
     },
     [
       currentBundle,
       stageRef,
+      layerRef,
+      animationQueue,
       animationInProgress,
       animationDuration,
       yearSpacing,

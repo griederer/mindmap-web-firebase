@@ -47,10 +47,12 @@ export default function TimelineCanvas() {
   const tracks = timeline?.config?.tracks || [];
   const events = timeline?.events || [];
 
-  // Keyboard navigation for timeline (arrow keys)
+  // Keyboard navigation for timeline (arrow keys) - smooth GPU-accelerated
   useKeyboardNavigation({
     enabled: true,
     stageRef,
+    layerRef,
+    animationQueue,
     animationDuration: 1200,
     yearSpacing: EVENT_SPACING,
   });
