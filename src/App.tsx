@@ -3,6 +3,7 @@ import Canvas from './components/Canvas/Canvas';
 import TimelineCanvas from './components/Timeline/TimelineCanvas';
 import Sidebar from './components/Layout/Sidebar';
 import NodeDetails from './components/Canvas/NodeDetails';
+import ViewSwitcher from './components/Layout/ViewSwitcher';
 import { useProjectStore } from './stores/projectStore';
 import { useViewportStore } from './stores/viewportStore';
 import { useUIStore } from './stores/uiStore';
@@ -103,6 +104,9 @@ function App() {
         </div>
 
         <div className="flex items-center gap-6">
+          {/* View Switcher */}
+          <ViewSwitcher />
+
           <div className="flex items-center space-x-2 text-xs text-gray-500">
             <span className="font-mono">{window.location.hostname}</span>
           </div>
