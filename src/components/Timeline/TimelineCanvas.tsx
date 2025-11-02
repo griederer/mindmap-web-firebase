@@ -3,7 +3,7 @@
  * Timeline view with pan/zoom/focus capabilities matching mindmap
  */
 
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import { Stage, Layer, Rect, Text, Line, Circle, Group } from 'react-konva';
 import Konva from 'konva';
 import { useViewportStore } from '../../stores/viewportStore';
@@ -12,6 +12,11 @@ import { TimelineEvent } from '../../types/project';
 import ZoomControls from '../Canvas/ZoomControls';
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
 import { calculateLabelPositions } from '../../utils/timeline/collisionDetection';
+import { AnimationQueue } from '../../utils/performance/animationThrottle';
+import {
+  disableShadowsDuringAnimation,
+  enableShadowsAfterAnimation,
+} from '../../utils/performance/canvasOptimizer';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -27,6 +32,10 @@ const EVENT_SPACING = 150; // Pixels per year
 export default function TimelineCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
+  const layerRef = useRef<Konva.Layer>(null);
+
+  // Animation queue for smooth transitions
+  const [animationQueue] = useState(() => new AnimationQueue());
 
   // Viewport state
   const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition } = useViewportStore();
@@ -42,7 +51,7 @@ export default function TimelineCanvas() {
   useKeyboardNavigation({
     enabled: true,
     stageRef,
-    animationDuration: 300,
+    animationDuration: 1200,
     yearSpacing: EVENT_SPACING,
   });
 
@@ -138,21 +147,39 @@ export default function TimelineCanvas() {
     const trackIdx = getTrackIndex(event.track);
     const eventY = TIMELINE_HEIGHT + trackIdx * (TRACK_HEIGHT + TRACK_SPACING) + TRACK_HEIGHT / 2;
 
-    // Center on event with smooth animation
+    // Center on event with smooth GPU-accelerated animation
     const stage = stageRef.current;
+    const layer = layerRef.current;
     if (!stage) return;
 
     const newX = width / 2 - eventX * zoom;
     const newY = height / 2 - eventY * zoom;
 
-    stage.to({
-      x: newX,
-      y: newY,
-      duration: 0.3,
-      easing: Konva.Easings.EaseOut,
-      onFinish: () => {
-        setPosition(newX, newY);
+    // Disable shadows for performance boost during animation
+    if (layer) {
+      disableShadowsDuringAnimation(layer);
+    }
+
+    // Use AnimationQueue for smooth, conflict-free transitions
+    animationQueue.add({
+      stage: stage,
+      target: {
+        x: newX,
+        y: newY,
+        scaleX: zoom,
+        scaleY: zoom,
       },
+      duration: 1.2,
+      easing: Konva.Easings.EaseInOut,
+      priority: 10,
+    }).then(() => {
+      // Re-enable shadows after animation
+      if (layer) {
+        enableShadowsAfterAnimation(layer);
+      }
+      setPosition(newX, newY);
+    }).catch((err) => {
+      console.warn('[TimelineCanvas] Animation cancelled:', err);
     });
   };
 
@@ -406,7 +433,7 @@ export default function TimelineCanvas() {
             onWheel={handleWheel}
             onDragEnd={handleDragEnd}
           >
-            <Layer>
+            <Layer ref={layerRef}>
               {/* Timeline axis */}
               {renderTimelineAxis()}
 

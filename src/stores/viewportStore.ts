@@ -210,7 +210,7 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
         scaleX: optimalZoom,
         scaleY: optimalZoom,
       },
-      duration: 0.8,
+      duration: 1.2,
       easing: Konva.Easings.EaseInOut,
       priority: 10,
     }).then(() => {
@@ -291,7 +291,7 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
         scaleX: optimalZoom,
         scaleY: optimalZoom,
       },
-      duration: 0.8,
+      duration: 1.2,
       easing: Konva.Easings.EaseInOut,
       priority: 10,
     }).then(() => {
