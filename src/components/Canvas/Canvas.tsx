@@ -146,16 +146,11 @@ export default function Canvas() {
 
   // Track previous visible nodes to detect changes
   const previousVisibleNodesRef = useRef<Set<string>>(new Set());
+  const pendingAutoFocusRef = useRef<Set<string> | null>(null);
 
   // Auto Focus: Watch for node expansion/collapse
   useEffect(() => {
     if (!autoFocusEnabled) return;
-
-    // CRITICAL: Skip auto-focus during animations to prevent infinite loops
-    if (animationInProgress) {
-      console.log('[Auto Focus] Skipping - animation in progress');
-      return;
-    }
 
     // CRITICAL: Skip auto-focus when relationship menu is open
     // Prevents unwanted camera movement and node expansion during relationship assignment
@@ -182,6 +177,32 @@ export default function Canvas() {
       currentVisibleIds.size !== previousVisibleIds.size ||
       [...currentVisibleIds].some(id => !previousVisibleIds.has(id)) ||
       [...previousVisibleIds].some(id => !currentVisibleIds.has(id));
+
+    // CRITICAL: If animation in progress, STORE the pending focus instead of skipping
+    if (animationInProgress) {
+      if (visibilityChanged) {
+        console.log('[Auto Focus] Animation in progress - storing pending focus');
+        pendingAutoFocusRef.current = currentVisibleIds;
+      }
+      return;
+    }
+
+    // If there's a pending focus from during animation, execute it now
+    if (pendingAutoFocusRef.current) {
+      console.log('[Auto Focus] Executing pending focus after animation');
+      const nodesToFocus = [...pendingAutoFocusRef.current];
+
+      console.log('[Auto Focus] Pending focus:', {
+        previous: previousVisibleIds.size,
+        current: pendingAutoFocusRef.current.size,
+        nodesToFocus: nodesToFocus.slice(0, 5)
+      });
+
+      focusOnNodes(nodesToFocus, true);
+      previousVisibleNodesRef.current = pendingAutoFocusRef.current;
+      pendingAutoFocusRef.current = null;
+      return;
+    }
 
     if (!visibilityChanged) return;
 
