@@ -127,6 +127,10 @@ export function useKeyboardNavigation(
       // Use AnimationQueue for smooth, conflict-free transitions
       if (animationQueue) {
         console.log('[useKeyboardNavigation] Using AnimationQueue for smooth animation');
+
+        // Set animation flag BEFORE starting animation
+        useViewportStore.setState({ animationInProgress: true });
+
         animationQueue.add({
           stage: stage,
           target: {
@@ -143,10 +147,18 @@ export function useKeyboardNavigation(
           if (layer) {
             enableShadowsAfterAnimation(layer);
           }
+
+          // Update state to match final position
           setPosition(targetX_pos, targetY_pos);
           setZoom(optimalZoom);
+
+          // Clear animation flag with small delay to prevent Canvas re-animation
+          setTimeout(() => {
+            useViewportStore.setState({ animationInProgress: false });
+          }, 50);
         }).catch((err) => {
           console.warn('[useKeyboardNavigation] Animation cancelled:', err);
+          useViewportStore.setState({ animationInProgress: false });
         });
       } else {
         // Fallback to direct Tween if no AnimationQueue provided

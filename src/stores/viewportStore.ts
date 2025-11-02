@@ -220,12 +220,18 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
       }
 
       // Update Zustand state to match final animated position
+      // CRITICAL: Update position first, then clear animationInProgress after small delay
+      // This prevents Canvas from detecting the change and trying to animate again
       set({
         x: camera.x,
         y: camera.y,
         zoom: optimalZoom,
-        animationInProgress: false,
       });
+
+      // Clear animation flag after a small delay to prevent Canvas re-animation
+      setTimeout(() => {
+        set({ animationInProgress: false });
+      }, 50);
     }).catch((err) => {
       console.warn('[ViewportStore] Animation cancelled:', err);
       set({ animationInProgress: false });
@@ -301,12 +307,18 @@ export const useViewportStore = create<ViewportState>((set, get) => ({
       }
 
       // Update Zustand state to match final animated position
+      // CRITICAL: Update position first, then clear animationInProgress after small delay
+      // This prevents Canvas from detecting the change and trying to animate again
       set({
         x: camera.x,
         y: camera.y,
         zoom: optimalZoom,
-        animationInProgress: false,
       });
+
+      // Clear animation flag after a small delay to prevent Canvas re-animation
+      setTimeout(() => {
+        set({ animationInProgress: false });
+      }, 50);
     }).catch((err) => {
       console.warn('[ViewportStore] Animation cancelled:', err);
       set({ animationInProgress: false });

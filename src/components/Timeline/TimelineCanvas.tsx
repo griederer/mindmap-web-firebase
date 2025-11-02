@@ -162,6 +162,9 @@ export default function TimelineCanvas() {
       disableShadowsDuringAnimation(layer);
     }
 
+    // Set animation flag BEFORE starting animation
+    useViewportStore.setState({ animationInProgress: true });
+
     // Use AnimationQueue for smooth, conflict-free transitions
     animationQueue.add({
       stage: stage,
@@ -179,9 +182,17 @@ export default function TimelineCanvas() {
       if (layer) {
         enableShadowsAfterAnimation(layer);
       }
+
+      // Update state to match final position
       setPosition(newX, newY);
+
+      // Clear animation flag with small delay to prevent Canvas re-animation
+      setTimeout(() => {
+        useViewportStore.setState({ animationInProgress: false });
+      }, 50);
     }).catch((err) => {
       console.warn('[TimelineCanvas] Animation cancelled:', err);
+      useViewportStore.setState({ animationInProgress: false });
     });
   };
 
