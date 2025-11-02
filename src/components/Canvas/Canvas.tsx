@@ -266,11 +266,20 @@ export default function Canvas() {
 
     if (!hasChanged) return;
 
+    // CRITICAL FIX: If AnimationQueue is handling the animation, just sync state
+    // This prevents duplicate animations and conflicts
+    if (animationInProgress) {
+      console.log('[Canvas Animation] Skipping - AnimationQueue is active');
+      // Just update tracking, AnimationQueue will handle the visual animation
+      previousValuesRef.current = { x, y, zoom };
+      return;
+    }
+
     // Check if this is a manual interaction (wheel or drag)
     const isManualInteraction = !shouldAnimateRef.current;
 
     // DEBUG: Log animation trigger
-    console.log('[Animation]', {
+    console.log('[Canvas Animation]', {
       type: isManualInteraction ? 'MANUAL' : 'AUTO_FOCUS',
       from: { x: prev.x, y: prev.y, zoom: prev.zoom },
       to: { x, y, zoom },
@@ -280,7 +289,7 @@ export default function Canvas() {
 
     if (isManualInteraction) {
       // Instant update for manual interactions
-      console.log('[Animation] Applying instant update');
+      console.log('[Canvas Animation] Applying instant update');
       stage.x(x);
       stage.y(y);
       stage.scaleX(zoom);
@@ -290,7 +299,7 @@ export default function Canvas() {
     } else {
       // Debounce: Wait for all values (x, y, zoom) to arrive before animating
       if (animationTimeoutRef.current !== null) {
-        console.log('[Animation] Clearing previous timeout');
+        console.log('[Canvas Animation] Clearing previous timeout');
         clearTimeout(animationTimeoutRef.current);
       }
 
@@ -299,7 +308,7 @@ export default function Canvas() {
         const to = { x, y, zoom };
         const distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
 
-        console.log('[Animation] Starting smooth animation:', {
+        console.log('[Canvas Animation] Starting smooth animation:', {
           from,
           to,
           distance: distance.toFixed(2),
@@ -320,12 +329,12 @@ export default function Canvas() {
           Math.abs(currentZoom - zoom) > 0.01;
 
         if (!hasSignificantChange) {
-          console.log('[Animation] No significant change, skipping animation');
+          console.log('[Canvas Animation] No significant change, skipping animation');
           previousValuesRef.current = { x, y, zoom };
           return;
         }
 
-        // Smooth animation for Auto Focus
+        // Smooth animation for Auto Focus (only when AnimationQueue is not active)
         // Note: Konva's .to() automatically stops previous animations on same properties
         setAnimationInProgress(true);
         stage.to({
@@ -336,7 +345,7 @@ export default function Canvas() {
           duration: 4.0, // 4 seconds
           easing: Konva.Easings.EaseInOut,
           onFinish: () => {
-            console.log('[Animation] Animation completed');
+            console.log('[Canvas Animation] Animation completed');
             previousValuesRef.current = { x, y, zoom };
             setAnimationInProgress(false);
           }
@@ -350,7 +359,7 @@ export default function Canvas() {
         clearTimeout(animationTimeoutRef.current);
       }
     };
-  }, [x, y, zoom]);
+  }, [x, y, zoom, animationInProgress]);
 
   // Update viewport size on mount and resize
   useEffect(() => {
