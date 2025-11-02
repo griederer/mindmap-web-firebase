@@ -380,7 +380,7 @@ export default function Canvas() {
         clearTimeout(animationTimeoutRef.current);
       }
     };
-  }, [x, y, zoom, animationInProgress]);
+  }, [x, y, zoom]); // ✅ FIX: Removed animationInProgress to prevent double-trigger race condition
 
   // Update viewport size on mount and resize
   useEffect(() => {
