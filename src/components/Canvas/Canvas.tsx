@@ -484,8 +484,10 @@ export default function Canvas() {
     }
   };
   
-  // Get all nodes (including invisible ones for fade-out animation)
-  const allNodes = Object.values(nodes);
+  // Get all nodes - ONLY visible ones (isVisible: true)
+  // Note: We used to include invisible nodes for fade-out animations,
+  // but this caused invisible nodes to block clicks on visible nodes below them
+  const allNodes = Object.values(nodes).filter(node => node.isVisible);
 
   // Apply viewport culling for performance (only render visible nodes)
   const visibleNodes = useMemo(() => {
