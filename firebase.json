@@ -12,8 +12,25 @@
     ],
     "headers": [
       {
-        "source": "**/*.@(js|css)",
+        "source": "**/*.@(js|mjs)",
         "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "**/*.css",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/css"
+          },
           {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
@@ -31,6 +48,14 @@
       }
     ],
     "rewrites": [
+      {
+        "source": "!/assets/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "!/examples/**",
+        "destination": "/index.html"
+      },
       {
         "source": "**",
         "destination": "/index.html"

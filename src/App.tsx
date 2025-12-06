@@ -4,43 +4,38 @@ import Sidebar from './components/Layout/Sidebar';
 import NodeDetails from './components/Canvas/NodeDetails';
 import { useProjectStore } from './stores/projectStore';
 import { useViewportStore } from './stores/viewportStore';
-import { calculateLayout } from './utils/layoutEngine';
+import { loadPmapFromUrl } from './utils/projectLoader';
+
+// Expose stores to window for testing in development
+if (process.env.NODE_ENV === 'development') {
+  (window as any).__STORES__ = {
+    projectStore: useProjectStore,
+    viewportStore: useViewportStore,
+  };
+}
 
 function App() {
   const { loadProjectBundle, currentProject } = useProjectStore();
   const { focusOnNodes } = useViewportStore();
 
-  // Load WWII project with timeline on mount
+  // Load project from .pmap format on mount
   useEffect(() => {
-    fetch('/examples/wwii-with-timeline.json')
-      .then(res => res.json())
-      .then(data => {
-        // Calculate layout for mindmap nodes
-        const { nodes: layoutedNodes } = calculateLayout(data.mindmap.nodes, data.mindmap.rootNodeId);
-
-        // Create project bundle
-        const bundle = {
-          projectId: data.projectId,
-          metadata: data.metadata,
-          mindmap: {
-            nodes: layoutedNodes,
-            rootNodeId: data.mindmap.rootNodeId,
-          },
-          timeline: data.timeline,
-        };
-
+    loadPmapFromUrl('/examples/ai-risks.json')
+      .then(({ bundle }) => {
         // Load project bundle
         loadProjectBundle(bundle);
 
         // Auto-focus on all visible nodes after loading
         setTimeout(() => {
-          const visibleNodeIds = Object.values(layoutedNodes)
-            .filter((node: any) => node.isVisible)
-            .map((node: any) => node.id);
-          focusOnNodes(visibleNodeIds, false);
+          if (bundle.mindmap?.nodes) {
+            const visibleNodeIds = Object.values(bundle.mindmap.nodes)
+              .filter((node: any) => node.isVisible)
+              .map((node: any) => node.id);
+            focusOnNodes(visibleNodeIds, false);
+          }
         }, 100);
       })
-      .catch(err => console.error('Failed to load WWII project:', err));
+      .catch(err => console.error('Failed to load project:', err));
   }, [loadProjectBundle, focusOnNodes]);
 
   return (
@@ -48,7 +43,7 @@ function App() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-6">
-          <h1 className="text-2xl font-bold text-gray-900">NODEM</h1>
+          <h1 className="text-2xl font-bold text-gray-900">MyMindmap</h1>
           <div className="h-6 w-px bg-gray-300"></div>
           <p className="text-sm text-gray-600">
             {currentProject?.metadata.title || 'No project loaded'}
@@ -67,7 +62,7 @@ function App() {
         {/* Sidebar */}
         <Sidebar />
 
-        {/* Canvas - Always show mindmap (timeline is now a node type) */}
+        {/* Canvas */}
         <main className="flex-1 overflow-hidden relative">
           <Canvas />
         </main>

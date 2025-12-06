@@ -1,6 +1,7 @@
 /**
  * Sidebar Component - Linear Style
  * Minimalist project management sidebar with collapse functionality
+ * Clean version - mindmap only
  */
 
 import { useState, useEffect } from 'react';
@@ -9,7 +10,7 @@ import { useProjectStore } from '../../stores/projectStore';
 import { useSidebarStore } from '../../stores/sidebarStore';
 import { useViewportStore } from '../../stores/viewportStore';
 import { calculateLayout } from '../../utils/layoutEngine';
-import { loadModularProject, loadLegacyProject } from '../../utils/projectLoader';
+import { loadModularProject, loadLegacyProject, loadPmapProject } from '../../utils/projectLoader';
 
 export default function Sidebar() {
   const [isLoading, setIsLoading] = useState(false);
@@ -78,9 +79,9 @@ export default function Sidebar() {
       const [fileHandle] = await (window as any).showOpenFilePicker({
         types: [
           {
-            description: 'NODEM Project Files',
+            description: 'MyMindmap Project Files',
             accept: {
-              'application/json': ['.json'],
+              'application/json': ['.json', '.pmap'],
             },
           },
         ],
@@ -89,6 +90,37 @@ export default function Sidebar() {
       });
 
       const file = await fileHandle.getFile();
+
+      // Check if it's a .pmap file (from MCP server)
+      if (file.name.endsWith('.pmap')) {
+        const { bundle } = await loadPmapProject(file);
+
+        // Apply layout
+        if (bundle.mindmap) {
+          const { nodes: layoutedNodes } = calculateLayout(
+            bundle.mindmap.nodes,
+            bundle.mindmap.rootNodeId
+          );
+          bundle.mindmap.nodes = layoutedNodes;
+        }
+
+        loadProjectBundle(bundle);
+
+        // Auto-focus on all visible nodes after loading
+        if (bundle.mindmap) {
+          setTimeout(() => {
+            const visibleNodeIds = Object.values(bundle.mindmap!.nodes)
+              .filter(node => node.isVisible)
+              .map(node => node.id);
+            focusOnNodes(visibleNodeIds, false);
+          }, 100);
+        }
+
+        setIsLoading(false);
+        return;
+      }
+
+      // Legacy JSON project
       const bundle = await loadLegacyProject(file);
 
       // Apply layout
@@ -176,7 +208,7 @@ export default function Sidebar() {
         {/* Logo letter */}
         <div className="mb-6">
           <div className="w-8 h-8 flex items-center justify-center">
-            <span className="text-lg font-semibold text-gray-900">N</span>
+            <span className="text-lg font-semibold text-gray-900">M</span>
           </div>
         </div>
 
@@ -225,7 +257,7 @@ export default function Sidebar() {
           >
             <ChevronLeft className="w-4 h-4 text-gray-600" strokeWidth={2} />
           </button>
-          <span className="text-sm font-semibold text-gray-900">NODEM</span>
+          <span className="text-sm font-semibold text-gray-900">MyMindmap</span>
         </div>
       </div>
 
@@ -332,7 +364,7 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="px-3 py-2 border-t border-gray-200">
-        <div className="text-xs text-gray-400 text-center">v1.4.0</div>
+        <div className="text-xs text-gray-400 text-center">v2.0.0</div>
       </div>
     </div>
   );

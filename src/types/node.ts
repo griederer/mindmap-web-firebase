@@ -1,6 +1,7 @@
 /**
- * Node Type Definitions for NODEM
+ * Node Type Definitions for MyMindmap
  * Represents a single node in the mind map hierarchy
+ * Clean version - pure mindmap only
  */
 
 export interface NodePosition {
@@ -36,23 +37,6 @@ export interface Node {
   // Visual state
   isExpanded: boolean;
   isVisible: boolean; // Hidden when parent collapsed
-
-  // Node type (for special nodes like timeline)
-  nodeType?: 'default' | 'timeline' | 'year' | 'event';
-
-  // Timeline-specific data
-  timelineConfig?: {
-    startYear: number;
-    endYear: number;
-    layout: 'horizontal-with-vertical-events';
-  };
-
-  // Year-specific data (for year nodes)
-  year?: number;
-
-  // Event-specific data
-  eventDate?: string; // ISO date string
-  eventCategory?: string; // e.g., "Europa", "Pacífico"
 
   // Metadata
   createdAt: number; // Unix timestamp

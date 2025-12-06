@@ -90,16 +90,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const { setRelationships } = useRelationshipStore.getState();
     setRelationships(bundle.relationships || []);
 
-    // Set default view
-    const { setView } = useUIStore.getState();
-    if (bundle.metadata.views) {
-      for (const [viewType, viewConfig] of Object.entries(bundle.metadata.views)) {
-        if (viewConfig.default && viewConfig.enabled) {
-          setView(viewType as any);
-          break;
-        }
-      }
-    }
+    // View handling removed - mindmap only
   },
 
   // Save current project (returns current state as Project)

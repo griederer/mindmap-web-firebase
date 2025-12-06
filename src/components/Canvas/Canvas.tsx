@@ -1,6 +1,7 @@
 /**
  * Canvas Component - Konva
  * Main canvas container for rendering mind map with zoom and pan
+ * Optimized for presentation mode with smooth animations
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -11,8 +12,6 @@ import { useProjectStore } from '../../stores/projectStore';
 import { useUIStore } from '../../stores/uiStore';
 import { Node } from '../../types/node';
 import NodeComponent from './NodeComponent';
-import TimelineComponent from './TimelineComponent';
-import TimelineEventInfoPanel from './TimelineEventInfoPanel';
 import Connector from './Connector';
 import ZoomControls from './ZoomControls';
 import NodeActionMenu from './NodeActionMenu';
@@ -22,11 +21,21 @@ import ImageViewer from './ImageViewer';
 import RelationshipSidebar from '../RelationshipSidebar/RelationshipSidebar';
 import RelationshipAssignMenu from './RelationshipAssignMenu';
 import RelationshipLines from './RelationshipLines';
-import TimelineRibbon from '../Timeline/TimelineRibbon';
 
-const MIN_ZOOM = 0.25;
-const MAX_ZOOM = 4;
-const ZOOM_SPEED = 0.1;
+// Presentation-optimized zoom settings
+// Based on PowerPoint best practices for projected presentations
+const MIN_ZOOM = 0.5;   // Min zoom for readability (was 0.25)
+const MAX_ZOOM = 3;     // Max zoom (was 4)
+const ZOOM_SPEED = 0.08; // Smoother zoom steps (was 0.1)
+
+// Animation configuration - optimized for smooth presentations
+const ANIMATION_CONFIG = {
+  camera: {
+    autoFocusDuration: 2.5,  // seconds (was 4.0)
+    manualZoomDuration: 0.3, // seconds (was instant)
+    debounceMs: 20,          // ms (was 50)
+  },
+};
 
 export default function Canvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,7 +45,7 @@ export default function Canvas() {
   const { x, y, zoom, width, height, setViewportSize, setZoom, setPosition, autoFocusEnabled, focusOnNodes, focusOnNodeWithPanel } = useViewportStore();
 
   // Project state
-  const { nodes, rootNodeId, addNode, deleteNode, updateNode, currentBundle } = useProjectStore();
+  const { nodes, rootNodeId, addNode, deleteNode, updateNode } = useProjectStore();
 
   // UI state
   const {
@@ -46,9 +55,6 @@ export default function Canvas() {
     focusedNodeId,
     toggleInfoPanel,
     setFocusMode,
-    selectedTimelineEvent,
-    selectTimelineEvent,
-    timelineRibbonOpen,
   } = useUIStore();
 
   // Edit modal state
@@ -81,20 +87,17 @@ export default function Canvas() {
   useEffect(() => {
     if (!autoFocusEnabled) return;
 
-    // Get current visible node IDs
     const currentVisibleIds = new Set(
       Object.values(nodes).filter(node => node.isVisible).map(node => node.id)
     );
 
     const previousVisibleIds = previousVisibleNodesRef.current;
 
-    // Detect if this is the first render (no previous state)
     if (previousVisibleIds.size === 0) {
       previousVisibleNodesRef.current = currentVisibleIds;
       return;
     }
 
-    // Check if visible nodes changed
     const visibilityChanged =
       currentVisibleIds.size !== previousVisibleIds.size ||
       [...currentVisibleIds].some(id => !previousVisibleIds.has(id)) ||
@@ -102,55 +105,32 @@ export default function Canvas() {
 
     if (!visibilityChanged) return;
 
-    // Focus on ALL currently visible nodes
     const nodesToFocus = [...currentVisibleIds];
-
-    console.log('[Auto Focus] Visibility change detected:', {
-      previous: previousVisibleIds.size,
-      current: currentVisibleIds.size,
-      nodesToFocus: nodesToFocus.slice(0, 5) // Show first 5 for debugging
-    });
-
-    // Trigger Auto Focus FIRST
     focusOnNodes(nodesToFocus, true);
 
-    // CRITICAL: Update ref AFTER calling focusOnNodes
-    // This ensures the viewport state change happens before we update our tracking
-    // Small delay allows the animation system to process the state change
     setTimeout(() => {
       previousVisibleNodesRef.current = currentVisibleIds;
     }, 100);
   }, [nodes, autoFocusEnabled, focusOnNodes]);
 
-  // Auto Focus: Watch for info panel display and focus on node + panel
+  // Auto Focus: Watch for info panel display
   useEffect(() => {
     if (!autoFocusEnabled || !infoPanelNodeId) return;
 
     const node = nodes[infoPanelNodeId];
     if (!node) return;
 
-    // Calculate approximate panel height based on content
-    // Base height + description lines + images
-    const PANEL_WIDTH = 240;
-    const BASE_HEIGHT = 120; // Header + padding
+    const PANEL_WIDTH = 280; // Increased for presentation
+    const BASE_HEIGHT = 140;
     const descriptionLines = Math.ceil((node.description?.length || 0) / 30);
-    const descriptionHeight = descriptionLines * 20;
-    const imagesHeight = (node.images?.length || 0) * 80; // Thumbnail height
+    const descriptionHeight = descriptionLines * 24; // Larger line height
+    const imagesHeight = (node.images?.length || 0) * 100;
     const estimatedPanelHeight = BASE_HEIGHT + descriptionHeight + imagesHeight;
 
-    console.log('[Auto Focus] Info panel detected:', {
-      nodeId: infoPanelNodeId,
-      panelWidth: PANEL_WIDTH,
-      panelHeight: estimatedPanelHeight
-    });
-
-    // CRITICAL: Call Auto Focus IMMEDIATELY (no delay)
-    // The 50ms debounce in the animation system will handle batching
-    console.log('[Auto Focus] Calling focusOnNodeWithPanel immediately');
     focusOnNodeWithPanel(infoPanelNodeId, PANEL_WIDTH, estimatedPanelHeight, true);
   }, [infoPanelNodeId, autoFocusEnabled, nodes, focusOnNodeWithPanel]);
 
-  // Track if we should animate (vs instant update for manual interactions)
+  // Animation refs
   const shouldAnimateRef = useRef(true);
   const previousValuesRef = useRef({ x, y, zoom });
   const animationTimeoutRef = useRef<number | null>(null);
@@ -168,7 +148,7 @@ export default function Canvas() {
     initialPositionSetRef.current = true;
   }, [x, y, zoom]);
 
-  // Smooth camera transitions using Konva animations
+  // Smooth camera transitions
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage || !initialPositionSetRef.current) return;
@@ -178,83 +158,51 @@ export default function Canvas() {
 
     if (!hasChanged) return;
 
-    // Check if this is a manual interaction (wheel or drag)
     const isManualInteraction = !shouldAnimateRef.current;
 
-    // DEBUG: Log animation trigger
-    console.log('[Animation]', {
-      type: isManualInteraction ? 'MANUAL' : 'AUTO_FOCUS',
-      from: { x: prev.x, y: prev.y, zoom: prev.zoom },
-      to: { x, y, zoom },
-      shouldAnimate: shouldAnimateRef.current,
-      timeoutPending: animationTimeoutRef.current !== null
-    });
-
     if (isManualInteraction) {
-      // Instant update for manual interactions
-      console.log('[Animation] Applying instant update');
-      stage.x(x);
-      stage.y(y);
-      stage.scaleX(zoom);
-      stage.scaleY(zoom);
-      shouldAnimateRef.current = true; // Reset for next Auto Focus
+      // Smooth animation even for manual zoom (presentation mode)
+      stage.to({
+        x,
+        y,
+        scaleX: zoom,
+        scaleY: zoom,
+        duration: ANIMATION_CONFIG.camera.manualZoomDuration,
+        easing: Konva.Easings.EaseOut,
+      });
+      shouldAnimateRef.current = true;
       previousValuesRef.current = { x, y, zoom };
     } else {
-      // Debounce: Wait for all values (x, y, zoom) to arrive before animating
+      // Debounced auto-focus animation
       if (animationTimeoutRef.current !== null) {
-        console.log('[Animation] Clearing previous timeout');
         clearTimeout(animationTimeoutRef.current);
       }
 
       animationTimeoutRef.current = window.setTimeout(() => {
-        const from = { x: stage.x(), y: stage.y(), zoom: stage.scaleX() };
-        const to = { x, y, zoom };
-        const distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
-
-        console.log('[Animation] Starting smooth animation:', {
-          from,
-          to,
-          distance: distance.toFixed(2),
-          zoomChange: (to.zoom - from.zoom).toFixed(3),
-          duration: '4.0s'
-        });
-
-        // CRITICAL FIX: Ensure stage is at current position before animating
-        // This prevents Konva from starting animation from wrong position
-        const currentX = stage.x();
-        const currentY = stage.y();
-        const currentZoom = stage.scaleX();
-
-        // Only animate if there's actually a change
         const hasSignificantChange =
-          Math.abs(currentX - x) > 0.1 ||
-          Math.abs(currentY - y) > 0.1 ||
-          Math.abs(currentZoom - zoom) > 0.01;
+          Math.abs(stage.x() - x) > 0.1 ||
+          Math.abs(stage.y() - y) > 0.1 ||
+          Math.abs(stage.scaleX() - zoom) > 0.01;
 
         if (!hasSignificantChange) {
-          console.log('[Animation] No significant change, skipping animation');
           previousValuesRef.current = { x, y, zoom };
           return;
         }
 
-        // Smooth animation for Auto Focus
-        // Note: Konva's .to() automatically stops previous animations on same properties
         stage.to({
           x,
           y,
           scaleX: zoom,
           scaleY: zoom,
-          duration: 4.0, // 4 seconds
+          duration: ANIMATION_CONFIG.camera.autoFocusDuration,
           easing: Konva.Easings.EaseInOut,
           onFinish: () => {
-            console.log('[Animation] Animation completed');
             previousValuesRef.current = { x, y, zoom };
           }
         });
-      }, 50); // Wait 50ms for all state updates to batch together
+      }, ANIMATION_CONFIG.camera.debounceMs);
     }
 
-    // Cleanup timeout on unmount
     return () => {
       if (animationTimeoutRef.current !== null) {
         clearTimeout(animationTimeoutRef.current);
@@ -276,25 +224,22 @@ export default function Canvas() {
     return () => window.removeEventListener('resize', updateSize);
   }, [setViewportSize]);
 
-  // Handle mouse wheel zoom
+  // Handle mouse wheel zoom with smooth animation
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
     e.evt.preventDefault();
 
     const stage = stageRef.current;
     if (!stage) return;
 
-    // Disable animation for manual wheel zoom
     shouldAnimateRef.current = false;
 
     const oldZoom = zoom;
     const pointer = stage.getPointerPosition();
     if (!pointer) return;
 
-    // Calculate new zoom
     const delta = e.evt.deltaY > 0 ? -ZOOM_SPEED : ZOOM_SPEED;
     const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, oldZoom + delta));
 
-    // Zoom towards cursor position
     const mousePointTo = {
       x: (pointer.x - x) / oldZoom,
       y: (pointer.y - y) / oldZoom,
@@ -309,35 +254,28 @@ export default function Canvas() {
     setPosition(newPos.x, newPos.y);
   };
 
-  // Handle stage drag to update viewport state
+  // Handle stage drag
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
-    // Disable animation for manual drag
     shouldAnimateRef.current = false;
-
     const stage = e.target as Konva.Stage;
     setPosition(stage.x(), stage.y());
   };
 
-  // Handle stage click to deselect node (click on empty space)
+  // Handle stage click to deselect
   const handleStageClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    // Only deselect if clicking on the stage itself (not on a node)
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
       selectNode(null);
-      // Also close info panels when clicking on empty space
       if (infoPanelNodeId) {
         toggleInfoPanel(null);
       }
-      if (selectedTimelineEvent) {
-        selectTimelineEvent(null);
-      }
     }
   };
-  
-  // Get all nodes (including invisible ones for fade-out animation)
+
+  // Get all nodes
   const allNodes = Object.values(nodes);
 
-  // Get all connectors (between parent and child nodes where both exist)
+  // Get connectors
   const connectors: Array<{ from: string; to: string }> = [];
   allNodes.forEach(node => {
     if (node.parentId && nodes[node.parentId]) {
@@ -345,12 +283,14 @@ export default function Canvas() {
     }
   });
 
-  // Get selected node for action menu positioning
+  // Get selected node
   const selectedNode = selectedNodeId ? nodes[selectedNodeId] : null;
-  const NODE_WIDTH = 200;
-  const NODE_HEIGHT = 60;
 
-  // Action menu handlers
+  // Presentation-optimized node dimensions
+  const NODE_WIDTH = 240;  // Increased for readability
+  const NODE_HEIGHT = 72;  // Increased for readability
+
+  // Action handlers
   const handleEdit = () => {
     if (selectedNodeId && selectedNode) {
       setNodeToEdit(selectedNode);
@@ -370,7 +310,6 @@ export default function Canvas() {
 
   const handleFocus = () => {
     if (selectedNodeId) {
-      // Toggle focus - if already focused, turn it off
       if (focusedNodeId === selectedNodeId) {
         setFocusMode(null);
       } else {
@@ -388,7 +327,7 @@ export default function Canvas() {
           title,
           description: '',
           level: selectedNode.level + 1,
-          position: { x: 0, y: 0 }, // Will be calculated by layout
+          position: { x: 0, y: 0 },
           children: [],
           parentId: selectedNodeId,
           isExpanded: true,
@@ -414,7 +353,7 @@ export default function Canvas() {
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="w-full h-full bg-gray-50"
       style={{ overflow: 'hidden' }}
@@ -430,7 +369,7 @@ export default function Canvas() {
           onClick={handleStageClick}
         >
           <Layer>
-            {/* Render connectors first (behind nodes) */}
+            {/* Render connectors (behind nodes) */}
             {connectors.map(({ from, to }) => (
               <Connector
                 key={`${from}-${to}`}
@@ -439,121 +378,18 @@ export default function Canvas() {
               />
             ))}
 
-            {/* Render relationship lines (above connectors, behind nodes) */}
+            {/* Render relationship lines */}
             <RelationshipLines />
 
-            {/* Render all nodes (visibility handled by component) */}
-            {allNodes.map(node => {
-              // Skip year and event nodes (they're part of timeline component now)
-              if (node.nodeType === 'year' || node.nodeType === 'event') {
-                return null;
-              }
+            {/* Render all nodes */}
+            {allNodes.map(node => (
+              <NodeComponent
+                key={node.id}
+                node={node}
+              />
+            ))}
 
-              // Render timeline node as regular node
-              if (node.nodeType === 'timeline') {
-                return (
-                  <NodeComponent
-                    key={node.id}
-                    node={node}
-                  />
-                );
-              }
-
-              // Render default nodes
-              return (
-                <NodeComponent
-                  key={node.id}
-                  node={node}
-                />
-              );
-            })}
-
-            {/* Render expanded timeline components */}
-            {/* Render timeline when ribbon is open */}
-            {timelineRibbonOpen && currentBundle?.timeline && (() => {
-              const timelineEvents = currentBundle.timeline.events || [];
-              const timelineTracks = currentBundle.timeline.config?.tracks || [];
-
-              // Create a virtual timeline node for positioning
-              const virtualTimelineNode = {
-                id: 'virtual-timeline',
-                title: 'Timeline',
-                timelineConfig: {
-                  startYear: currentBundle.timeline.config?.startDate ? new Date(currentBundle.timeline.config.startDate).getFullYear() : 1939,
-                  endYear: currentBundle.timeline.config?.endDate ? new Date(currentBundle.timeline.config.endDate).getFullYear() : 1945,
-                  layout: 'horizontal-with-vertical-events' as const,
-                },
-              };
-
-              return (
-                <TimelineComponent
-                  key="timeline-ribbon"
-                  timelineNode={virtualTimelineNode as any}
-                  events={timelineEvents}
-                  tracks={timelineTracks}
-                  onEventClick={(eventId) => {
-                    const event = timelineEvents.find(e => e.id === eventId);
-                    if (event) {
-                      selectTimelineEvent(event);
-
-                      // Auto-focus camera on the clicked event
-                      const timeline = currentBundle.timeline;
-                      if (!timeline?.config) return;
-
-                      const startYear = timeline.config.startDate ? new Date(timeline.config.startDate).getFullYear() : 1939;
-
-                      // Constants from TimelineComponent
-                      const YEAR_SPACING = 280;
-                      const TRACK_HEIGHT = 100;
-                      const TRACK_SPACING = 20;
-                      const TIMELINE_Y_OFFSET = 80;
-
-                      // Calculate event X position (based on date)
-                      const eventDate = new Date(event.date);
-                      const eventYear = eventDate.getFullYear();
-                      const yearsSinceStart = eventYear - startYear;
-                      const startOfYear = new Date(eventYear, 0, 1);
-                      const dayOfYear = Math.floor((eventDate.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
-                      const dayOffset = (dayOfYear / 365) * YEAR_SPACING;
-                      const eventX = (yearsSinceStart * YEAR_SPACING) + dayOffset;
-
-                      // Calculate event Y position (based on track)
-                      const trackIndex = timelineTracks.findIndex(t => t.id === event.track);
-                      const eventY = TIMELINE_Y_OFFSET + (trackIndex * (TRACK_HEIGHT + TRACK_SPACING)) + TRACK_HEIGHT / 2;
-
-                      // Timeline position on canvas
-                      const timelineX = 100;
-                      const timelineY = 800;
-
-                      // Absolute event position on canvas
-                      const absoluteEventX = timelineX + eventX;
-                      const absoluteEventY = timelineY + eventY;
-
-                      // Get viewport dimensions
-                      const viewportWidth = window.innerWidth;
-                      const viewportHeight = window.innerHeight;
-
-                      // Zoom closer on individual events
-                      const targetZoom = 1.5;
-
-                      // Calculate position to center event in viewport
-                      const targetX = (viewportWidth / 2) - (absoluteEventX * targetZoom);
-                      const targetY = (viewportHeight / 2) - (absoluteEventY * targetZoom);
-
-                      // Apply transformations
-                      setZoom(targetZoom);
-                      setPosition(targetX, targetY);
-                    }
-                  }}
-                  position={{
-                    x: 100,
-                    y: 800, // Position timeline below mindmap
-                  }}
-                />
-              );
-            })()}
-
-            {/* Render action menu above selected node (only if visible) */}
+            {/* Action menu for selected node */}
             {selectedNode && selectedNode.isVisible && (
               <NodeActionMenu
                 x={selectedNode.position.x}
@@ -567,7 +403,7 @@ export default function Canvas() {
               />
             )}
 
-            {/* Render info panel next to node */}
+            {/* Info panel */}
             {infoPanelNodeId && nodes[infoPanelNodeId] && (
               <NodeInfoPanel
                 node={nodes[infoPanelNodeId]}
@@ -583,65 +419,16 @@ export default function Canvas() {
                 }}
               />
             )}
-
-            {/* Render timeline event info panel */}
-            {selectedTimelineEvent && timelineRibbonOpen && currentBundle?.timeline && (() => {
-              // Timeline constants (must match TimelineComponent.tsx)
-              const YEAR_SPACING = 280;
-              const TRACK_HEIGHT = 100;
-              const TRACK_SPACING = 20;
-              const TIMELINE_Y_OFFSET = 80;
-              const EVENT_CIRCLE_RADIUS = 10;
-              const TRACK_LABEL_WIDTH = 120;
-
-              // Get tracks from bundle
-              const timelineTracks = currentBundle.timeline.config?.tracks || [];
-              const track = timelineTracks.find(t => t.id === selectedTimelineEvent.track);
-              if (!track) return null;
-
-              // Calculate event X position (same as TimelineComponent)
-              const date = new Date(selectedTimelineEvent.date);
-              const eventYear = date.getFullYear();
-              const startYear = currentBundle.timeline.config?.startDate
-                ? new Date(currentBundle.timeline.config.startDate).getFullYear()
-                : 1939;
-              const yearsSinceStart = eventYear - startYear;
-
-              // Calculate day offset within the year
-              const startOfYear = new Date(eventYear, 0, 1);
-              const dayOfYear = Math.floor((date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
-              const dayOffset = (dayOfYear / 365) * YEAR_SPACING;
-
-              // Timeline position matches Canvas.tsx timeline rendering (100, 800)
-              const timelineX = 100;
-              const timelineY = 800;
-
-              const eventX = timelineX + TRACK_LABEL_WIDTH + (yearsSinceStart * YEAR_SPACING) + dayOffset;
-
-              // Calculate event Y position (same as TimelineComponent)
-              const trackIndex = timelineTracks.findIndex(t => t.id === selectedTimelineEvent.track);
-              const eventY = timelineY + TIMELINE_Y_OFFSET + (trackIndex * (TRACK_HEIGHT + TRACK_SPACING)) + TRACK_HEIGHT / 2;
-
-              return (
-                <TimelineEventInfoPanel
-                  event={selectedTimelineEvent}
-                  eventPosition={{ x: eventX - EVENT_CIRCLE_RADIUS, y: eventY - EVENT_CIRCLE_RADIUS }}
-                  eventWidth={EVENT_CIRCLE_RADIUS * 2}
-                  eventHeight={EVENT_CIRCLE_RADIUS * 2}
-                  trackColor={track.color}
-                />
-              );
-            })()}
           </Layer>
         </Stage>
       )}
-      
+
       {/* Empty state */}
       {!rootNodeId && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-gray-400">
-            <p className="text-lg mb-2">No project loaded</p>
-            <p className="text-sm">Create or open a project to get started</p>
+            <p className="text-xl mb-2">No project loaded</p>
+            <p className="text-base">Create or open a project to get started</p>
           </div>
         </div>
       )}
@@ -676,15 +463,15 @@ export default function Canvas() {
         onClose={() => setRelationshipSidebarOpen(false)}
       />
 
-      {/* Relationship sidebar trigger button */}
+      {/* Relationship sidebar trigger */}
       {rootNodeId && (
         <button
           onClick={() => setRelationshipSidebarOpen(true)}
-          className="fixed right-6 top-6 w-12 h-12 bg-gray-900 bg-opacity-90 hover:bg-opacity-100 text-white rounded-full shadow-lg transition-all z-40 group flex items-center justify-center"
+          className="fixed right-6 top-6 w-14 h-14 bg-gray-900 bg-opacity-90 hover:bg-opacity-100 text-white rounded-full shadow-lg transition-all z-40 group flex items-center justify-center"
           aria-label="Manage relationships"
         >
           <svg
-            className="w-6 h-6"
+            className="w-7 h-7"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -696,16 +483,13 @@ export default function Canvas() {
               d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
             />
           </svg>
-          <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-sm px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-base px-3 py-2 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Relationships
           </span>
         </button>
       )}
 
-      {/* Timeline ribbon button */}
-      <TimelineRibbon />
-
-      {/* Relationship assignment submenu */}
+      {/* Relationship assignment menu */}
       {relationshipAssignOpen && selectedNode && (
         <RelationshipAssignMenu
           nodeId={selectedNode.id}

@@ -1,11 +1,11 @@
 /**
  * UI Store - Zustand
  * Manages UI state (selected node, focus mode, panels, etc.)
+ * Clean version - mindmap only
  */
 
 import { create } from 'zustand';
 import { NodeId } from '../types/node';
-import { ViewType, TimelineEvent } from '../types/project';
 
 interface UIState {
   // Node selection
@@ -23,20 +23,11 @@ interface UIState {
   // Inline info panel (shows on canvas)
   infoPanelNodeId: NodeId | null;
 
-  // Timeline event info panel
-  selectedTimelineEvent: TimelineEvent | null;
-
   // Fullscreen image
   fullscreenImageUrl: string | null;
 
   // Sidebar
   sidebarOpen: boolean;
-
-  // Timeline ribbon
-  timelineRibbonOpen: boolean;
-
-  // Current view
-  currentView: ViewType;
 
   // Operations
   selectNode: (nodeId: NodeId | null) => void;
@@ -48,14 +39,10 @@ interface UIState {
   closeDetails: () => void; // Alias
   toggleDetailPanel: () => void;
   toggleInfoPanel: (nodeId: NodeId | null) => void;
-  selectTimelineEvent: (event: TimelineEvent | null) => void;
   openFullscreenImage: (imageUrl: string) => void;
   closeFullscreenImage: () => void;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
-  toggleTimelineRibbon: () => void;
-  setTimelineRibbonOpen: (open: boolean) => void;
-  setView: (view: ViewType) => void;
 }
 
 export const useUIStore = create<UIState>((set, get) => ({
@@ -67,12 +54,9 @@ export const useUIStore = create<UIState>((set, get) => ({
   detailPanelNodeId: null,
   detailNodeId: null,
   infoPanelNodeId: null,
-  selectedTimelineEvent: null,
   fullscreenImageUrl: null,
   sidebarOpen: true,
-  timelineRibbonOpen: false,
-  currentView: 'mindmap',
-  
+
   // Select a node
   selectNode: (nodeId: NodeId | null) => {
     // Close info panel when selecting a different node
@@ -83,7 +67,7 @@ export const useUIStore = create<UIState>((set, get) => ({
       set({ selectedNodeId: nodeId });
     }
   },
-  
+
   // Set focus mode on a specific node
   setFocusMode: (nodeId: NodeId | null) => {
     set({
@@ -91,7 +75,7 @@ export const useUIStore = create<UIState>((set, get) => ({
       isFocusMode: nodeId !== null,
     });
   },
-  
+
   // Clear focus mode
   clearFocus: () => {
     set({
@@ -99,7 +83,7 @@ export const useUIStore = create<UIState>((set, get) => ({
       isFocusMode: false,
     });
   },
-  
+
   // Open detail panel for a node
   openDetailPanel: (nodeId: NodeId) => {
     set({
@@ -135,7 +119,7 @@ export const useUIStore = create<UIState>((set, get) => ({
       detailNodeId: null,
     });
   },
-  
+
   // Toggle detail panel
   toggleDetailPanel: () => {
     const { detailPanelOpen } = get();
@@ -158,52 +142,28 @@ export const useUIStore = create<UIState>((set, get) => ({
     if (infoPanelNodeId === nodeId) {
       set({ infoPanelNodeId: null });
     } else {
-      set({ infoPanelNodeId: nodeId, selectedTimelineEvent: null });
+      set({ infoPanelNodeId: nodeId });
     }
-  },
-
-  // Select timeline event (opens info panel for event)
-  selectTimelineEvent: (event: TimelineEvent | null) => {
-    set({
-      selectedTimelineEvent: event,
-      infoPanelNodeId: null, // Close node info panel
-    });
   },
 
   // Open fullscreen image
   openFullscreenImage: (imageUrl: string) => {
     set({ fullscreenImageUrl: imageUrl });
   },
-  
+
   // Close fullscreen image
   closeFullscreenImage: () => {
     set({ fullscreenImageUrl: null });
   },
-  
+
   // Toggle sidebar
   toggleSidebar: () => {
     const { sidebarOpen } = get();
     set({ sidebarOpen: !sidebarOpen });
   },
-  
+
   // Set sidebar state
   setSidebarOpen: (open: boolean) => {
     set({ sidebarOpen: open });
-  },
-
-  // Toggle timeline ribbon
-  toggleTimelineRibbon: () => {
-    const { timelineRibbonOpen } = get();
-    set({ timelineRibbonOpen: !timelineRibbonOpen });
-  },
-
-  // Set timeline ribbon state
-  setTimelineRibbonOpen: (open: boolean) => {
-    set({ timelineRibbonOpen: open });
-  },
-
-  // Set current view
-  setView: (view: ViewType) => {
-    set({ currentView: view });
   },
 }));
