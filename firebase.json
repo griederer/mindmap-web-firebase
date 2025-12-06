@@ -49,14 +49,6 @@
     ],
     "rewrites": [
       {
-        "source": "!/assets/**",
-        "destination": "/index.html"
-      },
-      {
-        "source": "!/examples/**",
-        "destination": "/index.html"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
