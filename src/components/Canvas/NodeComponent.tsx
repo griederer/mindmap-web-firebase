@@ -1,25 +1,65 @@
 /**
  * Node Component - Konva
- * Renders individual mind map node with title and expand button
+ * Renders individual mind map node with theme support
+ * Supports chalkboard style with chalk-like text
  */
 
-import { useEffect, useRef } from 'react';
-import { Group, Rect, Text, Circle } from 'react-konva';
+import { useEffect, useRef, useMemo } from 'react';
+import { Group, Rect, Text, Circle, Line } from 'react-konva';
 import { Node } from '../../types/node';
+import { Theme } from '../../types/theme';
 import { useProjectStore } from '../../stores/projectStore';
 import { useUIStore } from '../../stores/uiStore';
 import Konva from 'konva';
 
 interface NodeComponentProps {
   node: Node;
+  theme: Theme;
+  branchIndex?: number;
 }
 
 const NODE_WIDTH = 200;
 const NODE_HEIGHT = 60;
 const NODE_PADDING = 12;
-const EXPAND_BUTTON_RADIUS = 8;
+const EXPAND_BUTTON_RADIUS = 10;
 
-export default function NodeComponent({ node }: NodeComponentProps) {
+// Generate sketchy rectangle points for hand-drawn effect
+function getSketchyRectPoints(width: number, height: number, wobble: number = 3): number[] {
+  const points: number[] = [];
+  const segments = 20;
+
+  // Top edge
+  for (let i = 0; i <= segments; i++) {
+    const x = (width / segments) * i;
+    const y = Math.random() * wobble - wobble / 2;
+    points.push(x, y);
+  }
+
+  // Right edge
+  for (let i = 0; i <= segments; i++) {
+    const x = width + Math.random() * wobble - wobble / 2;
+    const y = (height / segments) * i;
+    points.push(x, y);
+  }
+
+  // Bottom edge
+  for (let i = segments; i >= 0; i--) {
+    const x = (width / segments) * i;
+    const y = height + Math.random() * wobble - wobble / 2;
+    points.push(x, y);
+  }
+
+  // Left edge
+  for (let i = segments; i >= 0; i--) {
+    const x = Math.random() * wobble - wobble / 2;
+    const y = (height / segments) * i;
+    points.push(x, y);
+  }
+
+  return points;
+}
+
+export default function NodeComponent({ node, theme, branchIndex = 0 }: NodeComponentProps) {
   const { toggleNodeExpansion } = useProjectStore();
   const {
     selectedNodeId,
@@ -32,10 +72,30 @@ export default function NodeComponent({ node }: NodeComponentProps) {
   const isSelected = selectedNodeId === node.id;
   const hasChildren = node.children.length > 0;
   const isFocused = focusedNodeId === node.id;
-  // Only blur visible nodes that are not focused
   const isBlurred = isFocusMode && !isFocused && node.isVisible;
 
-  // Animate node appearance on mount with smooth fade
+  // Determine node color based on level and theme
+  const nodeColor = useMemo(() => {
+    if (node.level === 0) {
+      return theme.colors.branchColors[0]; // Root uses first color
+    }
+    if (node.level === 1) {
+      return theme.colors.branchColors[branchIndex % theme.colors.branchColors.length];
+    }
+    // Children inherit parent's branch color
+    return theme.colors.branchColors[branchIndex % theme.colors.branchColors.length];
+  }, [node.level, branchIndex, theme.colors.branchColors]);
+
+  // Check if using chalkboard theme
+  const isChalkboard = theme.effects.handDrawn;
+
+  // Generate sketchy border for chalkboard style
+  const sketchyPoints = useMemo(() => {
+    if (!isChalkboard) return [];
+    return getSketchyRectPoints(NODE_WIDTH, NODE_HEIGHT, 2);
+  }, [isChalkboard]);
+
+  // Animate node appearance on mount
   useEffect(() => {
     if (groupRef.current) {
       groupRef.current.to({
@@ -48,7 +108,7 @@ export default function NodeComponent({ node }: NodeComponentProps) {
     }
   }, []);
 
-  // Animate position changes with smooth easing
+  // Animate position changes
   useEffect(() => {
     if (groupRef.current) {
       groupRef.current.to({
@@ -60,26 +120,24 @@ export default function NodeComponent({ node }: NodeComponentProps) {
     }
   }, [node.position.x, node.position.y]);
 
-  // Animate visibility changes (appear/disappear smoothly)
+  // Animate visibility changes
   useEffect(() => {
     if (groupRef.current) {
       if (node.isVisible) {
-        // Fade in when becoming visible
         const targetOpacity = isBlurred ? 0.3 : 1;
         groupRef.current.to({
           opacity: targetOpacity,
           scaleX: 1,
           scaleY: 1,
-          duration: 1.2, // Smooth 1.2s fade in
+          duration: 1.2,
           easing: Konva.Easings.EaseOut,
         });
       } else {
-        // Fade out when becoming invisible
         groupRef.current.to({
           opacity: 0,
           scaleX: 0.95,
           scaleY: 0.95,
-          duration: 1.0, // Smooth 1.0s fade out
+          duration: 1.0,
           easing: Konva.Easings.EaseIn,
         });
       }
@@ -103,11 +161,13 @@ export default function NodeComponent({ node }: NodeComponentProps) {
   };
 
   const handleExpandClick = (e: any) => {
-    e.cancelBubble = true; // Prevent node selection
+    e.cancelBubble = true;
     toggleNodeExpansion(node.id);
   };
 
-  
+  // Calculate font size based on level
+  const fontSize = node.level === 0 ? 18 : node.level === 1 ? 16 : 14;
+
   return (
     <Group
       ref={groupRef}
@@ -118,35 +178,50 @@ export default function NodeComponent({ node }: NodeComponentProps) {
       scaleY={0.95}
       onClick={handleClick}
     >
-      {/* Glow effect for focused node */}
-      {isFocused && (
+      {/* Glow effect for selected/focused node (chalkboard) */}
+      {isChalkboard && (isSelected || isFocused) && (
         <Rect
-          width={NODE_WIDTH + 16}
-          height={NODE_HEIGHT + 16}
-          x={-8}
-          y={-8}
+          width={NODE_WIDTH + 8}
+          height={NODE_HEIGHT + 8}
+          x={-4}
+          y={-4}
           fill="transparent"
-          cornerRadius={12}
-          shadowColor="#fb923c"
-          shadowBlur={25}
-          shadowOpacity={0.6}
+          shadowColor={nodeColor}
+          shadowBlur={20}
+          shadowOpacity={0.8}
           shadowEnabled={true}
         />
       )}
 
-      {/* Node background */}
-      <Rect
-        width={NODE_WIDTH}
-        height={NODE_HEIGHT}
-        fill="white"
-        cornerRadius={8}
-        shadowColor={isFocused ? 'rgba(251, 146, 60, 0.3)' : 'rgba(0, 0, 0, 0.1)'}
-        shadowBlur={isFocused ? 20 : 10}
-        shadowOffsetY={isFocused ? 4 : 2}
-        stroke={isSelected ? '#fb923c' : (isFocused ? '#fb923c' : '#e5e7eb')}
-        strokeWidth={isSelected || isFocused ? 2 : 1}
-      />
-      
+      {/* Node background - chalkboard style (no fill, just border) */}
+      {isChalkboard ? (
+        <>
+          {/* Sketchy hand-drawn border */}
+          <Line
+            points={sketchyPoints}
+            stroke={nodeColor}
+            strokeWidth={isSelected || isFocused ? 3 : 2}
+            closed={true}
+            opacity={0.8}
+            lineCap="round"
+            lineJoin="round"
+          />
+        </>
+      ) : (
+        /* Standard style with filled background */
+        <Rect
+          width={NODE_WIDTH}
+          height={NODE_HEIGHT}
+          fill={theme.colors.nodeBackground}
+          cornerRadius={theme.effects.nodeShape === 'rounded' ? 8 : 0}
+          shadowColor={isFocused ? 'rgba(251, 146, 60, 0.3)' : 'rgba(0, 0, 0, 0.1)'}
+          shadowBlur={theme.effects.nodeShadow ? (isFocused ? 20 : 10) : 0}
+          shadowOffsetY={theme.effects.nodeShadow ? (isFocused ? 4 : 2) : 0}
+          stroke={isSelected ? theme.colors.selectionRing : theme.colors.nodeBorder}
+          strokeWidth={isSelected || isFocused ? 2 : 1}
+        />
+      )}
+
       {/* Node title */}
       <Text
         x={NODE_PADDING}
@@ -154,14 +229,17 @@ export default function NodeComponent({ node }: NodeComponentProps) {
         width={NODE_WIDTH - NODE_PADDING * 2 - (hasChildren ? 30 : 0)}
         height={NODE_HEIGHT - NODE_PADDING * 2}
         text={node.title}
-        fontSize={14}
-        fontFamily="system-ui, -apple-system, sans-serif"
-        fill="#1f2937"
+        fontSize={fontSize}
+        fontFamily={theme.fonts.title}
+        fontStyle={node.level === 0 ? 'bold' : 'normal'}
+        fill={isChalkboard ? nodeColor : theme.colors.nodeText}
         verticalAlign="middle"
         wrap="word"
         ellipsis={true}
+        shadowColor={isChalkboard ? nodeColor : undefined}
+        shadowBlur={isChalkboard && theme.effects.glowEffect ? 2 : 0}
+        shadowOpacity={0.5}
       />
-      
 
       {/* Expand/collapse button */}
       {hasChildren && (
@@ -170,39 +248,62 @@ export default function NodeComponent({ node }: NodeComponentProps) {
           y={NODE_HEIGHT / 2}
           onClick={handleExpandClick}
         >
-          {/* Button background */}
-          <Circle
-            radius={EXPAND_BUTTON_RADIUS}
-            fill={node.isExpanded ? '#fb923c' : '#f3f4f6'}
-            stroke={node.isExpanded ? '#ea580c' : '#d1d5db'}
-            strokeWidth={1}
-          />
-
-          {/* Plus/minus icon */}
-          <Text
-            x={-EXPAND_BUTTON_RADIUS}
-            y={-EXPAND_BUTTON_RADIUS}
-            width={EXPAND_BUTTON_RADIUS * 2}
-            height={EXPAND_BUTTON_RADIUS * 2}
-            text={node.isExpanded ? '−' : '+'}
-            fontSize={12}
-            fontFamily="system-ui"
-            fill={node.isExpanded ? 'white' : '#6b7280'}
-            align="center"
-            verticalAlign="middle"
-          />
+          {isChalkboard ? (
+            /* Chalk style button */
+            <>
+              <Circle
+                radius={EXPAND_BUTTON_RADIUS}
+                stroke={nodeColor}
+                strokeWidth={2}
+                fill="transparent"
+              />
+              <Text
+                x={-EXPAND_BUTTON_RADIUS}
+                y={-EXPAND_BUTTON_RADIUS}
+                width={EXPAND_BUTTON_RADIUS * 2}
+                height={EXPAND_BUTTON_RADIUS * 2}
+                text={node.isExpanded ? '-' : '+'}
+                fontSize={16}
+                fontFamily={theme.fonts.title}
+                fill={nodeColor}
+                align="center"
+                verticalAlign="middle"
+              />
+            </>
+          ) : (
+            /* Standard style button */
+            <>
+              <Circle
+                radius={EXPAND_BUTTON_RADIUS}
+                fill={node.isExpanded ? '#fb923c' : '#f3f4f6'}
+                stroke={node.isExpanded ? '#ea580c' : '#d1d5db'}
+                strokeWidth={1}
+              />
+              <Text
+                x={-EXPAND_BUTTON_RADIUS}
+                y={-EXPAND_BUTTON_RADIUS}
+                width={EXPAND_BUTTON_RADIUS * 2}
+                height={EXPAND_BUTTON_RADIUS * 2}
+                text={node.isExpanded ? '-' : '+'}
+                fontSize={14}
+                fontFamily="system-ui"
+                fill={node.isExpanded ? 'white' : '#6b7280'}
+                align="center"
+                verticalAlign="middle"
+              />
+            </>
+          )}
         </Group>
       )}
 
-      {/* Level indicator (visual debugging) */}
-      {node.level > 0 && (
-        <Text
-          x={NODE_PADDING}
-          y={NODE_HEIGHT - 18}
-          text={`L${node.level}`}
-          fontSize={10}
-          fontFamily="monospace"
-          fill="#9ca3af"
+      {/* Level indicator for root node (chalkboard style) */}
+      {isChalkboard && node.level === 0 && (
+        <Line
+          points={[0, NODE_HEIGHT + 5, NODE_WIDTH, NODE_HEIGHT + 5]}
+          stroke={nodeColor}
+          strokeWidth={1}
+          opacity={0.5}
+          dash={[5, 5]}
         />
       )}
     </Group>

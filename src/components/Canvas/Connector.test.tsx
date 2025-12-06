@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { Stage, Layer } from 'react-konva';
 import Connector from './Connector';
 import { Node } from '../../types/node';
+import { DEFAULT_THEME } from '../../types/theme';
 
 const fromNode: Node = {
   id: 'parent',
@@ -37,7 +38,7 @@ describe('Connector', () => {
     const { container } = render(
       <Stage width={800} height={600}>
         <Layer>
-          <Connector fromNode={fromNode} toNode={toNode} />
+          <Connector fromNode={fromNode} toNode={toNode} theme={DEFAULT_THEME} />
         </Layer>
       </Stage>
     );
@@ -48,7 +49,7 @@ describe('Connector', () => {
     const { container } = render(
       <Stage width={800} height={600}>
         <Layer>
-          <Connector fromNode={fromNode} toNode={toNode} />
+          <Connector fromNode={fromNode} toNode={toNode} theme={DEFAULT_THEME} />
         </Layer>
       </Stage>
     );
@@ -66,7 +67,7 @@ describe('Connector', () => {
     const { container } = render(
       <Stage width={800} height={600}>
         <Layer>
-          <Connector fromNode={fromNode} toNode={verticalToNode} />
+          <Connector fromNode={fromNode} toNode={verticalToNode} theme={DEFAULT_THEME} />
         </Layer>
       </Stage>
     );
@@ -89,7 +90,7 @@ describe('Connector', () => {
     const { container } = render(
       <Stage width={800} height={600}>
         <Layer>
-          <Connector fromNode={customFromNode} toNode={customToNode} />
+          <Connector fromNode={customFromNode} toNode={customToNode} theme={DEFAULT_THEME} />
         </Layer>
       </Stage>
     );

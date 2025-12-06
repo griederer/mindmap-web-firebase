@@ -5,11 +5,12 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { Stage, Layer } from 'react-konva';
+import { Stage, Layer, Rect } from 'react-konva';
 import Konva from 'konva';
 import { useViewportStore } from '../../stores/viewportStore';
 import { useProjectStore } from '../../stores/projectStore';
 import { useUIStore } from '../../stores/uiStore';
+import { useThemeStore } from '../../stores/themeStore';
 import { Node } from '../../types/node';
 import NodeComponent from './NodeComponent';
 import Connector from './Connector';
@@ -46,6 +47,9 @@ export default function Canvas() {
 
   // Project state
   const { nodes, rootNodeId, addNode, deleteNode, updateNode } = useProjectStore();
+
+  // Theme state
+  const { currentTheme } = useThemeStore();
 
   // UI state
   const {
@@ -352,11 +356,17 @@ export default function Canvas() {
     setRelationshipAssignOpen(true);
   };
 
+  // Chalkboard background style
+  const isChalkboard = currentTheme.colors.backgroundPattern === 'chalkboard';
+
   return (
     <div
       ref={containerRef}
-      className="w-full h-full bg-gray-50"
-      style={{ overflow: 'hidden' }}
+      className="w-full h-full"
+      style={{
+        overflow: 'hidden',
+        backgroundColor: currentTheme.colors.background,
+      }}
     >
       {width > 0 && height > 0 && (
         <Stage
@@ -369,12 +379,25 @@ export default function Canvas() {
           onClick={handleStageClick}
         >
           <Layer>
+            {/* Chalkboard texture background */}
+            {isChalkboard && (
+              <Rect
+                x={-5000}
+                y={-5000}
+                width={10000}
+                height={10000}
+                fill={currentTheme.colors.background}
+                listening={false}
+              />
+            )}
+
             {/* Render connectors (behind nodes) */}
             {connectors.map(({ from, to }) => (
               <Connector
                 key={`${from}-${to}`}
                 fromNode={nodes[from]}
                 toNode={nodes[to]}
+                theme={currentTheme}
               />
             ))}
 
@@ -382,10 +405,12 @@ export default function Canvas() {
             <RelationshipLines />
 
             {/* Render all nodes */}
-            {allNodes.map(node => (
+            {allNodes.map((node) => (
               <NodeComponent
                 key={node.id}
                 node={node}
+                theme={currentTheme}
+                branchIndex={node.level === 1 ? allNodes.filter(n => n.level === 1).indexOf(node) : 0}
               />
             ))}
 
