@@ -1,9 +1,10 @@
 /**
  * Connector Component - Konva
  * Renders animated Bezier curve connectors between parent and child nodes
+ * Optimized with React.memo for performance
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { Line } from 'react-konva';
 import { Node } from '../../types/node';
 import Konva from 'konva';
@@ -18,7 +19,7 @@ const NODE_HEIGHT = 60;
 const CONNECTOR_COLOR = '#fb923c'; // Orange-400
 const CONNECTOR_WIDTH = 2;
 
-export default function Connector({ fromNode, toNode }: ConnectorProps) {
+function ConnectorInner({ fromNode, toNode }: ConnectorProps) {
   const lineRef = useRef<Konva.Line>(null);
 
   // Animate connector visibility (fade in/out with nodes)
@@ -104,3 +105,17 @@ export default function Connector({ fromNode, toNode }: ConnectorProps) {
     />
   );
 }
+
+// Memoized component - only re-renders when node positions or visibility change
+const Connector = memo(ConnectorInner, (prevProps, nextProps) => {
+  return (
+    prevProps.fromNode.position.x === nextProps.fromNode.position.x &&
+    prevProps.fromNode.position.y === nextProps.fromNode.position.y &&
+    prevProps.toNode.position.x === nextProps.toNode.position.x &&
+    prevProps.toNode.position.y === nextProps.toNode.position.y &&
+    prevProps.fromNode.isVisible === nextProps.fromNode.isVisible &&
+    prevProps.toNode.isVisible === nextProps.toNode.isVisible
+  );
+});
+
+export default Connector;

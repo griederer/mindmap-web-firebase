@@ -1,9 +1,10 @@
 /**
  * Node Component - Konva
  * Renders individual mind map node with title and expand button
+ * Optimized with React.memo for performance
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback, memo } from 'react';
 import { Group, Rect, Text, Circle } from 'react-konva';
 import { Node } from '../../types/node';
 import { useProjectStore } from '../../stores/projectStore';
@@ -12,6 +13,9 @@ import Konva from 'konva';
 
 interface NodeComponentProps {
   node: Node;
+  isSelected: boolean;
+  isFocused: boolean;
+  isBlurred: boolean;
 }
 
 const NODE_WIDTH = 200;
@@ -19,21 +23,12 @@ const NODE_HEIGHT = 60;
 const NODE_PADDING = 12;
 const EXPAND_BUTTON_RADIUS = 8;
 
-export default function NodeComponent({ node }: NodeComponentProps) {
-  const { toggleNodeExpansion } = useProjectStore();
-  const {
-    selectedNodeId,
-    selectNode,
-    isFocusMode,
-    focusedNodeId,
-  } = useUIStore();
+function NodeComponentInner({ node, isSelected, isFocused, isBlurred }: NodeComponentProps) {
+  const toggleNodeExpansion = useProjectStore((state) => state.toggleNodeExpansion);
+  const selectNode = useUIStore((state) => state.selectNode);
   const groupRef = useRef<Konva.Group>(null);
 
-  const isSelected = selectedNodeId === node.id;
   const hasChildren = node.children.length > 0;
-  const isFocused = focusedNodeId === node.id;
-  // Only blur visible nodes that are not focused
-  const isBlurred = isFocusMode && !isFocused && node.isVisible;
 
   // Animate node appearance on mount with smooth fade
   useEffect(() => {
@@ -98,14 +93,14 @@ export default function NodeComponent({ node }: NodeComponentProps) {
     }
   }, [isBlurred, node.isVisible]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     selectNode(node.id);
-  };
+  }, [selectNode, node.id]);
 
-  const handleExpandClick = (e: any) => {
+  const handleExpandClick = useCallback((e: any) => {
     e.cancelBubble = true; // Prevent node selection
     toggleNodeExpansion(node.id);
-  };
+  }, [toggleNodeExpansion, node.id]);
 
   
   return (
@@ -208,3 +203,21 @@ export default function NodeComponent({ node }: NodeComponentProps) {
     </Group>
   );
 }
+
+// Memoized component - only re-renders when props change
+const NodeComponent = memo(NodeComponentInner, (prevProps, nextProps) => {
+  return (
+    prevProps.node.id === nextProps.node.id &&
+    prevProps.node.title === nextProps.node.title &&
+    prevProps.node.position.x === nextProps.node.position.x &&
+    prevProps.node.position.y === nextProps.node.position.y &&
+    prevProps.node.isVisible === nextProps.node.isVisible &&
+    prevProps.node.isExpanded === nextProps.node.isExpanded &&
+    prevProps.node.children.length === nextProps.node.children.length &&
+    prevProps.isSelected === nextProps.isSelected &&
+    prevProps.isFocused === nextProps.isFocused &&
+    prevProps.isBlurred === nextProps.isBlurred
+  );
+});
+
+export default NodeComponent;

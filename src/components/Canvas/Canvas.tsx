@@ -3,7 +3,7 @@
  * Main canvas container for rendering mind map with zoom and pan
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
 import { useViewportStore } from '../../stores/viewportStore';
@@ -276,8 +276,8 @@ export default function Canvas() {
     return () => window.removeEventListener('resize', updateSize);
   }, [setViewportSize]);
 
-  // Handle mouse wheel zoom
-  const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
+  // Handle mouse wheel zoom - memoized
+  const handleWheel = useCallback((e: Konva.KonvaEventObject<WheelEvent>) => {
     e.evt.preventDefault();
 
     const stage = stageRef.current;
@@ -307,19 +307,19 @@ export default function Canvas() {
 
     setZoom(newZoom);
     setPosition(newPos.x, newPos.y);
-  };
+  }, [zoom, x, y, setZoom, setPosition]);
 
-  // Handle stage drag to update viewport state
-  const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+  // Handle stage drag to update viewport state - memoized
+  const handleDragEnd = useCallback((e: Konva.KonvaEventObject<DragEvent>) => {
     // Disable animation for manual drag
     shouldAnimateRef.current = false;
 
     const stage = e.target as Konva.Stage;
     setPosition(stage.x(), stage.y());
-  };
+  }, [setPosition]);
 
-  // Handle stage click to deselect node (click on empty space)
-  const handleStageClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  // Handle stage click to deselect node (click on empty space) - memoized
+  const handleStageClick = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
     // Only deselect if clicking on the stage itself (not on a node)
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
@@ -332,43 +332,49 @@ export default function Canvas() {
         selectTimelineEvent(null);
       }
     }
-  };
+  }, [selectNode, infoPanelNodeId, toggleInfoPanel, selectedTimelineEvent, selectTimelineEvent]);
   
-  // Get all nodes (including invisible ones for fade-out animation)
-  const allNodes = Object.values(nodes);
+  // Memoize all nodes (including invisible ones for fade-out animation)
+  const allNodes = useMemo(() => Object.values(nodes), [nodes]);
 
-  // Get all connectors (between parent and child nodes where both exist)
-  const connectors: Array<{ from: string; to: string }> = [];
-  allNodes.forEach(node => {
-    if (node.parentId && nodes[node.parentId]) {
-      connectors.push({ from: node.parentId, to: node.id });
-    }
-  });
+  // Memoize connectors (between parent and child nodes where both exist)
+  const connectors = useMemo(() => {
+    const result: Array<{ from: string; to: string }> = [];
+    allNodes.forEach(node => {
+      if (node.parentId && nodes[node.parentId]) {
+        result.push({ from: node.parentId, to: node.id });
+      }
+    });
+    return result;
+  }, [allNodes, nodes]);
 
   // Get selected node for action menu positioning
-  const selectedNode = selectedNodeId ? nodes[selectedNodeId] : null;
+  const selectedNode = useMemo(
+    () => selectedNodeId ? nodes[selectedNodeId] : null,
+    [selectedNodeId, nodes]
+  );
   const NODE_WIDTH = 200;
   const NODE_HEIGHT = 60;
 
-  // Action menu handlers
-  const handleEdit = () => {
+  // Action menu handlers - memoized with useCallback
+  const handleEdit = useCallback(() => {
     if (selectedNodeId && selectedNode) {
       setNodeToEdit(selectedNode);
       setEditModalOpen(true);
     }
-  };
+  }, [selectedNodeId, selectedNode]);
 
-  const handleSaveEdit = (nodeId: string, updates: { title: string; description: string; images?: import('../../types/node').NodeImage[] }) => {
+  const handleSaveEdit = useCallback((nodeId: string, updates: { title: string; description: string; images?: import('../../types/node').NodeImage[] }) => {
     updateNode(nodeId, updates);
-  };
+  }, [updateNode]);
 
-  const handleShowInfo = () => {
+  const handleShowInfo = useCallback(() => {
     if (selectedNodeId) {
       toggleInfoPanel(selectedNodeId);
     }
-  };
+  }, [selectedNodeId, toggleInfoPanel]);
 
-  const handleFocus = () => {
+  const handleFocus = useCallback(() => {
     if (selectedNodeId) {
       // Toggle focus - if already focused, turn it off
       if (focusedNodeId === selectedNodeId) {
@@ -377,9 +383,9 @@ export default function Canvas() {
         setFocusMode(selectedNodeId);
       }
     }
-  };
+  }, [selectedNodeId, focusedNodeId, setFocusMode]);
 
-  const handleAddChild = () => {
+  const handleAddChild = useCallback(() => {
     if (selectedNodeId && selectedNode) {
       const title = prompt('Enter child node title:');
       if (title) {
@@ -399,19 +405,19 @@ export default function Canvas() {
         addNode(newNode);
       }
     }
-  };
+  }, [selectedNodeId, selectedNode, addNode]);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (selectedNodeId && selectedNode && selectedNode.parentId) {
       if (confirm(`Delete "${selectedNode.title}"?`)) {
         deleteNode(selectedNodeId);
       }
     }
-  };
+  }, [selectedNodeId, selectedNode, deleteNode]);
 
-  const handleManageRelationships = () => {
+  const handleManageRelationships = useCallback(() => {
     setRelationshipAssignOpen(true);
-  };
+  }, []);
 
   return (
     <div 
@@ -449,12 +455,21 @@ export default function Canvas() {
                 return null;
               }
 
+              // Calculate memoization-friendly props
+              const isFocusMode = focusedNodeId !== null;
+              const isSelected = selectedNodeId === node.id;
+              const isFocused = focusedNodeId === node.id;
+              const isBlurred = isFocusMode && !isFocused && node.isVisible;
+
               // Render timeline node as regular node
               if (node.nodeType === 'timeline') {
                 return (
                   <NodeComponent
                     key={node.id}
                     node={node}
+                    isSelected={isSelected}
+                    isFocused={isFocused}
+                    isBlurred={isBlurred}
                   />
                 );
               }
@@ -464,6 +479,9 @@ export default function Canvas() {
                 <NodeComponent
                   key={node.id}
                   node={node}
+                  isSelected={isSelected}
+                  isFocused={isFocused}
+                  isBlurred={isBlurred}
                 />
               );
             })}

@@ -1,47 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Canvas from './components/Canvas/Canvas';
 import Sidebar from './components/Layout/Sidebar';
 import NodeDetails from './components/Canvas/NodeDetails';
 import { useProjectStore } from './stores/projectStore';
-import { useViewportStore } from './stores/viewportStore';
-import { calculateLayout } from './utils/layoutEngine';
+import { useAutoSave } from './hooks/useAutoSave';
+import { initFirebase } from './services/firebaseService';
 
 function App() {
-  const { loadProjectBundle, currentProject } = useProjectStore();
-  const { focusOnNodes } = useViewportStore();
+  const { currentProject } = useProjectStore();
+  const [, setIsFirebaseReady] = useState(false);
 
-  // Load WWII project with timeline on mount
+  // Initialize Firebase on mount
   useEffect(() => {
-    fetch('/examples/wwii-with-timeline.json')
-      .then(res => res.json())
-      .then(data => {
-        // Calculate layout for mindmap nodes
-        const { nodes: layoutedNodes } = calculateLayout(data.mindmap.nodes, data.mindmap.rootNodeId);
-
-        // Create project bundle
-        const bundle = {
-          projectId: data.projectId,
-          metadata: data.metadata,
-          mindmap: {
-            nodes: layoutedNodes,
-            rootNodeId: data.mindmap.rootNodeId,
-          },
-          timeline: data.timeline,
-        };
-
-        // Load project bundle
-        loadProjectBundle(bundle);
-
-        // Auto-focus on all visible nodes after loading
-        setTimeout(() => {
-          const visibleNodeIds = Object.values(layoutedNodes)
-            .filter((node: any) => node.isVisible)
-            .map((node: any) => node.id);
-          focusOnNodes(visibleNodeIds, false);
-        }, 100);
+    initFirebase()
+      .then(() => {
+        setIsFirebaseReady(true);
+        console.log('Firebase initialized');
       })
-      .catch(err => console.error('Failed to load WWII project:', err));
-  }, [loadProjectBundle, focusOnNodes]);
+      .catch((err) => {
+        console.error('Firebase init failed:', err);
+        setIsFirebaseReady(true); // Continue anyway for offline use
+      });
+  }, []);
+
+  // Auto-save hook - saves changes to Firebase
+  useAutoSave();
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">

@@ -1,25 +1,47 @@
 /**
  * Sidebar Component - Linear Style
  * Minimalist project management sidebar with collapse functionality
+ * Now with Firebase persistence
  */
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ChevronDown, Plus, FolderOpen, CircleDot } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Plus, CircleDot, Trash2, Cloud, CloudOff } from 'lucide-react';
 import { useProjectStore } from '../../stores/projectStore';
 import { useSidebarStore } from '../../stores/sidebarStore';
 import { useViewportStore } from '../../stores/viewportStore';
+import { useSaveStatusStore } from '../../stores/saveStatusStore';
 import { calculateLayout } from '../../utils/layoutEngine';
-import { loadModularProject, loadLegacyProject } from '../../utils/projectLoader';
+import { listProjects, loadProject, createProject, deleteProject, type ProjectListItem } from '../../services/firebaseService';
 
 export default function Sidebar() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isActionsExpanded, setIsActionsExpanded] = useState(true);
   const [isProjectsExpanded, setIsProjectsExpanded] = useState(true);
+  const [cloudProjects, setCloudProjects] = useState<ProjectListItem[]>([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
 
-  const { loadProject, loadProjectBundle, currentProject } = useProjectStore();
+  const { loadProjectBundle, currentProject } = useProjectStore();
   const { isCollapsed, toggleCollapse } = useSidebarStore();
   const { focusOnNodes } = useViewportStore();
+  const { status: saveStatus } = useSaveStatusStore();
+
+  // Load projects from Firebase on mount
+  useEffect(() => {
+    loadCloudProjects();
+  }, []);
+
+  const loadCloudProjects = async () => {
+    try {
+      setIsLoadingProjects(true);
+      const projects = await listProjects();
+      setCloudProjects(projects);
+    } catch (err: any) {
+      console.error('Failed to load projects:', err);
+    } finally {
+      setIsLoadingProjects(false);
+    }
+  };
 
   // Keyboard shortcut: Cmd+B to toggle sidebar
   useEffect(() => {
@@ -34,64 +56,17 @@ export default function Sidebar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleCollapse]);
 
-  const handleLoadProject = async () => {
+  const handleLoadCloudProject = async (projectId: string) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Try to load modular project (folder)
-      try {
-        const bundle = await loadModularProject();
-
-        // Apply layout to mindmap nodes if present
-        if (bundle.mindmap) {
-          const { nodes: layoutedNodes } = calculateLayout(
-            bundle.mindmap.nodes,
-            bundle.mindmap.rootNodeId
-          );
-          bundle.mindmap.nodes = layoutedNodes;
-        }
-
-        loadProjectBundle(bundle);
-
-        // Auto-focus on all visible nodes after loading
-        if (bundle.mindmap) {
-          setTimeout(() => {
-            const visibleNodeIds = Object.values(bundle.mindmap!.nodes)
-              .filter(node => node.isVisible)
-              .map(node => node.id);
-            focusOnNodes(visibleNodeIds, false);
-          }, 100);
-        }
-
-        setIsLoading(false);
-        return;
-      } catch (folderErr: any) {
-        // If folder loading fails, fall back to single file
-        if (folderErr.message.includes('showDirectoryPicker')) {
-          // Browser doesn't support directory picker, use file picker
-          console.log('Directory picker not supported, falling back to file picker');
-        }
+      const bundle = await loadProject(projectId);
+      if (!bundle) {
+        throw new Error('Project not found');
       }
 
-      // Fall back to legacy single-file loading
-      const [fileHandle] = await (window as any).showOpenFilePicker({
-        types: [
-          {
-            description: 'NODEM Project Files',
-            accept: {
-              'application/json': ['.json'],
-            },
-          },
-        ],
-        excludeAcceptAllOption: true,
-        multiple: false,
-      });
-
-      const file = await fileHandle.getFile();
-      const bundle = await loadLegacyProject(file);
-
-      // Apply layout
+      // Apply layout to mindmap nodes if present
       if (bundle.mindmap) {
         const { nodes: layoutedNodes } = calculateLayout(
           bundle.mindmap.nodes,
@@ -111,53 +86,102 @@ export default function Sidebar() {
           focusOnNodes(visibleNodeIds, false);
         }, 100);
       }
-
-      setIsLoading(false);
     } catch (err: any) {
-      if (err.name === 'AbortError') {
-        setIsLoading(false);
-        return;
-      }
       setError(err.message || 'Failed to load project');
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleNewProject = () => {
-    const newProject = {
-      projectId: `project-${Date.now()}`,
-      metadata: {
-        title: 'New Project',
-        description: '',
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        version: '1.0.0',
-      },
-      nodes: {
-        root: {
-          id: 'root',
-          title: 'Root Node',
-          description: '',
-          children: [],
-          level: 0,
-          parentId: null,
-          position: { x: 100, y: 300 },
-          isExpanded: true,
-          isVisible: true,
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-        },
-      },
-      rootNodeId: 'root',
-      actions: [],
-    };
+  const handleNewProject = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
 
-    loadProject(newProject);
+      const title = prompt('Project name:', 'New Project');
+      if (!title) {
+        setIsLoading(false);
+        return;
+      }
 
-    // Auto-focus on root node after creating new project
-    setTimeout(() => {
-      focusOnNodes(['root'], false);
-    }, 100);
+      const bundle = await createProject(title);
+
+      // Apply layout
+      if (bundle.mindmap) {
+        const { nodes: layoutedNodes } = calculateLayout(
+          bundle.mindmap.nodes,
+          bundle.mindmap.rootNodeId
+        );
+        bundle.mindmap.nodes = layoutedNodes;
+      }
+
+      loadProjectBundle(bundle);
+
+      // Refresh project list
+      await loadCloudProjects();
+
+      // Auto-focus on root node
+      if (bundle.mindmap) {
+        setTimeout(() => {
+          focusOnNodes([bundle.mindmap!.rootNodeId], false);
+        }, 100);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to create project');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteProject = async (projectId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!confirm('Are you sure you want to delete this project?')) {
+      return;
+    }
+
+    try {
+      await deleteProject(projectId);
+      await loadCloudProjects();
+
+      // Clear current project if it was deleted
+      if (currentProject?.projectId === projectId) {
+        useProjectStore.getState().clearProject();
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete project');
+    }
+  };
+
+  // Save status indicator
+  const getSaveStatusIcon = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return <Cloud className="w-3 h-3 text-blue-500 animate-pulse" />;
+      case 'saved':
+        return <Cloud className="w-3 h-3 text-green-500" />;
+      case 'error':
+        return <CloudOff className="w-3 h-3 text-red-500" />;
+      case 'pending':
+        return <Cloud className="w-3 h-3 text-yellow-500" />;
+      default:
+        return <Cloud className="w-3 h-3 text-gray-400" />;
+    }
+  };
+
+  const getSaveStatusText = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return 'Saving...';
+      case 'saved':
+        return 'Saved';
+      case 'error':
+        return 'Error';
+      case 'pending':
+        return 'Pending...';
+      default:
+        return '';
+    }
   };
 
   // Collapsed state (48px width)
@@ -186,6 +210,7 @@ export default function Sidebar() {
             <div className="w-6 h-6 flex items-center justify-center">
               <CircleDot className="w-4 h-4 text-orange-500" strokeWidth={2} />
             </div>
+            {getSaveStatusIcon()}
           </div>
         )}
 
@@ -198,14 +223,6 @@ export default function Sidebar() {
             title="New Project"
           >
             <Plus className="w-4 h-4 text-gray-600" strokeWidth={2} />
-          </button>
-          <button
-            onClick={handleLoadProject}
-            disabled={isLoading}
-            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50"
-            title="Open Project"
-          >
-            <FolderOpen className="w-4 h-4 text-gray-600" strokeWidth={2} />
           </button>
         </div>
       </div>
@@ -227,6 +244,13 @@ export default function Sidebar() {
           </button>
           <span className="text-sm font-semibold text-gray-900">NODEM</span>
         </div>
+        {/* Save status */}
+        {currentProject && (
+          <div className="flex items-center gap-1" title={getSaveStatusText()}>
+            {getSaveStatusIcon()}
+            <span className="text-xs text-gray-500">{getSaveStatusText()}</span>
+          </div>
+        )}
       </div>
 
       {/* Content sections */}
@@ -257,17 +281,6 @@ export default function Sidebar() {
               >
                 <Plus className="w-4 h-4 text-gray-600" strokeWidth={2} />
                 <span className="text-sm text-gray-700">New Project</span>
-              </button>
-
-              <button
-                onClick={handleLoadProject}
-                disabled={isLoading}
-                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <FolderOpen className="w-4 h-4 text-gray-600" strokeWidth={2} />
-                <span className="text-sm text-gray-700">
-                  {isLoading ? 'Loading...' : 'Open Project'}
-                </span>
               </button>
             </div>
           )}
@@ -305,24 +318,49 @@ export default function Sidebar() {
 
           {isProjectsExpanded && (
             <div className="mt-3 overflow-auto flex-1">
-              {/* Current project */}
-              {currentProject ? (
-                <div className="space-y-1">
-                  <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 transition-colors text-left">
-                    <CircleDot className="w-4 h-4 text-orange-500 flex-shrink-0" strokeWidth={2} />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-gray-900 truncate">
-                        {currentProject.metadata.title}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {Object.keys(currentProject.nodes).length} nodes
-                      </div>
-                    </div>
-                  </button>
+              {isLoadingProjects ? (
+                <div className="text-xs text-gray-400 px-2 py-4">
+                  Loading projects...
+                </div>
+              ) : cloudProjects.length === 0 ? (
+                <div className="text-xs text-gray-400 px-2 py-4">
+                  No projects yet
                 </div>
               ) : (
-                <div className="text-xs text-gray-400 px-2 py-4">
-                  No projects open
+                <div className="space-y-1">
+                  {cloudProjects.map((project) => (
+                    <div
+                      key={project.projectId}
+                      className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 transition-colors text-left cursor-pointer group ${
+                        currentProject?.projectId === project.projectId ? 'bg-orange-50' : ''
+                      }`}
+                      onClick={() => handleLoadCloudProject(project.projectId)}
+                    >
+                      <CircleDot
+                        className={`w-4 h-4 flex-shrink-0 ${
+                          currentProject?.projectId === project.projectId
+                            ? 'text-orange-500'
+                            : 'text-gray-400'
+                        }`}
+                        strokeWidth={2}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 truncate">
+                          {project.title}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {project.nodeCount} nodes
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => handleDeleteProject(project.projectId, e)}
+                        className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded hover:bg-red-100 transition-all"
+                        title="Delete project"
+                      >
+                        <Trash2 className="w-3 h-3 text-red-500" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -332,7 +370,7 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="px-3 py-2 border-t border-gray-200">
-        <div className="text-xs text-gray-400 text-center">v1.4.0</div>
+        <div className="text-xs text-gray-400 text-center">v2.0.0</div>
       </div>
     </div>
   );
