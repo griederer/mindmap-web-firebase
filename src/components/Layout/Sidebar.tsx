@@ -12,6 +12,7 @@ import { useViewportStore } from '../../stores/viewportStore';
 import { useSaveStatusStore } from '../../stores/saveStatusStore';
 import { calculateLayout } from '../../utils/layoutEngine';
 import { listProjects, loadProject, createProject, deleteProject, type ProjectListItem } from '../../services/firebaseService';
+import { Download } from 'lucide-react';
 
 export default function Sidebar() {
   const [isLoading, setIsLoading] = useState(false);
@@ -153,6 +154,54 @@ export default function Sidebar() {
     }
   };
 
+  // Load demo project (WW2 mindmap for testing)
+  const handleLoadDemo = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await fetch('/examples/ww2-mindmap.json');
+      const data = await response.json();
+
+      // Apply layout
+      if (data.mindmap) {
+        const { nodes: layoutedNodes } = calculateLayout(
+          data.mindmap.nodes,
+          data.mindmap.rootNodeId
+        );
+        data.mindmap.nodes = layoutedNodes;
+      }
+
+      const bundle = {
+        projectId: `demo-${Date.now()}`,
+        metadata: {
+          title: data.metadata.title,
+          description: data.metadata.description,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        },
+        mindmap: data.mindmap,
+        relationships: [],
+      };
+
+      loadProjectBundle(bundle);
+
+      // Auto-focus on visible nodes
+      if (bundle.mindmap) {
+        setTimeout(() => {
+          const visibleNodeIds = Object.values(bundle.mindmap!.nodes)
+            .filter(node => node.isVisible)
+            .map(node => node.id);
+          focusOnNodes(visibleNodeIds, false);
+        }, 100);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to load demo');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Save status indicator
   const getSaveStatusIcon = () => {
     switch (saveStatus) {
@@ -281,6 +330,14 @@ export default function Sidebar() {
               >
                 <Plus className="w-4 h-4 text-gray-600" strokeWidth={2} />
                 <span className="text-sm text-gray-700">New Project</span>
+              </button>
+              <button
+                onClick={handleLoadDemo}
+                disabled={isLoading}
+                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-orange-50 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Download className="w-4 h-4 text-orange-500" strokeWidth={2} />
+                <span className="text-sm text-orange-600">Load WW2 Demo (41 nodes)</span>
               </button>
             </div>
           )}
