@@ -13,6 +13,7 @@ import { useSaveStatusStore } from '../../stores/saveStatusStore';
 import { calculateLayout } from '../../utils/layoutEngine';
 import { listProjects, loadProject, createProject, deleteProject, type ProjectListItem } from '../../services/firebaseService';
 import { Download } from 'lucide-react';
+import type { Node } from '../../types/node';
 
 export default function Sidebar() {
   const [isLoading, setIsLoading] = useState(false);
@@ -161,7 +162,10 @@ export default function Sidebar() {
       setError(null);
 
       const response = await fetch('/examples/ww2-mindmap.json');
-      const data = await response.json();
+      const data = await response.json() as {
+        metadata: { title: string; description?: string; version?: string };
+        mindmap?: { rootNodeId: string; nodes: Record<string, Node> };
+      };
 
       // Apply layout
       if (data.mindmap) {
@@ -179,6 +183,7 @@ export default function Sidebar() {
           description: data.metadata.description,
           createdAt: Date.now(),
           updatedAt: Date.now(),
+          version: data.metadata.version || '1.0.0',
         },
         mindmap: data.mindmap,
         relationships: [],
@@ -427,7 +432,7 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="px-3 py-2 border-t border-gray-200">
-        <div className="text-xs text-gray-400 text-center">v2.0.0 (stable)</div>
+        <div className="text-xs text-gray-400 text-center">v3.0.0 (organic)</div>
       </div>
     </div>
   );
